@@ -26,7 +26,7 @@ const Notice = ()=>{
 
             <div className="row mt-4">
                 <div className="col">
-                    <table className="table table-striped">
+                    <table className="table table-striped table-hover">
                         <thead className="text-center">
                             <tr>
                                 <th>
