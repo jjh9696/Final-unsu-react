@@ -8,7 +8,7 @@ import axios from "axios";
 //필요한 설정을 추가한다
 const instance = axios.create({
     baseURL : "http://localhost:8080",//기본 통신 URL 접두사
-    baseURL : process.env.REACT_APP_BASE_URL,
+    //baseURL : process.env.REACT_APP_BASE_URL,
     timeout : 5000,//통신의 최대 지연시간(ms)
 });
 
