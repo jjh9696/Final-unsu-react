@@ -20,7 +20,7 @@ const App = () => {
         </div>
         {/* 바디 */}
         <div className='row mt-4'>
-          <div className='col-10 offset-sm-1'>
+          <div className='col'>
             <Suspense fallback={<LoadingScreen />}>
               <Routes>
                 <Route path="/" element={<Home />} />
@@ -30,7 +30,11 @@ const App = () => {
           </div>
         </div>
       </div>
-      <Footter />
+      <div className='row'>
+        <div className='col'>
+          <Footter />
+        </div>
+      </div>
     </>
   );
 }
