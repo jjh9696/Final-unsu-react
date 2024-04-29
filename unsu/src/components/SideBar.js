@@ -24,7 +24,7 @@ function SideBar() {
       >
         <div className='row' style={{ marginBlockStart: '2em', marginLeft: '5em', marginBottom: '2em' }}>
           <div className='col'>
-            <img src="https://picsum.photos/100/100" alt="Sidebar Image" className='' />
+          <NavLink to="/"><img src="https://picsum.photos/100/100" alt="Sidebar Image" className='' /></NavLink>
           </div>
         </div>
         <Menu
