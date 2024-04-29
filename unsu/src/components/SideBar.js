@@ -6,7 +6,7 @@ import {
   sidebarClasses,
   menuClasses,
 } from "react-pro-sidebar";
-
+import { NavLink } from 'react-router-dom';
 
 function SideBar() {
   return (
@@ -49,7 +49,9 @@ function SideBar() {
             <MenuItem> 승차권 환불 안내 </MenuItem>
             <MenuItem> 고속버스터미널 안내 </MenuItem>
           </SubMenu>
-          <MenuItem> 공지사항 </MenuItem>
+          <NavLink to="/notice">
+            <MenuItem> 공지사항 </MenuItem>
+          </NavLink>
           <SubMenu label="고객센터">
             <MenuItem> 자주하는 질문 </MenuItem>
             <MenuItem> 유실물센터 안내 </MenuItem>
