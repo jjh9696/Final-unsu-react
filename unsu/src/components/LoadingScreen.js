@@ -1,6 +1,6 @@
 import Jumbotron from "../Jumbotron";
 import "./LoadingScreen.css";
-import ClimingBoxLoader from "react-spinners/ClimbingBoxLoader";
+import ClimingBoxLoader from "react-spinners/FadeLoader";
 
 const LoadingScreen = ()=>{
 

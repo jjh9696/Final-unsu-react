@@ -49,29 +49,31 @@ const Header = () => {
     const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
     const isLogin = useRecoilValue(isLoginState);
     const logout = useCallback(() => {
-
         // recoil 저장소에 대한 정리 + axios의 헤더 제거 + localStorage 청소
         setLoginId('');
         setLoginLevel('');
         delete axios.defaults.headers.common['Authorization'];
         window.localStorage.removeItem("refreshToken");
     }, [loginId, loginLevel]);
+    
+
     return (
         <div className="row   text-end headerStyles" >
             <div className="col  bg-light">
-            {isLogin ? (
-                                <>
-                                <div className="col">
-                                    {loginId}님
-                                    <button className="btn" onClick={e=>logout()}>로그아웃</button>
-                                </div>
-                                </>
-                            ):(
-                                <>
-                                    <Link to="/login" className="btn">회원가입</Link>
-                                    <Link to="/login" className="btn">로그인</Link>
-                                </>
-                            )}
+                {isLogin ? (
+                    <>
+                        <div className="col">
+                            {loginId}님
+                            <button className="btn" onClick={e => logout()}>로그아웃</button>
+                            <Link to="/mypage" className="btn">마이페이지</Link>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <Link to="/Join" className="btn">회원가입</Link>
+                        <Link to="/Login" className="btn">로그인</Link>
+                    </>
+                )}
             </div>
         </div>
     );
