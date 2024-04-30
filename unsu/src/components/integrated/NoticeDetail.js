@@ -15,7 +15,7 @@ const NoticeDetail = (props) => {
         console.log('공지사항번호:', noticeNo);
     }, []);
 
-    2
+    
 
 
     return (
