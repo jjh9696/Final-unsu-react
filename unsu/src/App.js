@@ -13,6 +13,8 @@ import axios from './components/utils/CustomAxios';
 // 컴포넌트 배치
 import Login from './components/integrated/Login';
 import Notice from './components/integrated/Notice';
+import NoticeAdd from './components/integrated/NoticeAdd';
+import NoticeDetail from './components/integrated/NoticeDetail';
 
 const App = () => {
 
@@ -63,6 +65,8 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/notice" element={<Notice />} />
+                <Route path="/noticeAdd" element={<NoticeAdd />} />
+                <Route path="/noticeDetail/:noticeNo" element={<NoticeDetail/>} />
               </Routes>
             </Suspense>
             </div>
