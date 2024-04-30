@@ -10,6 +10,8 @@ import { loginIdState, loginLevelState, isLoginState, isAdminState } from './com
 import LoadingScreen from './components/LoadingScreen';
 import axios from './components/utils/CustomAxios';
 import { Link } from 'react-router-dom';
+import NoticeAdd from './components/integrated/NoticeAdd';
+import NoticeDetail from './components/integrated/NoticeDetail';
 
 import NoticeAdd from './components/integrated/NoticeAdd';
 import NoticeDetail from './components/integrated/NoticeDetail';
