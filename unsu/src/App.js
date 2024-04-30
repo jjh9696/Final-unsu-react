@@ -13,8 +13,6 @@ import { Link } from 'react-router-dom';
 import NoticeAdd from './components/integrated/NoticeAdd';
 import NoticeDetail from './components/integrated/NoticeDetail';
 
-import NoticeAdd from './components/integrated/NoticeAdd';
-import NoticeDetail from './components/integrated/NoticeDetail';
 
 // 컴포넌트 배치
 
