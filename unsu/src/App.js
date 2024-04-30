@@ -1,7 +1,6 @@
 import './App.css';
 import Footter from './components/Footter';
 import Header from './components/Header';
-import Home from './components/Home';
 import SideBar from './components/SideBar';
 import { Route, Routes } from 'react-router';
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -11,8 +10,10 @@ import LoadingScreen from './components/LoadingScreen';
 import axios from './components/utils/CustomAxios';
 
 // 컴포넌트 배치
-import Login from './components/integrated/Login';
-import Notice from './components/integrated/Notice';
+const Home = lazy(()=>import("./components/Home"));
+const Join = lazy(()=>import("./components/integrated/Join"));
+const Notice = lazy(()=>import("./components/integrated/Notice"));
+const Login = lazy(()=>import("./components/integrated/Login"));
 
 const App = () => {
 
@@ -63,6 +64,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/notice" element={<Notice />} />
+                <Route path="/join" element={<Join />} />
               </Routes>
             </Suspense>
             </div>
