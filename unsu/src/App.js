@@ -10,20 +10,18 @@ import { loginIdState, loginLevelState, isLoginState, isAdminState } from './com
 import LoadingScreen from './components/LoadingScreen';
 import axios from './components/utils/CustomAxios';
 import { Link } from 'react-router-dom';
+import NoticeAdd from './components/integrated/NoticeAdd';
+import NoticeDetail from './components/integrated/NoticeDetail';
 
 // 컴포넌트 배치
-<<<<<<< HEAD
+
 const AdminHome = lazy(()=>import("./components/integrated/admin/AdminHome"));
 const Home = lazy(()=>import("./components/Home"));
 const Join = lazy(()=>import("./components/integrated/Join"));
 const Notice = lazy(()=>import("./components/integrated/Notice"));
 const Login = lazy(()=>import("./components/integrated/Login"));
-=======
-import Login from './components/integrated/Login';
-import Notice from './components/integrated/Notice';
-import NoticeAdd from './components/integrated/NoticeAdd';
-import NoticeDetail from './components/integrated/NoticeDetail';
->>>>>>> origin/yong0430
+
+
 
 const App = () => {
 
