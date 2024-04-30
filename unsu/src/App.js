@@ -84,13 +84,10 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/notice" element={<Notice />} />
-<<<<<<< HEAD
                 <Route path="/join" element={<Join />} />
                 <Route path="/adminHome" element={<AdminHome />} />
-=======
                 <Route path="/noticeAdd" element={<NoticeAdd />} />
                 <Route path="/noticeDetail/:noticeNo" element={<NoticeDetail/>} />
->>>>>>> origin/yong0430
               </Routes>
             </Suspense>
             </div>
