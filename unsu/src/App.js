@@ -2,14 +2,17 @@ import './App.css';
 import Footter from './components/Footter';
 import Header from './components/Header';
 import SideBar from './components/SideBar';
+import AdminSideBar from './components/integrated/admin/AdminSideBar';
 import { Route, Routes } from 'react-router';
 import { useRecoilState, useRecoilValue } from "recoil";
 import { Suspense, lazy, useCallback, useEffect } from 'react';
-import { loginIdState, loginLevelState, isLoginState } from './components/utils/RecoilData';
+import { loginIdState, loginLevelState, isLoginState, isAdminState } from './components/utils/RecoilData';
 import LoadingScreen from './components/LoadingScreen';
 import axios from './components/utils/CustomAxios';
+import { Link } from 'react-router-dom';
 
 // 컴포넌트 배치
+const AdminHome = lazy(()=>import("./components/integrated/admin/AdminHome"));
 const Home = lazy(()=>import("./components/Home"));
 const Join = lazy(()=>import("./components/integrated/Join"));
 const Notice = lazy(()=>import("./components/integrated/Notice"));
@@ -23,6 +26,7 @@ const App = () => {
 
   // recoil value
   const isLogin = useRecoilValue(isLoginState);
+  const isAdmin = useRecoilValue(isAdminState);
 
 
   //effect
@@ -51,10 +55,19 @@ const App = () => {
     <>
       {/* 메뉴 */}
       <Header />
-
+      
       <div className='container-fluid d-flex'>
-        <div className='sideber'>
-          <SideBar/>
+        <div className='sidebar'>
+          {isAdmin && (<div className='text-end'><Link to="/adminhome">관리자홈</Link></div>)}
+          {isAdmin ? (
+            <>
+            <AdminSideBar/>
+            </>
+          ):(
+            <>
+            <SideBar/>
+            </>
+          )}
         </div>
         <div className='container'>
           <div className='row mt-4'>
@@ -65,6 +78,7 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/notice" element={<Notice />} />
                 <Route path="/join" element={<Join />} />
+                <Route path="/adminHome" element={<AdminHome />} />
               </Routes>
             </Suspense>
             </div>

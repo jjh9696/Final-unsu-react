@@ -33,8 +33,16 @@ const isLoginState = selector({
     }
 });
 
+const isAdminState = selector({
+    key : 'isAdminState',
+    get : (state)=>{
+        const loginLevel = state.get(loginLevelState);
+        return loginLevel === '관리자';
+    }
+});
+
 // default export는 하나밖에 할 수 없다
 // export default countState;
 
 // naming export 는 여러개 할 수 있다. {} 로 해야함
-export {countState, loginIdState, loginLevelState,isLoginState}; 
+export {countState, loginIdState, loginLevelState,isLoginState, isAdminState}; 
