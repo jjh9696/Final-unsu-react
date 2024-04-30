@@ -2,7 +2,44 @@ import { useCallback, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { loginIdState, loginLevelState, isLoginState } from "./utils/RecoilData";
 import axios from "./utils/CustomAxios";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+
+
+const headerStyles = `
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 50px;
+    padding: 0 20px;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    flex: 1;
+    text-align: center;
+}
+
+.menu {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+.menu-item {
+    text-decoration: none;
+    color: #333;
+}
+`;
+
 
 const Header = () => {
 
@@ -20,8 +57,8 @@ const Header = () => {
         window.localStorage.removeItem("refreshToken");
     }, [loginId, loginLevel]);
     return (
-        <div className="row ms-5 ps-5 text-end" >
-            <div className="col ms-5 ps-5 bg-light">
+        <div className="row   text-end headerStyles" >
+            <div className="col  bg-light">
             {isLogin ? (
                                 <>
                                 <div className="col">
@@ -31,8 +68,8 @@ const Header = () => {
                                 </>
                             ):(
                                 <>
-                                    <NavLink to="/login" className="btn">회원가입</NavLink>
-                                    <NavLink to="/login" className="btn">로그인</NavLink>
+                                    <Link to="/login" className="btn">회원가입</Link>
+                                    <Link to="/login" className="btn">로그인</Link>
                                 </>
                             )}
             </div>
