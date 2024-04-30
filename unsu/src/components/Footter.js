@@ -1,8 +1,8 @@
 const Footter = () => {
     return (
-            <div className="row ms-5 ps-5">
-                <div className="col ms-5 ps-5">
-                    <div className="p-4 bg-dark text-light ms-5">
+            <div className="row ">
+                <div className="col ">
+                    <div className="p-4 bg-dark text-light ">
                         <label>이용약관</label>&nbsp;&nbsp;
                         <label>개인정보 처리방침</label>&nbsp;&nbsp;
                         <label>고속버스 운송약관</label>&nbsp;&nbsp;

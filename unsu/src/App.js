@@ -23,6 +23,7 @@ const App = () => {
   // recoil value
   const isLogin = useRecoilValue(isLoginState);
 
+
   //effect
   useEffect(() => {
     refreshLogin();
@@ -52,11 +53,11 @@ const App = () => {
 
       <div className='container-fluid d-flex'>
         <div className='sideber'>
-          <SideBar />
+          <SideBar/>
         </div>
-        {/* 바디 */}
-        <div className='row mt-4'>
-          <div className='col'>
+        <div className='container'>
+          <div className='row mt-4'>
+            <div className='col-10 offset-sm-1'>
             <Suspense fallback={<LoadingScreen />}>
               <Routes>
                 <Route path="/" element={<Home />} />
@@ -64,6 +65,7 @@ const App = () => {
                 <Route path="/notice" element={<Notice />} />
               </Routes>
             </Suspense>
+            </div>
           </div>
         </div>
       </div>

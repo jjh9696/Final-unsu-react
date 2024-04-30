@@ -16,7 +16,7 @@ const Login = () => {
     //recoil
     const [loginId, setLoginId] = useRecoilState(loginIdState);
     const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
-    
+
     //callback
     const changeMember = useCallback(e => {
         setMember({
@@ -51,8 +51,8 @@ const Login = () => {
 
     return (
         <>
+            <Jumbotron title="로그인" />
             <form onSubmit={e => login(e)}>
-                <Jumbotron title="진짜 로그인" />
                 <div className="row mt-4">
                     <div className="col">
                         <label>아이디</label>
