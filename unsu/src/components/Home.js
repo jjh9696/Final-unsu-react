@@ -3,7 +3,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ko from 'date-fns/locale/ko';
-import { Modal, Button } from 'bootstrap'; // 모달 및 버튼 가져오기
 
 import { FaArrowsAltH } from "react-icons/fa";
 import { SiRollsroyce } from "react-icons/si";
@@ -15,7 +14,6 @@ const Home = () => {
   const [startDate, setStartDate] = useState(null); // 가는날 상태 추가
   const [endDate, setEndDate] = useState(null); // 오는날 상태 추가
   const [tripType, setTripType] = useState('oneway'); // 편도와 왕복을 구분하기 위한 상태 추가
-  const [showModal, setShowModal] = useState(false); // 모달 열림 상태 추가
 
   // 편도를 선택할 때 가는날 DatePicker만 보이도록 설정
   const handleOneWayClick = () => {
@@ -25,11 +23,6 @@ const Home = () => {
   // 왕복을 선택할 때 가는날과 오는날 DatePicker 모두 보이도록 설정
   const handleRoundTripClick = () => {
     setTripType('roundtrip');
-  };
-
-  // 모달을 열고 닫는 함수
-  const toggleModal = () => {
-    setShowModal(!showModal);
   };
 
   return (
@@ -51,7 +44,7 @@ const Home = () => {
       <div className="container-sm border border-5 rounded p-5 mb-3">
         {/* 출발지 */}
         <div className="row align-items-center">
-          <div className="col-md-2 p-5 text-center border border-5 rounded p-1 mb-3 smooth-hover " onClick={toggleModal}>
+          <div className="col-md-2 p-5 text-center border border-5 rounded p-1 mb-3 smooth-hover ">
             <span className="d-inline-block font-style">출발</span>
           </div>
           <div className="col-md-1 p-1 text-center rounded p-1 mb-1">
@@ -107,22 +100,6 @@ const Home = () => {
           )}
         </div>
       </div>
-
-      {/* 모달 */}
-      <Modal show={showModal} onHide={toggleModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>출발지 선택</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* 모달 내용 */}
-          모달 내용을 입력하세요.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={toggleModal}>
-            닫기
-          </Button>
-        </Modal.Footer>
-      </Modal>
 
       <div className="container-sm border border-5 rounded p-3">
         <div className="row align-items-center">
