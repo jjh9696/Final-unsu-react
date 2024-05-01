@@ -14,6 +14,7 @@ import NoticeAdd from './components/integrated/NoticeAdd';
 import NoticeDetail from './components/integrated/NoticeDetail';
 
 
+
 // 컴포넌트 배치
 
 const AdminHome = lazy(()=>import("./components/integrated/admin/AdminHome"));
