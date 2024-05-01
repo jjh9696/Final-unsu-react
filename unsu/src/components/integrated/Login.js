@@ -45,8 +45,13 @@ const Login = () => {
         //(+추가) refreshToken을 localStroage에 저장
         window.localStorage.setItem("refreshToken", resp.data.refreshToken);
 
-        //강제 페이지 이동 - useNavigate()
-        navigator("/");
+
+        if(resp.data.memberLevel==='관리자'){
+            navigator("/adminHome")
+        }
+        else{
+            navigator("/");
+         }
     }, [member]);
 
     return (

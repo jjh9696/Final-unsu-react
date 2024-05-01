@@ -64,7 +64,6 @@ const App = () => {
       
       <div className='container-fluid d-flex'>
         <div className='sidebar'>
-          {isAdmin && (<div className='text-end'><Link to="/adminhome">관리자홈</Link></div>)}
           {isAdmin ? (
             <>
             <AdminSideBar/>
