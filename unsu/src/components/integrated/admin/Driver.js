@@ -177,7 +177,7 @@ const Driver = () => {
                 <div className="col text-end">
                     <button className="btn btn-info" onClick={e => openModalCreate()}>
                         <FaClipboardUser /> &nbsp;
-                        신규등록
+                        신규 등록
                     </button>
                 </div>
             </div>
@@ -215,14 +215,14 @@ const Driver = () => {
 
 
             {/* 등록 모달 */}
-            <div ref={bsModal1} class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">신규 기사님 등록</h1>
-                            <button type="button" class="btn-close" aria-label="Close" onClick={e => cancelInput()}></button>
+            <div ref={bsModal1} className="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel">신규 기사님 등록</h1>
+                            <button type="button" className="btn-close" aria-label="Close" onClick={e => cancelInput()}></button>
                         </div>
-                        <div class="modal-body">
+                        <div className="modal-body">
                             {/* 등록 */}
                             <div className="row mt-4">
                                 <div className="col">
@@ -230,7 +230,7 @@ const Driver = () => {
                                     <input type="text" name="driverName"
                                         value={input.driverName}
                                         onChange={e => changeInput(e)}
-                                        className="form-control" />
+                                        className="form-control rounded" />
                                 </div>
                             </div>
 
@@ -241,7 +241,7 @@ const Driver = () => {
                                         value={input.driverContact}
                                         placeholder="'-' 없이 입력"
                                         onChange={e => changeInput(e)}
-                                        className="form-control" />
+                                        className="form-control rounded" />
                                 </div>
                             </div>
 
@@ -251,7 +251,7 @@ const Driver = () => {
                                     <input type="date" name="driverAge"
                                         value={input.driverAge}
                                         onChange={e => changeInput(e)}
-                                        className="form-control" />
+                                        className="form-control rounded" />
                                 </div>
                             </div>
 
@@ -262,7 +262,7 @@ const Driver = () => {
                                         value={input.driverLicense}
                                         onChange={e => changeInput(e)}
                                         placeholder="0-00-000000"
-                                        className="form-control" />
+                                        className="form-control rounded" />
                                 </div>
                             </div>
 
@@ -272,13 +272,13 @@ const Driver = () => {
                                     <input type="date" name="driverDate"
                                         value={input.driverDate}
                                         onChange={e => changeInput(e)}
-                                        className="form-control" />
+                                        className="form-control rounded" />
                                 </div>
                             </div>
                         </div>
 
 
-                        <div class="modal-footer">
+                        <div className="modal-footer">
                             <button className="btn btn-success me-2"
                                 onClick={e => saveInput()}>
                                 등록
@@ -295,21 +295,21 @@ const Driver = () => {
 
 
             {/* 상세보기 모달 */}
-            <div ref={bsModal2} class="modal fade" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">기사님 상세정보</h1>
-                            <button type="button" class="btn-close" aria-label="Close" onClick={e => closeModalInfo()}></button>
+            <div ref={bsModal2} className="modal fade" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel">기사님 상세정보</h1>
+                            <button type="button" className="btn-close" aria-label="Close" onClick={e => closeModalInfo()}></button>
                         </div>
-                        <div class="modal-body" key={drivers.driverNo}>
+                        <div className="modal-body" key={drivers.driverNo}>
                             {selectedDriver && selectedDriver.edit === true ? (
                                 <>
                                     <div className="row mt-4">
                                         <div className="col">
                                             <label>기사이름</label><br/>
                                             <input type="text" name="driverName"
-                                                className="form-control"
+                                                className="form-control rounded"
                                                 onChange={e=>changeDriver(e,selectedDriver)}
                                                 value={selectedDriver.driverName}/>
                                         </div>
@@ -319,7 +319,7 @@ const Driver = () => {
                                         <div className="col">
                                             <label>연락처</label><br/>
                                             <input type="text" name="driverContact"
-                                                className="form-control"
+                                                className="form-control rounded"
                                                 onChange={e=>changeDriver(e,selectedDriver)}
                                                 value={selectedDriver.driverContact}/>
                                         </div>
@@ -329,7 +329,7 @@ const Driver = () => {
                                         <div className="col">
                                             <label>생년월일</label><br/>
                                             <input type="date" name="driverAge"
-                                                className="form-control"
+                                                className="form-control rounded"
                                                 onChange={e=>changeDriver(e,selectedDriver)}
                                                 value={selectedDriver.driverAge}/>
                                         </div>
@@ -339,7 +339,7 @@ const Driver = () => {
                                         <div className="col">
                                             <label>면허증번호</label><br/>
                                             <input type="text" name="driverLicense"
-                                                className="form-control"
+                                                className="form-control rounded"
                                                 onChange={e=>changeDriver(e,selectedDriver)}
                                                 value={selectedDriver.driverLicense}/>
                                         </div>
@@ -349,7 +349,7 @@ const Driver = () => {
                                         <div className="col">
                                             <label>면허증 취득일</label><br/>
                                             <input type="date" name="driverDate"
-                                                className="form-control"
+                                                className="form-control rounded"
                                                 onChange={e=>changeDriver(e,selectedDriver)}
                                                 value={selectedDriver.driverDate}/>
                                         </div>
