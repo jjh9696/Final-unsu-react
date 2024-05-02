@@ -10,9 +10,14 @@ import { loginIdState, loginLevelState, isLoginState, isAdminState } from './com
 import LoadingScreen from './components/LoadingScreen';
 import axios from './components/utils/CustomAxios';
 import { Link } from 'react-router-dom';
+import NoticeAdd from './components/integrated/NoticeAdd';
+import NoticeDetail from './components/integrated/NoticeDetail';
+
+
 
 
 // 컴포넌트 배치
+
 const AdminHome = lazy(()=>import("./components/integrated/admin/AdminHome"));
 const Home = lazy(()=>import("./components/Home"));
 const Join = lazy(()=>import("./components/integrated/Join"));
@@ -20,6 +25,8 @@ const Notice = lazy(()=>import("./components/integrated/Notice"));
 const Login = lazy(()=>import("./components/integrated/Login"));
 const Driver = lazy(()=>import("./components/integrated/admin/Driver"));
 const Bus = lazy(()=>import("./components/integrated/admin/Bus"));
+
+
 
 const App = () => {
 
@@ -61,7 +68,6 @@ const App = () => {
       
       <div className='container-fluid d-flex'>
         <div className='sidebar'>
-          {isAdmin && (<div className='text-end'><Link to="/adminhome">관리자홈</Link></div>)}
           {isAdmin ? (
             <>
             <AdminSideBar/>
@@ -84,6 +90,8 @@ const App = () => {
                 <Route path="/adminHome" element={<AdminHome />} />
                 <Route path="/driver" element={<Driver/>}/>
                 <Route path="/bus" element={<Bus/>}/>
+                <Route path="/noticeAdd" element={<NoticeAdd />} />
+                <Route path="/noticeDetail/:noticeNo" element={<NoticeDetail/>} />
               </Routes>
             </Suspense>
             </div>
