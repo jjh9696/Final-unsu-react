@@ -18,6 +18,7 @@ import { Link } from "react-router-dom";
 
 
 
+
 // 컴포넌트 배치
 
 const AdminHome = lazy(()=>import("./components/integrated/admin/AdminHome"));
@@ -25,6 +26,9 @@ const Home = lazy(()=>import("./components/OneWay"));
 const Join = lazy(()=>import("./components/integrated/Join"));
 const Notice = lazy(()=>import("./components/integrated/Notice"));
 const Login = lazy(()=>import("./components/integrated/Login"));
+const Driver = lazy(()=>import("./components/integrated/admin/Driver"));
+const Bus = lazy(()=>import("./components/integrated/admin/Bus"));
+const RouteMap = lazy(()=>import("./components/integrated/admin/Route"));
 
 
 
@@ -88,11 +92,14 @@ const App = () => {
                 <Route path="/notice" element={<Notice />} />
                 <Route path="/join" element={<Join />} />
                 <Route path="/adminHome" element={<AdminHome />} />
+                <Route path="/driver" element={<Driver/>}/>
+                <Route path="/bus" element={<Bus/>}/>
                 <Route path="/noticeAdd" element={<NoticeAdd />} />
                 <Route path="/noticeDetail/:noticeNo" element={<NoticeDetail/>} />
                 <Route path="/oneWay" element={<OneWay/>} />
                 <Route path="/roundTrip" element={<RoundTrip/>}/>
                 
+                <Route path="/route" element={<RouteMap/>}/>
               </Routes>
             </Suspense>
             </div>
