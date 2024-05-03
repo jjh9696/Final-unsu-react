@@ -9,16 +9,19 @@ import { Suspense, lazy, useCallback, useEffect } from 'react';
 import { loginIdState, loginLevelState, isLoginState, isAdminState } from './components/utils/RecoilData';
 import LoadingScreen from './components/LoadingScreen';
 import axios from './components/utils/CustomAxios';
-import { Link } from 'react-router-dom';
 import NoticeAdd from './components/integrated/NoticeAdd';
 import NoticeDetail from './components/integrated/NoticeDetail';
+import OneWay from './components/OneWay';
+import RoundTrip from "./components/RoundTrip";
+import { Link } from "react-router-dom";
+
 
 
 
 // 컴포넌트 배치
 
 const AdminHome = lazy(()=>import("./components/integrated/admin/AdminHome"));
-const Home = lazy(()=>import("./components/Home"));
+const Home = lazy(()=>import("./components/OneWay"));
 const Join = lazy(()=>import("./components/integrated/Join"));
 const Notice = lazy(()=>import("./components/integrated/Notice"));
 const Login = lazy(()=>import("./components/integrated/Login"));
@@ -87,6 +90,8 @@ const App = () => {
                 <Route path="/adminHome" element={<AdminHome />} />
                 <Route path="/noticeAdd" element={<NoticeAdd />} />
                 <Route path="/noticeDetail/:noticeNo" element={<NoticeDetail/>} />
+                <Route path="/oneWay" element={<OneWay/>} />
+                <Route path="/roundTrip" element={<RoundTrip/>}/>
               </Routes>
             </Suspense>
             </div>
