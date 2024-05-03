@@ -92,6 +92,7 @@ const App = () => {
                 <Route path="/noticeDetail/:noticeNo" element={<NoticeDetail/>} />
                 <Route path="/oneWay" element={<OneWay/>} />
                 <Route path="/roundTrip" element={<RoundTrip/>}/>
+                
               </Routes>
             </Suspense>
             </div>
