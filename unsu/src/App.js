@@ -9,8 +9,6 @@ import { Suspense, lazy, useCallback, useEffect } from 'react';
 import { loginIdState, loginLevelState, isLoginState, isAdminState } from './components/utils/RecoilData';
 import LoadingScreen from './components/LoadingScreen';
 import axios from './components/utils/CustomAxios';
-import NoticeAdd from './components/integrated/NoticeAdd';
-import NoticeDetail from './components/integrated/NoticeDetail';
 import OneWay from './components/OneWay';
 import RoundTrip from "./components/RoundTrip";
 import { Link } from "react-router-dom";
