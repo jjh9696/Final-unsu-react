@@ -10,8 +10,6 @@ import { loginIdState, loginLevelState, isLoginState, isAdminState } from './com
 import LoadingScreen from './components/LoadingScreen';
 import axios from './components/utils/CustomAxios';
 import { Link } from 'react-router-dom';
-import NoticeAdd from './components/integrated/NoticeAdd';
-import NoticeDetail from './components/integrated/NoticeDetail';
 
 
 // 컴포넌트 배치
@@ -19,7 +17,9 @@ import NoticeDetail from './components/integrated/NoticeDetail';
 const AdminHome = lazy(()=>import("./components/integrated/admin/AdminHome"));
 const Home = lazy(()=>import("./components/Home"));
 const Join = lazy(()=>import("./components/integrated/Join"));
-const Notice = lazy(()=>import("./components/integrated/Notice"));
+const Notice = lazy(()=>import("./components/integrated/notice/Notice"));
+const NoticeAdd = lazy(()=>import("./components/integrated/notice/NoticeAdd"));
+const NoticeDetail = lazy(()=>import("./components/integrated/notice/NoticeDetail"));
 const Login = lazy(()=>import("./components/integrated/Login"));
 
 
@@ -33,7 +33,6 @@ const App = () => {
   // recoil value
   const isLogin = useRecoilValue(isLoginState);
   const isAdmin = useRecoilValue(isAdminState);
-
 
   //effect
   useEffect(() => {
@@ -87,6 +86,7 @@ const App = () => {
                 <Route path="/adminHome" element={<AdminHome />} />
                 <Route path="/noticeAdd" element={<NoticeAdd />} />
                 <Route path="/noticeDetail/:noticeNo" element={<NoticeDetail/>} />
+
               </Routes>
             </Suspense>
             </div>
