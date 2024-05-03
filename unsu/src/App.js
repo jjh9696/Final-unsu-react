@@ -25,6 +25,7 @@ const Notice = lazy(()=>import("./components/integrated/Notice"));
 const Login = lazy(()=>import("./components/integrated/Login"));
 const Driver = lazy(()=>import("./components/integrated/admin/Driver"));
 const Bus = lazy(()=>import("./components/integrated/admin/Bus"));
+const RouteMap = lazy(()=>import("./components/integrated/admin/Route"));
 
 
 
@@ -92,6 +93,7 @@ const App = () => {
                 <Route path="/bus" element={<Bus/>}/>
                 <Route path="/noticeAdd" element={<NoticeAdd />} />
                 <Route path="/noticeDetail/:noticeNo" element={<NoticeDetail/>} />
+                <Route path="/route" element={<RouteMap/>}/>
               </Routes>
             </Suspense>
             </div>

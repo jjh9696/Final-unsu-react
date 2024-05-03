@@ -81,7 +81,7 @@ import {
                           <Menu menuItemStyles={subItemStyles}>
                               <MenuItem component={<Link to="/driver" />}> 기사님 관리 </MenuItem>
                               <MenuItem component={<Link to="/bus" />}> 버스차량 관리 </MenuItem>
-                              <MenuItem component={<Link to="/" />}> 노선도 관리 </MenuItem>
+                              <MenuItem component={<Link to="/route" />}> 노선도 관리 </MenuItem>
                               <MenuItem component={<Link to="/" />}> 터미널 관리 </MenuItem>
                           </Menu>
                       </SubMenu>
