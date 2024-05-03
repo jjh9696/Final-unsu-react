@@ -18,13 +18,14 @@ import { Link } from "react-router-dom";
 
 
 
-
 // 컴포넌트 배치
 
 const AdminHome = lazy(()=>import("./components/integrated/admin/AdminHome"));
 const Home = lazy(()=>import("./components/OneWay"));
 const Join = lazy(()=>import("./components/integrated/Join"));
-const Notice = lazy(()=>import("./components/integrated/Notice"));
+const Notice = lazy(()=>import("./components/integrated/notice/Notice"));
+const NoticeAdd = lazy(()=>import("./components/integrated/notice/NoticeAdd"));
+const NoticeDetail = lazy(()=>import("./components/integrated/notice/NoticeDetail"));
 const Login = lazy(()=>import("./components/integrated/Login"));
 const Driver = lazy(()=>import("./components/integrated/admin/Driver"));
 const Bus = lazy(()=>import("./components/integrated/admin/Bus"));
@@ -41,7 +42,6 @@ const App = () => {
   // recoil value
   const isLogin = useRecoilValue(isLoginState);
   const isAdmin = useRecoilValue(isAdminState);
-
 
   //effect
   useEffect(() => {
@@ -96,9 +96,9 @@ const App = () => {
                 <Route path="/bus" element={<Bus/>}/>
                 <Route path="/noticeAdd" element={<NoticeAdd />} />
                 <Route path="/noticeDetail/:noticeNo" element={<NoticeDetail/>} />
+
                 <Route path="/oneWay" element={<OneWay/>} />
                 <Route path="/roundTrip" element={<RoundTrip/>}/>
-                
                 <Route path="/route" element={<RouteMap/>}/>
               </Routes>
             </Suspense>
