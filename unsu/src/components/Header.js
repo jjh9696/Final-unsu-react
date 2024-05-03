@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { loginIdState, loginLevelState, isLoginState } from "./utils/RecoilData";
 import axios from "./utils/CustomAxios";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 
 
@@ -42,6 +42,8 @@ const headerStyles = `
 
 
 const Header = () => {
+    // Navigate hook
+    const navigate = useNavigate();
 
     // recoil value
     //recoil
@@ -52,10 +54,11 @@ const Header = () => {
         // recoil 저장소에 대한 정리 + axios의 헤더 제거 + localStorage 청소
         setLoginId('');
         setLoginLevel('');
+        navigate("/"); 
         delete axios.defaults.headers.common['Authorization'];
         window.localStorage.removeItem("refreshToken");
     }, [loginId, loginLevel]);
-    
+
 
     return (
         <div className="row   text-end headerStyles" >

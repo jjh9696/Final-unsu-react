@@ -35,4 +35,39 @@
   to {
     transform: rotate(360deg);
   }
+
+  
 }
+
+/* styles.css */
+.smooth-hover {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.smooth-hover:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.font-style {
+  font-size: 15px; /* 폰트 크기 조정 */
+  font-family: Arial, sans-serif; /* 글꼴 지정 */
+  font-weight: bold; /* 글자 굵기 조정 */
+  /* 추가적인 폰트 스타일링 */
+}
+.font-style1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.weekend {
+  font-weight: bold;
+  color: red;
+}
+
+.modal-body {
+  max-height: 400px; /* 내용의 최대 높이 지정 */
+  overflow-y: auto; /* 세로 스크롤바 추가 */
+}
+
+
