@@ -23,6 +23,7 @@ const Join = lazy(()=>import("./components/integrated/member/Join"));
 const Notice = lazy(()=>import("./components/integrated/Notice"));
 const Login = lazy(()=>import("./components/integrated/member/Login"));
 const Mypage = lazy(()=> import("./components/integrated/member/Mypage"));
+const TestJoin = lazy(()=> import("./components/integrated/member/TestJoin"));
 
 
 
@@ -89,6 +90,7 @@ const App = () => {
                 <Route path="/noticeAdd" element={<NoticeAdd />} />
                 <Route path="/noticeDetail/:noticeNo" element={<NoticeDetail/>} />
                 <Route path="/mypage" element={<Mypage/>} />
+                <Route path="/testjoin" element={<TestJoin/>} />
               </Routes>
             </Suspense>
             </div>
