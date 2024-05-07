@@ -254,8 +254,14 @@ const Route = () => {
                                             style={{ cursor: 'pointer' }}>
                                             {route.endTerminal}
                                         </td>
-                                        <td>{route.routeKm} km</td>
-                                        <td>{route.routeTime}</td>
+                                        <td onClick={e => openModalInfo(route)}
+                                            style={{ cursor: 'pointer' }}>
+                                                {route.routeKm} km
+                                        </td>
+                                        <td onClick={e => openModalInfo(route)}
+                                            style={{ cursor: 'pointer' }}>
+                                            {route.routeTime}
+                                        </td>
                                     </tr>
                                 )
                             ))}
