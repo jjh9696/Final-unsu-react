@@ -705,8 +705,7 @@ const Join = () => {
                         <button
                             type="submit"
                             className="btn btn-warning w-100"
-                        // onClick={joinStart}
-                        // disabled={!areAllInputsValid()} // 버튼 활성화 여부 설정
+                        disabled={!areAllInputsValid()} // 버튼 활성화 여부 설정
                         >
                             {areAllInputsValid() ? '가입하기' : '미입력된 항목 있음'}
                         </button>
