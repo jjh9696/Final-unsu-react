@@ -247,8 +247,8 @@ const Bus = () => {
                                             <td style={{
                                                 color: bus.busStatus === "운행중" ? "green" :
                                                     bus.busStatus === "운행종료" ? "red" :
-                                                        bus.busStatus === "수리중" ? "orange" : "black"
-                                            }} >{bus.busStatus}</td>
+                                                    bus.busStatus === "수리중" ? "orange" : "black"
+                                                }} >{bus.busStatus}</td>
                                             <td>
                                                 <MdBusAlert className="text-primary"
                                                     onClick={e => editBus(bus)} />

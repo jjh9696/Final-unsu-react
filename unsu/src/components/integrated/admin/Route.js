@@ -39,15 +39,16 @@ const Route = () => {
         routeWay: "",
         edit: false
     });
-
-    //시간 제발
+    //시간 담기
     const [routeTimes, setRouteTimes] = useState([]);
+
 
     //effect
     useEffect(() => {
         loadData();
         loadTerminalData();
         loadBusData();
+        loadTimeData();
     }, []);
     //노선 목록
     const loadData = useCallback(async () => {
@@ -79,6 +80,11 @@ const Route = () => {
         const resp = await axios.get("/bus/");
         setBuses(resp.data);
     }, [buses]);
+    //시간 조회
+    const loadTimeData = useCallback(async () => {
+        const resp = await axios.get("/route/time");
+        setRouteTimes(resp.data);
+    }, [routeTimes]);
 
 
 
@@ -169,21 +175,33 @@ const Route = () => {
         setSelectRoute({ ...backup, edit: false });
     }, [backup, setSelectRoute]);
 
+    //삭제
+    const deleteRoute = useCallback(async(target)=>{
+        //확인창
+        const choice = window.confirm("노선 정보를 삭제하시겠습니까?");
+        if (choice === false) return;
 
-    // const formatTime = (timeString) => {
-    //     // 주어진 시간 문자열을 Date 객체로 변환
-    //     const date = new Date(timeString);
-    //     // Date 객체에서 시간과 분을 추출
-    //     const hours = date.getHours();
-    //     const minutes = date.getMinutes();
-    //     // 추출된 시간과 분을 문자열로 포맷팅하여 반환
-    //     const formattedTime = `${padZero(hours)}:${padZero(minutes)}`;
-    //     return formattedTime;
-    // };
+        const resp = await axios.delete("/route/" + target.routeNo);
+        loadData();
+    },[routes]);
 
-    // const padZero = (num) => {
-    //     return num < 10 ? `0${num}` : num;
-    // };
+
+
+
+    const formatTime = (timeString) => {
+        // 주어진 시간 문자열을 Date 객체로 변환
+        const date = new Date(timeString);
+        // Date 객체에서 시간과 분을 추출
+        const HH24 = date.getHours();
+        const MI = date.getMinutes();
+        // 추출된 시간과 분을 문자열로 포맷팅하여 반환
+        const formattedTime = `${padZero(HH24)}:${padZero(MI)}`;
+        return formattedTime;
+    };
+    //시간 앞에 0 붙이기
+    const padZero = (num) => {
+        return num < 10 ? `0${num}` : num;
+    };
 
 
 
@@ -256,7 +274,7 @@ const Route = () => {
                                         </td>
                                         <td onClick={e => openModalInfo(route)}
                                             style={{ cursor: 'pointer' }}>
-                                                {route.routeKm} km
+                                            {route.routeKm} km
                                         </td>
                                         <td onClick={e => openModalInfo(route)}
                                             style={{ cursor: 'pointer' }}>
@@ -548,10 +566,12 @@ const Route = () => {
                                         <div className="col">
                                             <label>출발시간</label><br />
                                             <select>
-                                                {routes.map(route=>(
-                                                    <option key={route.routeNo} value={route.routeStart}>
-                                                        {route.routeStartTime}
-                                                    </option>
+                                            {routeTimes.map(routeTime => (
+                                                    (routeTime.routeStart === selectRoute.startTerminal && routeTime.routeEnd === selectRoute.endTerminal) && (
+                                                        <option key={routes.routeNo} value={routeTime.routeStartTime}>
+                                                            {formatTime(routeTime.routeStartTime)}
+                                                        </option>
+                                                    )
                                                 ))}
                                             </select>
                                         </div>
@@ -559,7 +579,7 @@ const Route = () => {
                                         </div>
                                         <div className="col">
                                             <label>도착시간</label><br />
-                                            <h5>{selectRoute.routeEndTime}</h5>
+                                            <h5>{routeTimes.routeEndTime}</h5>
                                         </div>
                                     </div>
 
@@ -579,12 +599,18 @@ const Route = () => {
                                     </div>
                                     <hr />
                                     <div className="row mt-3">
+                                        <div className="col">
+                                            <button className="btn btn-danger"
+                                                onClick={e=>deleteRoute(selectRoute)}>
+                                                삭제
+                                            </button>
+                                        </div>
                                         <div className="col text-end">
                                             <button className="btn btn-primary me-3"
                                                 onClick={e => editRoute(selectRoute)}>
                                                 수정
                                             </button>
-                                            <button className="btn btn-warning"
+                                            <button className="btn btn-light"
                                                 onClick={e => closeModalInfo()}>
                                                 닫기
                                             </button>
