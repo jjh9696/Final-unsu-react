@@ -30,6 +30,8 @@ const Driver = lazy(()=>import("./components/integrated/admin/Driver"));
 const Bus = lazy(()=>import("./components/integrated/admin/Bus"));
 const RouteMap = lazy(()=>import("./components/integrated/admin/Route"));
 const Reservation = lazy(()=>import("./components/integrated/Reservation"));
+const Terminal = lazy(()=>import("./components/integrated/admin/Terminal"));
+
 
 
 const App = () => {
@@ -100,6 +102,7 @@ const App = () => {
                 <Route path="/oneWay" element={<OneWay/>} />
                 <Route path="/roundTrip" element={<RoundTrip/>}/>
                 <Route path="/route" element={<RouteMap/>}/>
+                <Route path="/terminal" element={<Terminal/>}/>
               </Routes>
             </Suspense>
             </div>
