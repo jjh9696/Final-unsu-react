@@ -31,6 +31,7 @@ const Bus = lazy(()=>import("./components/integrated/admin/Bus"));
 const RouteMap = lazy(()=>import("./components/integrated/admin/Route"));
 const Reservation = lazy(()=>import("./components/integrated/Reservation"));
 const Terminal = lazy(()=>import("./components/integrated/admin/Terminal"));
+const TestPrice = lazy(()=>import("./components/TestPrice"));
 
 
 
@@ -103,6 +104,7 @@ const App = () => {
                 <Route path="/roundTrip" element={<RoundTrip/>}/>
                 <Route path="/route" element={<RouteMap/>}/>
                 <Route path="/terminal" element={<Terminal/>}/>
+                <Route path="/testPrice" element={<TestPrice/>}/>
               </Routes>
             </Suspense>
             </div>
