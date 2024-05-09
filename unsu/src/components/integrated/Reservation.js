@@ -7,6 +7,7 @@ import Draggable from "react-draggable";
 const Reservation = () => {
     const [startRegion, setStartRegion] = useState('');
     const [endRegion, setEndRegion] = useState('');
+    const [selectedId, setSelectedId] = useState('');
     const [startTerminals, setStartTerminals] = useState([]);
     const [endTerminals, setEndTerminals] = useState([]);
     const [selectedStartTerminal, setSelectedStartTerminal] = useState('');
@@ -23,11 +24,30 @@ const Reservation = () => {
     // 좌석띄우는 부분 
     const [seats, setSeats] = useState([]); // 좌석 정보를 담을 state
     const [selectedSeat, setSelectedSeat] = useState(null); // 선택된 좌석 번호를 담을 state
+    // 버스번호를 좌석정보가져오는 비동기에 넣을거
+    const [seatBusNo, setSeatBusNo] = useState('');
+    // qjtm 클릭 이벤트 핸들러
+    const handleBusClick = (e) => {
+        setSeatBusNo(e.target.value); 
+        console.log(seatBusNo);
+    };
+    // const handleCombinedClick = (bus) => {
+    //     openModalCreate();
+    //     console.log(bus.busNo);
+    //     setSeatBusNo(bus.busNo);
+    // };
+    const handleCombinedClick = async (bus) => {
+        console.log(bus.busNo);
+        setSeatBusNo(bus.busNo);
+        // 데이터를 불러온 후에 모달을 열도록 선택
+        await loadSeatData();
+        openModalCreate();
+    };
 
     // 좌석 정보를 가져오는 함수
     const loadSeatData = async () => {
         try {
-            const resp = await axios.get("/seat/");
+            const resp = await axios.get(`/seat/${seatBusNo}/seat`);
             setSeats(resp.data); // 가져온 좌석 정보를 state에 설정
         } catch (error) {
             console.error("Error fetching seats:", error);
@@ -38,6 +58,13 @@ const Reservation = () => {
     const handleSeatClick = (seatNumber) => {
         setSelectedSeat(seatNumber); // 선택한 좌석 번호를 state에 설정
     };
+
+
+    useEffect(() => {
+        if(seatBusNo) {
+            loadSeatData();
+        }
+    }, [seatBusNo]); 
 
     useEffect(() => {
         loadSeatData();
@@ -80,12 +107,32 @@ const Reservation = () => {
 
     }, [startRegion]);
 
+ // 출발 터미널 변경하는거 관리
+ const handleStartTerminalChange = (e) => {
+    const selectedId = parseInt(e.target.value, 10);  // 선택된 터미널 ID를 숫자로 변환
+    const selectedTerminal = startTerminals.find(terminal => terminal.terminalId === selectedId);
+    // console.log(selectedId);
+    setSelectedStartTerminal(selectedId);
+    if (selectedTerminal) {
+        setSelectedStartTerminalName(selectedTerminal.terminalName);
+        // 출발 터미널 선택 시 도착 터미널도 같은 터미널로 설정
+        setSelectedEndTerminal(selectedId);
+        setSelectedEndTerminalName(selectedTerminal.terminalName);
+        setFormData({ ...formData, routeStart: selectedId, routeEnd: selectedId });
+    } else {
+        setSelectedStartTerminalName('터미널 선택');
+        setSelectedEndTerminal('');
+        setSelectedEndTerminalName('');
+    }
+};
+
     // 도착 터미널을 보여주기 위한 통신
     useEffect(() => {
         const fetchData = async () => {
             if (endRegion) {
                 try {
-                    const response = await axios.post("/reservation/", { terminalRegion: endRegion });
+                    // console.log("선택됐나?",selectedStartTerminal);
+                    const response = await axios.post("/reservation/end", { terminalId: selectedStartTerminal });
                     setEndTerminals(response.data);
                     if (response.data.length > 0) {
                         setSelectedEndTerminal(response.data[0].id);
@@ -106,29 +153,14 @@ const Reservation = () => {
     // 출발 지역 선택
     const handleStartRegionChange = (e) => {
         setStartRegion(e.target.value);
-        if (e.target.value === endRegion) { // 만약 선택한 출발 지역 값과 도착 지역 값이 같다면, 도착 지역을 선택하지 않은 것으로 간주하여
-            setEndRegion(''); // 도착 지역을 초기화
-        }
-    };
+    };  
 
     // 도착 지역선택
     const handleEndRegionChange = (e) => {
         setEndRegion(e.target.value);
     };
 
-    // 출발 터미널 변경하는거 관리
-    const handleStartTerminalChange = (e) => {
-        const selectedId = parseInt(e.target.value, 10);  // 선택된 터미널 ID를 숫자로 변환
-        const selectedTerminal = startTerminals.find(terminal => terminal.terminalId === selectedId);
-
-        setSelectedStartTerminal(selectedId);
-        if (selectedTerminal) {
-            setSelectedStartTerminalName(selectedTerminal.terminalName);
-        } else {
-            setSelectedStartTerminalName('터미널 선택');
-        }
-        setFormData({ ...formData, routeStart: selectedId });
-    };
+   
 
     // 도착 터미널 변경하는거 관리
     const handleEndTerminalChange = (e) => {
@@ -143,7 +175,11 @@ const Reservation = () => {
         }
         setFormData({ ...formData, routeEnd: selectedId });
     };
-
+    useEffect(() => {
+        if (selectedStartTerminal) {
+            setSelectedEndTerminal(selectedStartTerminal);  // 출발 터미널이 선택되면 도착 터미널도 해당 터미널로 설정
+        }
+    }, [selectedStartTerminal]);
     // 시간을 폼데이터에 넣기 사용자가 맨첨에 달력에서 선택한 데이터를 저장해서 아래에 창에 보여주려고 만들었음
     const handleStartDateChange = (e) => {
         setFormData({ ...formData, routeStartTime: e.target.value });
@@ -281,7 +317,10 @@ const Reservation = () => {
                             <select onChange={handleEndRegionChange} value={endRegion}>
                                 <option value="">지역을 선택하세요</option>
                                 {/* 출발지 값 regions 배열에서 출발 지역과 같지 않은 지역만 필터링하여 보여줌 */}
-                                {regions.filter(region => region.value !== startRegion).map(region => (
+                                {/* {regions.filter(region => region.value !== startRegion).map(region => (
+                                    <option key={region.key} value={region.value}>{region.name}</option>
+                                ))} */}
+                                {regions.map(region => (
                                     <option key={region.key} value={region.value}>{region.name}</option>
                                 ))}
                             </select>
@@ -325,12 +364,12 @@ const Reservation = () => {
                             <div className="col">
                                 <label>출발터미널</label><div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
                                 <label>도착터미널</label><div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
-                                {busResults.map((bus) => (
-                                    <div key={bus.routeNo}>
-                                        <label>소요시간{bus.routeTime}</label><br />
-                                        <label>{bus.routeKm}</label>
+                                {busResults.length > 0 && (
+                                    <div key={busResults[0].routeNo}>
+                                        <div><label>소요시간</label>{busResults[0].routeTime}</div>
+                                        <div><label>킬로미터</label>{busResults[0].routeKm}</div>
                                     </div>
-                                ))}
+                                )}
                                 <div className="col mt-4">
                                     요금
                                 </div>
@@ -361,7 +400,7 @@ const Reservation = () => {
                                         {/* YYYY-MM-DD HH24:MI 형식에서 시간만 출력하게 설정함 */}
                                         <div className="col col-3">{bus.gradeType}</div>
                                         <div className="col col-3">{bus.busSeat}석</div>
-                                        <div className="col col-3"><button className="btn btn-primary" onClick={e => openModalCreate()}>선택{bus.busNo}</button></div>
+                                        <div className="col col-3"><button className="btn btn-primary"  onClick={e => handleCombinedClick(bus)}>선택{bus.busNo}</button></div>
                                     </div>
                                 ))}
                             </div>
