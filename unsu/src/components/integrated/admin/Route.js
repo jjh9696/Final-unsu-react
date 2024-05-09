@@ -6,7 +6,6 @@ import { FaRoad } from "react-icons/fa";
 import { FaRightLong } from "react-icons/fa6";
 
 
-
 const Route = () => {
 
     //state
@@ -39,8 +38,6 @@ const Route = () => {
         routeWay: "",
         edit: false
     });
-    //시간 담기
-    const [routeTimes, setRouteTimes] = useState([]);
 
 
     //effect
@@ -48,7 +45,6 @@ const Route = () => {
         loadData();
         loadTerminalData();
         loadBusData();
-        loadTimeData();
     }, []);
     //노선 목록
     const loadData = useCallback(async () => {
@@ -66,7 +62,7 @@ const Route = () => {
                 };
             })
         );
-
+        setRoutes(resp.data);
         setRoutes(respData);
     }, [routes]);
 
@@ -80,11 +76,6 @@ const Route = () => {
         const resp = await axios.get("/bus/");
         setBuses(resp.data);
     }, [buses]);
-    //시간 조회
-    const loadTimeData = useCallback(async () => {
-        const resp = await axios.get("/route/time");
-        setRouteTimes(resp.data);
-    }, [routeTimes]);
 
 
 
@@ -123,6 +114,7 @@ const Route = () => {
         });
     }, [input]);
 
+
     //수정상태로 바꾸기
     const editRoute = useCallback((target) => {
         const copy = { ...selectRoute };
@@ -141,6 +133,15 @@ const Route = () => {
         setSelectRoute(copy);
     }, [selectRoute]);
 
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setSelectRoute(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
     //입력한 내용 수정
     const changeRoute = useCallback((e, target) => {
         const copy = { ...selectRoute };
@@ -151,6 +152,15 @@ const Route = () => {
         }
         setSelectRoute(copy);
     }, [selectRoute]);
+
+    // const changeRoute = useCallback((e, target) => {
+    //     console.log('Updating:', e.target.name, e.target.value);
+    //     setSelectRoute(prevState => {
+    //         const newState = {...prevState, [e.target.name]: e.target.value};
+    //         console.log('New state:', newState);
+    //         return newState;
+    //     });
+    // }, [selectRoute]);
 
     //수정된 결과 저장하고 목록 갱신하기
     const saveEditRoute = useCallback(async (target) => {
@@ -176,14 +186,14 @@ const Route = () => {
     }, [backup, setSelectRoute]);
 
     //삭제
-    const deleteRoute = useCallback(async(target)=>{
+    const deleteRoute = useCallback(async (target) => {
         //확인창
         const choice = window.confirm("노선 정보를 삭제하시겠습니까?");
         if (choice === false) return;
 
         const resp = await axios.delete("/route/" + target.routeNo);
         loadData();
-    },[routes]);
+    }, [routes]);
 
 
 
@@ -465,7 +475,7 @@ const Route = () => {
 
                                     <div className="row mt-4">
                                         <div className="col">
-                                            <label>출발시간</label>
+                                            <label>출발시간 ~ 도착시간</label>
                                             <input type="text" name="routeStartTime"
                                                 value={selectRoute.routeStartTime}
                                                 onChange={e => changeRoute(e, selectRoute)}
@@ -565,13 +575,17 @@ const Route = () => {
                                     <div className="row mt-4 text-center">
                                         <div className="col">
                                             <label>출발시간</label><br />
-                                            <select>
-                                            {routeTimes.map(routeTime => (
-                                                    (routeTime.routeStart === selectRoute.startTerminal && routeTime.routeEnd === selectRoute.endTerminal) && (
-                                                        <option key={routes.routeNo} value={routeTime.routeStartTime}>
-                                                            {formatTime(routeTime.routeStartTime)}
-                                                        </option>
-                                                    )
+                                            <select className="form-select text-center"
+                                                    onChange={handleChange}
+                                                    name="routeStartTime"
+                                                    value={selectRoute.routeStartTime}
+                                                    id="routeNo"
+                                                    >
+                                            {routes.map(route => (
+                                                    route.startTerminal === selectRoute.startTerminal && selectRoute.endTerminal === route.endTerminal) && (
+                                                    <option key={route.routeNo} value={selectRoute.routeStartTime}>
+                                                        {route.routeStartTime}
+                                                    </option>
                                                 ))}
                                             </select>
                                         </div>
@@ -579,7 +593,18 @@ const Route = () => {
                                         </div>
                                         <div className="col">
                                             <label>도착시간</label><br />
-                                            <h5>{routeTimes.routeEndTime}</h5>
+                                            <select className="form-select text-center"
+                                                    onChange={handleChange}
+                                                    name="routeEndTime"
+                                                    value={routes.routeEndTime}
+                                                    >
+                                            {routes.map(route => (
+                                                    route.startTerminal === selectRoute.startTerminal && selectRoute.endTerminal === route.endTerminal) && (
+                                                    <option key={route.routeNo} value={selectRoute.routeEndTime}>
+                                                        {route.routeEndTime}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
                                     </div>
 
@@ -601,7 +626,7 @@ const Route = () => {
                                     <div className="row mt-3">
                                         <div className="col">
                                             <button className="btn btn-danger"
-                                                onClick={e=>deleteRoute(selectRoute)}>
+                                                onClick={e => deleteRoute(selectRoute)}>
                                                 삭제
                                             </button>
                                         </div>
