@@ -10,6 +10,7 @@
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
     "bootswatch": "^5.3.3",
+    "hacademy-cinema-seat": "^0.0.13",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "react": "^18.3.0",

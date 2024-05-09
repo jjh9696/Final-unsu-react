@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import axios from '../utils/CustomAxios';
 import { useNavigate } from "react-router";
 import { Modal } from 'bootstrap';
 import Draggable from "react-draggable";
+import {SeatGroup} from "hacademy-cinema-seat";
 
 const Reservation = () => {
     const [startRegion, setStartRegion] = useState('');
@@ -42,6 +43,9 @@ const Reservation = () => {
         // 데이터를 불러온 후에 모달을 열도록 선택
         await loadSeatData();
         openModalCreate();
+        setTimeout(()=>{
+            window.dispatchEvent(new Event('resize'));
+        }, 500);
     };
 
     // 좌석 정보를 가져오는 함수
@@ -284,6 +288,15 @@ const Reservation = () => {
             // 버스 예약 인서트 할것 넣기
         });
     }, [input]);
+
+
+
+    //좌석을 선택했을 때 선택된 좌석만 추출
+    const checkSeats = useMemo(()=>{
+        return seats.filter(seat=>seat.seatChecked === true);
+    }, [seats]);
+
+
     ///////////////////////////////////////////////// 아래부터 리턴 화면 /////////////////////////////////////////////////////
     return (
         <>
@@ -405,13 +418,33 @@ const Reservation = () => {
                                 ))}
                             </div>
                         </div>
+
                     </div>
+                    {/* <div className='row mt-5'>
+                        <div className='col'>
+                            <SeatGroup map={seats} setMap={setSeats}
+                                                            fields={{
+                                                            no:'seatNo', 
+                                                            row:'seatColumn', 
+                                                            col:'seatRow', 
+                                                            price:'seatPrice', 
+                                                            grade:'seatGrade',
+                                                            reserved:'seatReserved', 
+                                                            disabled:'seatDisabled',
+                                                            checked:'seatChecked',
+                                                            }}
+                                                            rows={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                                                            cols={[1, 2, ' ', 3, 4]}
+                                                            showNames
+                                                        />
+                        </div>
+                    </div> */}
                     {/* 등록 모달 */}
 
                     <div ref={bsModal} className="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" >
                         <Draggable>
-                            <div className="modal-dialog modal-lg" >
-                                <div className="modal-content" style={{ height: "800px" }}> {/* 높이 어디서 하는지 몰라서 그냥 인라인으로 스타일 박음 모달창 높이 조정 */}
+                            <div className="modal-dialog modal-xl" >
+                                <div className="modal-content modal-xl" style={{ height: "1200px" }}> 
                                     <div className="modal-header">
                                         <h1 className="modal-title fs-5" id="staticBackdropLabel">고속버스예약</h1>
                                         <button type="button" className="btn-close" aria-label="Close" onClick={e => cancelInput()}></button>
@@ -442,7 +475,8 @@ const Reservation = () => {
                                                     <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
                                                     <hr />
                                                     <div className="row mt-4">
-                                                        <div className="col off-set"> {seats.map((seat) => (
+                                                        <div className="col off-set"> 
+                                                        {/* {seats.map((seat) => (
                                                             <button
                                                                 key={seat.seatNo}
                                                                 onClick={() => handleSeatClick(seat.seatNo)}
@@ -459,7 +493,23 @@ const Reservation = () => {
                                                                 <p>{seat.seatColumn}열</p>
                                                                 <p>버스번호:{seat.busNo}</p>
                                                             </button>
-                                                        ))}</div>
+                                                        ))} */}
+                                                        
+                                                        {/* 좌석 라이브러리 */}
+                                                        <SeatGroup map={seats} setMap={setSeats}
+                                                            fields={{
+                                                            no:'seatNo', 
+                                                            row:'seatColumn', 
+                                                            col:'seatRow', 
+                                                            reserved:'seatReserved', 
+                                                            disabled:'seatDisabled',
+                                                            checked:'seatChecked',
+                                                            }}
+                                                            rows={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                                                            cols={[1, 2, '통로', 3, 4]} 
+                                                            showNames
+                                                        />
+                                                        </div>
                                                     </div>
                                                     <div className="row mt-4">
                                                     </div>
