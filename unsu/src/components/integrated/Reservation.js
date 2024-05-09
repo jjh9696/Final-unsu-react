@@ -136,7 +136,10 @@ const Reservation = () => {
             if (endRegion) {
                 try {
                     // console.log("선택됐나?",selectedStartTerminal);
-                    const response = await axios.post("/reservation/end", { terminalId: selectedStartTerminal });
+                    const response = await axios.post("/reservation/end", { 
+                        terminalId: selectedStartTerminal ,
+                        terminalRegion : endRegion
+                    });
                     setEndTerminals(response.data);
                     if (response.data.length > 0) {
                         setSelectedEndTerminal(response.data[0].id);

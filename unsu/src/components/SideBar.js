@@ -80,7 +80,7 @@ const SideBar = () => {
                     <SubMenu label="이용안내" defaultClose>
                         <Menu menuItemStyles={subItemStyles}>
                             <MenuItem component={<Link to="/reservation" />}> 예매  </MenuItem>
-                            <MenuItem component={<Link to="/" />}> 결제수단 안내</MenuItem>
+                            <MenuItem component={<Link to="/testPrice" />}> 결제수단 안내</MenuItem>
                             <MenuItem component={<Link to="/" />}> 승차권 환불 안내</MenuItem>
                             <MenuItem component={<Link to="/" />}> 고속버스터미널 안내</MenuItem>
                         </Menu>
