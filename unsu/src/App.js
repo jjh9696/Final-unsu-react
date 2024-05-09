@@ -9,7 +9,6 @@ import { Suspense, lazy, useCallback, useEffect } from 'react';
 import { loginIdState, loginLevelState, isLoginState, isAdminState } from './components/utils/RecoilData';
 import LoadingScreen from './components/LoadingScreen';
 import axios from './components/utils/CustomAxios';
-import OneWay from './components/OneWay';
 import RoundTrip from "./components/RoundTrip";
 import { Link } from "react-router-dom";
 
@@ -23,13 +22,14 @@ const Join = lazy(()=>import("./components/integrated/member/Join"));
 const Login = lazy(()=>import("./components/integrated/member/Login"));
 const Mypage = lazy(()=> import("./components/integrated/member/Mypage"));
 const TestJoin = lazy(()=> import("./components/integrated/member/TestJoin"));
-const Home = lazy(()=>import("./components/OneWay"));
+const OneWay = lazy(()=>import("./components/OneWay"));
 const Notice = lazy(()=>import("./components/integrated/notice/Notice"));
 const NoticeAdd = lazy(()=>import("./components/integrated/notice/NoticeAdd"));
 const NoticeDetail = lazy(()=>import("./components/integrated/notice/NoticeDetail"));
 const Driver = lazy(()=>import("./components/integrated/admin/Driver"));
 const Bus = lazy(()=>import("./components/integrated/admin/Bus"));
 const RouteMap = lazy(()=>import("./components/integrated/admin/Route"));
+const Reservation = lazy(()=>import("./components/integrated/Reservation"));
 const Terminal = lazy(()=>import("./components/integrated/admin/Terminal"));
 
 
@@ -88,7 +88,7 @@ const App = () => {
             <div className='col-10 offset-sm-1'>
             <Suspense fallback={<LoadingScreen />}>
               <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/reservation" element={<Reservation />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/notice" element={<Notice />} />
                 <Route path="/join" element={<Join />} />
