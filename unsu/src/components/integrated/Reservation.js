@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import axios from '../utils/CustomAxios';
 import { useNavigate } from "react-router";
 import { Modal } from 'bootstrap';
-import Draggable from "react-draggable";
-import {SeatGroup} from "hacademy-cinema-seat";
+import { SeatGroup } from "hacademy-cinema-seat";
 
 const Reservation = () => {
     const [startRegion, setStartRegion] = useState('');
@@ -19,6 +18,22 @@ const Reservation = () => {
         routeStartTime: "",
         gradeType: ""
     });
+    // 지역은 미리 지정해둠 아래에 regions에 셀렉트로 보이게 설정해둠
+    const regions = [
+        { key: "2", value: "광주/전남", name: "광주/전남" },
+        { key: "3", value: "전북", name: "전북" },
+        { key: "4", value: "부산/경남", name: "부산/경남" },
+        { key: "5", value: "대구/경북", name: "대구/경북" },
+        { key: "6", value: "인천/경기", name: "인천/경기" },
+        { key: "7", value: "서울", name: "서울" }
+    ];
+    const [submissionSuccess, setSubmissionSuccess] = useState(false); // 버스조회가 정상적으로 이루어 지면 사용자가 조회한 내용을 바탕으로 다른 컴포넌트를 보여주기 위한 상태
+    // 요금계산을 위한 빌드업
+    const [priceData, setPriceData] = useState({
+        routeNo: '',
+        chargeNo: ''
+    });
+
     const [selectedStartTerminalName, setSelectedStartTerminalName] = useState('');
     const [selectedEndTerminalName, setSelectedEndTerminalName] = useState('');
     const [busResults, setBusResults] = useState([]);
@@ -43,10 +58,12 @@ const Reservation = () => {
         //setRouteNo(resp.data);
        
     };
-    // 좌석 선택 가능 여부를 확인하는 함수
+// 좌석 선택 가능 여부를 확인하는 함수
 const isSeatSelectable = (seatNo) => {
     // 예약된 좌석 목록에서 선택된 좌석 번호를 검색
-    return !reservedSeats.includes(seatNo);
+    const reservedSeat = reservedSeats.find(seat => seat.seatNo === seatNo);
+    // 예약된 좌석이면 선택 불가능하므로 false 반환, 아니면 true 반환
+    return !reservedSeat;
 };
 
 // 좌석을 클릭할 때 실행되는 함수
@@ -71,7 +88,7 @@ const handleSeatClicks = (seat) => {
 
     // 버스 클릭 이벤트 핸들러
     const handleBusClick = (e) => {
-        setSeatBusNo(e.target.value); 
+        setSeatBusNo(e.target.value);
         console.log(seatBusNo);
     };
     // const handleCombinedClick = (bus) => {
@@ -85,7 +102,7 @@ const handleSeatClicks = (seat) => {
         // 데이터를 불러온 후에 모달을 열도록 선택
         await loadSeatData(bus.routeNo);
         openModalCreate();
-        setTimeout(()=>{
+        setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
         }, 500);
     };
@@ -119,31 +136,103 @@ const handleSeatClicks = (seat) => {
 
 
     useEffect(() => {
-        if(seatBusNo) {
+        if (seatBusNo) {
             loadSeatData();
         }
-    }, [seatBusNo]); 
+    }, [seatBusNo]);
 
     // useEffect(() => {
     //     loadSeatData();
     // }, []);
 
-    // useEffect(()=>{
-    //     loadReservedDate();
-    // },[]);
+
+    ///////////////////////좌석관련 핸들러끝////////////////////////////
+    useEffect(()=>{
+        loadReservedDate();
+    },[]);
 
 
 
-    // 지역은 미리 지정해둠 아래에 regions에 셀렉트로 보이게 설정해둠
-    const regions = [
-        { key: "2", value: "광주/전남", name: "광주/전남" },
-        { key: "3", value: "전북", name: "전북" },
-        { key: "4", value: "부산/경남", name: "부산/경남" },
-        { key: "5", value: "대구/경북", name: "대구/경북" },
-        { key: "6", value: "인천/경기", name: "인천/경기" },
-        { key: "7", value: "서울", name: "서울" }
-    ];
-    const [submissionSuccess, setSubmissionSuccess] = useState(false); // 버스조회가 정상적으로 이루어 지면 사용자가 조회한 내용을 바탕으로 다른 컴포넌트를 보여주기 위한 상태
+      // 사용자가 원하는 버스노선 정보를 얻기 위한 백엔드로 정보 전달
+      const handleSubmit = async () => {
+        // 폼 데이터에서 gradeType이 "전체" 또는 빈 문자열인 경우 제거
+        const dataToSend = formData.gradeType === "" || formData.gradeType === "전체" ?
+            (({ gradeType, ...rest }) => rest)(formData) : formData; // 이렇게 하면 등급을 전체로 하면 데이터 전송시 등급이 빠지고 백엔드에서 where절에 등급 조건이 빠지게 함
+
+        console.log('전송되는 정보:', dataToSend);
+
+        try {
+            const response = await axios.post('/search/', dataToSend);
+            console.log('Server Response:', response.data);
+            setBusResults(response.data);
+            setSubmissionSuccess(true);  // 제출 성공 상태를 true로 설정
+            setError(null);  // 에러 상태 초기화
+        } catch (error) {
+            console.error('전송 오류:', error.response ? error.response.data : error.message);
+            setSubmissionSuccess(false);  // 에러 발생 시 제출 성공 상태를 false로 설정
+            setError('Submission failed');  // 에러 메시지를 상태에 저장
+        }
+    };
+    /////////////////////요금관련/////////////////////////////////////////
+    const [fares, setFares] = useState({
+        standard: null,
+        business: null,
+        premium: null
+    });
+    const [error, setError] = useState(null);
+    const [chargeNo, setChargeNo]= useState();
+    useEffect(() => {
+        const fetchFares = async (routeNo) => {
+            try {
+                const standardFare = await fetchFare(41, routeNo);
+                const businessFare = await fetchFare(36, routeNo);
+                const premiumFare = await fetchFare(31, routeNo);
+                setFares({ standard: standardFare, business: businessFare, premium: premiumFare });
+            } catch (error) {
+                console.error('에러발생:', error);
+                setError('에러발생');
+            }
+        };
+
+        if (busResults.length > 0) {
+            fetchFares(busResults[0].routeNo);
+        }
+    }, [busResults]);
+
+    const fetchFare = async (chargeNo, routeNo) => {
+        try {
+            const response = await axios.get(`/charge/${routeNo}/${chargeNo}`);
+            if (response.status === 200) {
+                return response.data;
+            } else {
+                throw new Error(`Server responded with status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('API Error:', error.response ? error.response.data : error.message);
+            throw error;  // 상위 호출자에게 에러를 전파하여 적절히 처리할 수 있도록 합니다.
+        }
+    };
+    const fetchFareDetails = async (routeNo) => {
+        try {
+            const [standard, business, premium] = await Promise.all([
+                fetchFare(31, routeNo),
+                fetchFare(36, routeNo),
+                fetchFare(41, routeNo)
+            ]);
+            setFares({
+                standard: standard,
+                business: business,
+                premium: premium
+            });
+        } catch (error) {
+            console.error('요금 계산 중 에러 발생:', error);
+            setFares({ standard: '에러', business: '에러', premium: '에러' });
+        }
+    };
+    
+
+    ////////////////////////요금관련 끝//////////////////////////////////////
+
     const navigate = useNavigate(); // 폼이 전송되면 페이지 리다이렉트
     // 출발 터미널을 보여주기 위한 통신
     useEffect(() => {
@@ -169,24 +258,24 @@ const handleSeatClicks = (seat) => {
 
     }, [startRegion]);
 
- // 출발 터미널 변경하는거 관리
- const handleStartTerminalChange = (e) => {
-    const selectedId = parseInt(e.target.value, 10);  // 선택된 터미널 ID를 숫자로 변환
-    const selectedTerminal = startTerminals.find(terminal => terminal.terminalId === selectedId);
-    // console.log(selectedId);
-    setSelectedStartTerminal(selectedId);
-    if (selectedTerminal) {
-        setSelectedStartTerminalName(selectedTerminal.terminalName);
-        // 출발 터미널 선택 시 도착 터미널도 같은 터미널로 설정
-        setSelectedEndTerminal(selectedId);
-        setSelectedEndTerminalName(selectedTerminal.terminalName);
-        setFormData({ ...formData, routeStart: selectedId, routeEnd: selectedId });
-    } else {
-        setSelectedStartTerminalName('터미널 선택');
-        setSelectedEndTerminal('');
-        setSelectedEndTerminalName('');
-    }
-};
+    // 출발 터미널 변경하는거 관리
+    const handleStartTerminalChange = (e) => {
+        const selectedId = parseInt(e.target.value, 10);  // 선택된 터미널 ID를 숫자로 변환
+        const selectedTerminal = startTerminals.find(terminal => terminal.terminalId === selectedId);
+        // console.log(selectedId);
+        setSelectedStartTerminal(selectedId);
+        if (selectedTerminal) {
+            setSelectedStartTerminalName(selectedTerminal.terminalName);
+            // 출발 터미널 선택 시 도착 터미널도 같은 터미널로 설정
+            setSelectedEndTerminal(selectedId);
+            setSelectedEndTerminalName(selectedTerminal.terminalName);
+            setFormData({ ...formData, routeStart: selectedId, routeEnd: selectedId });
+        } else {
+            setSelectedStartTerminalName('터미널 선택');
+            setSelectedEndTerminal('');
+            setSelectedEndTerminalName('');
+        }
+    };
 
     // 도착 터미널을 보여주기 위한 통신
     useEffect(() => {
@@ -194,9 +283,9 @@ const handleSeatClicks = (seat) => {
             if (endRegion) {
                 try {
                     // console.log("선택됐나?",selectedStartTerminal);
-                    const response = await axios.post("/reservation/end", { 
-                        terminalId: selectedStartTerminal ,
-                        terminalRegion : endRegion
+                    const response = await axios.post("/reservation/end", {
+                        terminalId: selectedStartTerminal,
+                        terminalRegion: endRegion
                     });
                     setEndTerminals(response.data);
                     if (response.data.length > 0) {
@@ -218,14 +307,14 @@ const handleSeatClicks = (seat) => {
     // 출발 지역 선택
     const handleStartRegionChange = (e) => {
         setStartRegion(e.target.value);
-    };  
+    };
 
     // 도착 지역선택
     const handleEndRegionChange = (e) => {
         setEndRegion(e.target.value);
     };
 
-   
+
 
     // 도착 터미널 변경하는거 관리
     const handleEndTerminalChange = (e) => {
@@ -261,42 +350,7 @@ const handleSeatClicks = (seat) => {
         }
     };
 
-    // 원래 form 에서 submit으로 했다가 onClick 으로 바꿈. 원코드는 살려서 냅둠
-    // const searchBus = async (e) => {
-    //     e.preventDefault();
-
-    //     // 폼 데이터에서 gradeType이 빈 문자열이면 제거
-    //     const filteredData = formData.gradeType === "" ? (({ gradeType, ...rest }) => rest)(formData) : formData;
-    //     console.log('전송되는정보:', filteredData); // 이것을 통해 등급을 전체로 하면 디비 전송될때 등급이 빠지고 백엔드에서 where절에 등급 조건이 빠지게 함
-    //     try {
-    //         const response = await axios.post('/search/', filteredData);
-    //         console.log('Server Response:', response.data);
-    //         setBusResults(response.data);
-    //         setSubmissionSuccess(true);  // 제출 성공 상태를 true로 설정
-    //     } catch (error) {
-    //         console.error('전송오류:', error.response ? error.response.data : error.message);
-    //         setSubmissionSuccess(false);  // 에러 발생 시 제출 성공 상태를 false로 설정
-    //     }
-    // };
-
-    // 사용자가 원하는 버스노선 정보를 얻기 위한 백엔드로 정보 전달
-    const handleSubmit = async () => {
-        // 폼 데이터에서 gradeType이 "전체" 또는 빈 문자열인 경우 제거
-        const dataToSend = formData.gradeType === "" || formData.gradeType === "전체" ?
-            (({ gradeType, ...rest }) => rest)(formData) : formData; // 이것을 통해 등급을 전체로 하면 디비 전송될때 등급이 빠지고 백엔드에서 where절에 등급 조건이 빠지게 함
-
-        console.log('전송되는 정보:', dataToSend);
-
-        try {
-            const response = await axios.post('/search/', dataToSend);
-            console.log('Server Response:', response.data);
-            setBusResults(response.data);
-            setSubmissionSuccess(true);  // 제출 성공 상태를 true로 설정
-        } catch (error) {
-            console.error('전송 오류:', error.response ? error.response.data : error.message);
-            setSubmissionSuccess(false);  // 에러 발생 시 제출 성공 상태를 false로 설정
-        }
-    };
+  
 
 
     ///////////////////////////////////////////// 버스 눌러서 예약 하는 모달 ////////////////////////////////////////////
@@ -353,8 +407,8 @@ const handleSeatClicks = (seat) => {
 
 
     //좌석을 선택했을 때 선택된 좌석만 추출
-    const checkSeats = useMemo(()=>{
-        return seats.filter(seat=>seat.seatChecked === true);
+    const checkSeats = useMemo(() => {
+        return seats.filter(seat => seat.seatChecked === true);
     }, [seats]);
 
 
@@ -442,20 +496,17 @@ const handleSeatClicks = (seat) => {
                                     <div key={busResults[0].routeNo}>
                                         <div><label>소요시간</label>{busResults[0].routeTime}</div>
                                         <div><label>킬로미터</label>{busResults[0].routeKm}</div>
+                                        <div className="col mt-4">
+                                            <hr />
+                                            요금
+                                        </div>
+                                        <div className="col mt-2">
+                                            <p>일반: {fares.standard}원</p>
+                                            <p>우등: {fares.business}원</p>
+                                            <p>프리미엄: {fares.premium}원</p>
+                                        </div>
                                     </div>
                                 )}
-                                <div className="col mt-4">
-                                    요금
-                                </div>
-                                <div className="col">
-                                    <label>일반</label> xxxx원
-                                </div>
-                                <div className="col">
-                                    <label>우등</label> xxxx원
-                                </div>
-                                <div className="col">
-                                    <label>프리미엄</label> xxxx원
-                                </div>
                             </div>
                         </div>
                         <div className="row mt-2 w-75 text-center">
@@ -474,7 +525,7 @@ const handleSeatClicks = (seat) => {
                                         {/* YYYY-MM-DD HH24:MI 형식에서 시간만 출력하게 설정함 */}
                                         <div className="col col-3">{bus.gradeType}</div>
                                         <div className="col col-3">{bus.busSeat}석</div>
-                                        <div className="col col-3"><button className="btn btn-primary"  onClick={e => handleCombinedClick(bus)}>선택{bus.busNo}</button></div>
+                                        <div className="col col-3"><button className="btn btn-primary" onClick={e => handleCombinedClick(bus)}>선택{bus.busNo}</button></div>
                                     </div>
                                 ))}
                             </div>
@@ -503,40 +554,39 @@ const handleSeatClicks = (seat) => {
                     {/* 등록 모달 */}
 
                     <div ref={bsModal} className="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" >
-                        <Draggable>
-                            <div className="modal-dialog modal-xl" >
-                                <div className="modal-content modal-xl" style={{ height: "1200px" }}> 
-                                    <div className="modal-header">
-                                        <h1 className="modal-title fs-5" id="staticBackdropLabel">고속버스예약</h1>
-                                        <button type="button" className="btn-close" aria-label="Close" onClick={e => cancelInput()}></button>
-                                    </div>
-                                    <div className="modal-body">
-                                        {/* 등록 */}
-                                        <div className="container d-flex justify-content-end">
-                                            <div className="row mt-5 w-25 text-center me-5">
+                        <div className="modal-dialog modal-xl" >
+                            <div className="modal-content modal-xl" >
+                                <div className="modal-header">
+                                    <h1 className="modal-title fs-5" id="staticBackdropLabel">고속버스예약</h1>
+                                    <button type="button" className="btn-close" aria-label="Close" onClick={e => cancelInput()}></button>
+                                </div>
+                                <div className="modal-body">
+                                    {/* 등록 */}
+                                    <div className="container d-flex justify-content-end">
+                                        <div className="row mt-5 w-25 text-center me-5">
+                                            <div className="col">
+                                                <label>출발터미널</label><div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
+                                                <label>도착터미널</label><div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
+                                                <div className="col mt-4">
+                                                    요금
+                                                </div>
                                                 <div className="col">
-                                                    <label>출발터미널</label><div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
-                                                    <label>도착터미널</label><div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
-                                                    <div className="col mt-4">
-                                                        요금
-                                                    </div>
-                                                    <div className="col">
-                                                        <label>일반</label> xxxx원
-                                                    </div>
-                                                    <div className="col">
-                                                        <label>우등</label> xxxx원
-                                                    </div>
-                                                    <div className="col">
-                                                        <label>프리미엄</label> xxxx원
-                                                    </div>
+                                                    <label>일반</label> xxxx원
+                                                </div>
+                                                <div className="col">
+                                                    <label>우등</label> xxxx원
+                                                </div>
+                                                <div className="col">
+                                                    <label>프리미엄</label> xxxx원
                                                 </div>
                                             </div>
-                                            <div className="row mt-2 w-75 text-center">
-                                                <div className="col">
-                                                    <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
-                                                    <hr />
-                                                    <div className="row mt-4">
-                                                        <div className="col off-set"> 
+                                        </div>
+                                        <div className="row mt-2 w-75 text-center">
+                                            <div className="col">
+                                                <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
+                                                <hr />
+                                                <div className="row mt-4">
+                                                    <div className="col off-set">
                                                         {/* {seats.map((seat) => (
                                                             <button
                                                                 key={seat.seatNo}
@@ -555,43 +605,46 @@ const handleSeatClicks = (seat) => {
                                                                 <p>버스번호:{seat.busNo}</p>
                                                             </button>
                                                         ))} */}
-                                                        
+
                                                         {/* 좌석 라이브러리 */}
                                                         <SeatGroup map={seats} setMap={setSeats}
                                                             fields={{
+
                                                             no:'seatNo', 
                                                             row:'seatColumn', 
                                                             col:'seatRow', 
                                                             reserved:'reservationSeatNo', 
                                                             disabled:'seatDisabled',
                                                             checked:'seatChecked',
+
+                                                               
+
                                                             }}
                                                             rows={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                                                            cols={[1, 2, '통로', 3, 4]} 
+                                                            cols={[1, 2, '통로', 3, 4]}
                                                             showNames
                                                             onSeatClick={handleSeatClicks}
                                                         />
-                                                        </div>
                                                     </div>
-                                                    <div className="row mt-4">
-                                                    </div>
+                                                </div>
+                                                <div className="row mt-4">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="modal-footer">
-                                        <button className="btn btn-success me-2"
-                                            onClick={e => saveInput()}>
-                                            등록
-                                        </button>
-                                        <button className="btn btn-danger"
-                                            onClick={e => cancelInput()}>
-                                            취소
-                                        </button>
-                                    </div>
+                                </div>
+                                <div className="modal-footer">
+                                    <button className="btn btn-success me-2"
+                                        onClick={e => saveInput()}>
+                                        등록
+                                    </button>
+                                    <button className="btn btn-danger"
+                                        onClick={e => cancelInput()}>
+                                        취소
+                                    </button>
                                 </div>
                             </div>
-                        </Draggable>
+                        </div>
                     </div>
                 </>
             )}
