@@ -7,34 +7,40 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import { GrFormPrevious } from "react-icons/gr";
 import { GrFormNext } from "react-icons/gr";
 
-
-
 const Notice = () => {
 
     //state
     const [notices, setNotices] = useState([]);
     //목록 페이징
     const [page, setPage] = useState(1);//현재 페이지 번호
-    const [size, setSize] = useState(10);//목록 개수
-    const [count, setCount] = useState(0);
-    
+    const [size, setSize] = useState(5);//목록 개수
+    const [count, setCount] = useState(0);    
     // 검색 기준과 검색어를 저장할 state
     const [defaultColumn, setDefaultColumn] = useState("notice_title");//기본값
     const [keyword, setKeyword] = useState(""); // 검색어는 빈 문자열로 초기화
-    const [column, setColumn] = useState(""); // 
+    const [column, setColumn] = useState("");
+    const [searched, setSearched] = useState(false); //검색 여부 상태 추가
+    const [fetchType, setFetchType] = useState(1);
     
     //effect
     useEffect(() => {
-        loadData();
-    }, [page, size]); // page가 변경될 때마다 loadData 호출
-
+        if (!searched) {
+            console.log("searced: " + searched);
+            if (fetchType === 1) {
+                loadData(); // 최신순 조회
+            } else if (fetchType === 2) {
+                mostView(); // 조회순 조회
+            } else if (fetchType === 3) {
+                handleSearch(); // 검색어 조회
+            }
+        }
+    }, [page, size, searched, fetchType]); // 상태값 fetchType도 감시
     //목록 불러오기
     const loadData = useCallback(async () => {
         const resp = await axios.get(`/notice/page/${page}/size/${size}`);
         //setNotices([...notices, ...resp.data.list]);
         setNotices(resp.data.list);
         setCount(resp.data.pageVO.totalPage);//페이지 숫자 표시
-
     }, [page, size]);
 
     //조회수 목록 불러오기
@@ -72,21 +78,21 @@ const Notice = () => {
         setPage(pageNumber); // 페이지 번호를 직접 선택하여 이동하는 함수
     };
 
-
     //키워드 검색
     const handleSearch = useCallback(async () => {
+        setPage(1);
+
+        console.log("searched2 : " + searched)
         // console.log("search : " + handleSearch)
         // console.log("column : " + defaultColumn);
         // console.log("keyword : " + keyword);
-        const resp = await axios.get(`/notice/search/column/${defaultColumn}/keyword/${keyword}`,
-            { params: {
-                page: page, // 현재 페이지 번호
-                size: size  // 목록 개수
-            }}
-        );
+        const resp = await axios.get(`/notice/search/column/${defaultColumn}/keyword/${keyword}`,{
+             params: { page: page, size: size }
+        });
         setNotices(resp.data.list);
         setCount(resp.data.pageVO.totalPage); // 페이지 숫자 업데이트
-    }, [keyword, defaultColumn]);
+        setSearched(true);
+    }, [keyword, defaultColumn, size]);
     
     const keywordChange = (e) => {
         setKeyword(e.target.value);
@@ -94,7 +100,6 @@ const Notice = () => {
     const columnChange = (e) => {
         setDefaultColumn(e.target.value);
     };
-
 
     //화면 출력
     return (
