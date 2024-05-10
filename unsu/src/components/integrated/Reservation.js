@@ -20,6 +20,18 @@ const Reservation = () => {
         routeStartTime: "",
         gradeType: ""
     });
+
+    const [count, setCount] = useState(0);  // 초기값을 0으로 설정
+
+    // 숫자를 증가시키는 함수
+    const incrementCount = () => {
+        setCount(prevCount => prevCount + 1);
+    };
+
+    // 숫자를 감소시키는 함수, 0보다 클 때만 감소
+    const decrementCount = () => {
+        setCount(prevCount => prevCount > 0 ? prevCount - 1 : prevCount);
+    };
     // 지역은 미리 지정해둠 아래에 regions에 셀렉트로 보이게 설정해둠
     const regions = [
         { key: "2", value: "광주/전남", name: "광주/전남" },
@@ -58,8 +70,8 @@ const Reservation = () => {
     const loadReservedDate = async (routeNo) => {
         const resp = await axios.get(`/seat/reservation/${routeNo}`);
         //setRouteNo(resp.data);
-
     };
+
     // 좌석 선택 가능 여부를 확인하는 함수
     const isSeatSelectable = (seatNo) => {
         // 예약된 좌석 목록에서 선택된 좌석 번호를 검색
@@ -89,7 +101,7 @@ const Reservation = () => {
     // 버스 클릭 이벤트 핸들러
     const handleBusClick = (e) => {
         setSeatBusNo(e.target.value);
-        
+
     };
     // const handleCombinedClick = (bus) => {
     //     openModalCreate();
@@ -97,7 +109,7 @@ const Reservation = () => {
     //     setSeatBusNo(bus.busNo);
     // };
     const handleCombinedClick = async (bus) => {
-        
+
         //setSeatBusNo(bus.busNo);
         // 데이터를 불러온 후에 모달을 열도록 선택
         await loadSeatData(bus.routeNo);
@@ -188,9 +200,9 @@ const Reservation = () => {
     useEffect(() => {
         const fetchFares = async (routeNo) => {
             try {
-                const standardFare = await fetchFare(41, routeNo);
-                const businessFare = await fetchFare(36, routeNo);
-                const premiumFare = await fetchFare(31, routeNo);
+                const standardFare = await fetchFare(3, routeNo);
+                const businessFare = await fetchFare(2, routeNo);
+                const premiumFare = await fetchFare(1, routeNo);
                 setFares({ standard: standardFare, business: businessFare, premium: premiumFare });
             } catch (error) {
                 console.error('에러발생:', error);
@@ -219,9 +231,9 @@ const Reservation = () => {
     const fetchFareDetails = async (routeNo) => {
         try {
             const [standard, business, premium] = await Promise.all([
-                fetchFare(31, routeNo),
-                fetchFare(36, routeNo),
-                fetchFare(41, routeNo)
+                fetchFare(1, routeNo),
+                fetchFare(2, routeNo),
+                fetchFare(3, routeNo)
             ]);
             setFares({
                 standard: standard,
@@ -568,7 +580,6 @@ const Reservation = () => {
                                                         />
                         </div>
                     </div> */}
-
                 </>
             ) : (
                 <>
@@ -580,23 +591,57 @@ const Reservation = () => {
                                 <div className="col mt-4">
                                     요금
                                 </div>
-                                <div className="col">
-                                    <label>일반</label> xxxx원
+                                <div className="row" >
+                                    <div className="col w-50 text-center mb-4">
+                                        <div className="mt-3">
+                                            <label>성인</label><br /><br />
+                                            <label>{count}</label>
+                                        </div>
+                                    </div>
+                                    <div className="col w-50">
+                                        <div className="mt-2 me-3">
+                                            <button className="btn" onClick={incrementCount}>+</button><br /><br />
+                                            <button className="btn" onClick={decrementCount}>-</button><br />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="col">
-                                    <label>우등</label> xxxx원
+                                <div className="row" >
+                                    <div className="col w-50 text-center mb-4">
+                                        <div className="mt-3">
+                                            <label>청소년</label><br /><br />
+                                            <label>{count}</label>
+                                        </div>
+                                    </div>
+                                    <div className="col w-75">
+                                        <div className="mt-2 me-3">
+                                            <button className="btn" onClick={incrementCount}>+</button><br /><br />
+                                            <button className="btn" onClick={decrementCount}>-</button><br />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="col">
-                                    <label>프리미엄</label> xxxx원
+                                <div className="row" >
+                                    <div className="col w-25 text-center mb-4">
+                                        <div className="mt-3">
+                                            <label>아동</label><br /><br />
+                                            <label>{count}</label>
+                                        </div>
+                                    </div>
+                                    <div className="col w-75">
+                                        <div className="mt-2 me-3">
+                                            <button className="btn" onClick={incrementCount}>+</button><br /><br />
+                                            <button className="btn" onClick={decrementCount}>-</button><br />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="row mt-2 w-75 text-center">
+
+                        <div className="row mt-2 w-100 text-center">
                             <div className="col">
                                 <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
                                 <hr />
-                                <div className="row mt-4">
-                                    <div className="col off-set">
+                                <div className="row mt-4"  >
+                                    <div className="col " >
                                         {/* {seats.map((seat) => (
                                                             <button
                                                                 key={seat.seatNo}
@@ -640,9 +685,22 @@ const Reservation = () => {
                                 </div>
                             </div>
                         </div>
+                        <div className='row w-75 text-center alert alert-primary' >
+                            <div className='col mt-4'>
+                                <label>선택좌석</label><br />
+                                좌석을 선택해주세요
+                                <hr />
+                                <label>탑승인원 및 요금</label>
+                                <div className='col'>
+                                    <label>성인 : 0</label>원 <br />
+                                    <label>청소년 : 0</label>원 <br />
+                                    <label>아동 : 0</label>원 <br />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </>
-            )}
+            )};
         </>
     );
 };
