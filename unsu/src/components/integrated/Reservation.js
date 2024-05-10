@@ -40,20 +40,23 @@ const Reservation = () => {
     // 좌석띄우는 부분 
     const [seats, setSeats] = useState([]); // 좌석 정보를 담을 state
     const [selectedSeat, setSelectedSeat] = useState(null); // 선택된 좌석 번호를 담을 state
+   
     // 버스번호에 대한 좌석정보가져오는 비동기에 넣을거
     const [seatBusNo, setSeatBusNo] = useState('');
 
     //예약된 좌석
     const [reservedSeats, setReservedSeats] = useState([])
+    
+    //const [routeNo,setRouteNo]= useState([]);
 
     // 좌석을 선택했을 때 선택된 좌석만 추출
     const [selectedSeats, setSelectedSeats] = useState([])
 
     //예약된 좌석을 가져 오는 함수
-    const loadReservedDate = async()=>{
-        const resp = await axios.get("/seat/reservation");
-        setReservedSeats(resp.data);
-        console.log(resp.data);
+    const loadReservedDate = async(routeNo)=>{
+        const resp = await axios.get(`/seat/reservation/${routeNo}`);
+        //setRouteNo(resp.data);
+       
     };
 // 좌석 선택 가능 여부를 확인하는 함수
 const isSeatSelectable = (seatNo) => {
@@ -95,9 +98,9 @@ const handleSeatClicks = (seat) => {
     // };
     const handleCombinedClick = async (bus) => {
         console.log(bus.busNo);
-        setSeatBusNo(bus.busNo);
+        //setSeatBusNo(bus.busNo);
         // 데이터를 불러온 후에 모달을 열도록 선택
-        await loadSeatData();
+        await loadSeatData(bus.routeNo);
         openModalCreate();
         setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
@@ -105,10 +108,22 @@ const handleSeatClicks = (seat) => {
     };
 
     // 좌석 정보를 가져오는 함수
-    const loadSeatData = async () => {
+    const loadSeatData = async (routeNo) => {
         try {
-            const resp = await axios.get(`/seat/${seatBusNo}/seat`);
-            setSeats(resp.data); // 가져온 좌석 정보를 state에 설정
+            //const resp = await axios.get(`/seat/${routeNo}/seat`);
+            const resp = await axios.get(`/seat/reservation/${routeNo}`);
+
+            //여기서 잠깐! 이대로 설정하면 예약좌석을 좌석 라이브러리에서 인지를 못함
+            //reservationSeatNo에 들어있는 숫자를 논리로 수정하는 코드를 작성
+            const convert = resp.data.map(seat=>{
+                return {
+                    ...seat,
+                    reservationSeatNo : seat.reservationSeatNo !== 0
+                }
+            });
+
+            setSeats(convert); // 가져온 좌석 정보를 state에 설정
+            //console.log(resp.data);
         } catch (error) {
             console.error("Error fetching seats:", error);
         }
@@ -126,14 +141,16 @@ const handleSeatClicks = (seat) => {
         }
     }, [seatBusNo]);
 
-    useEffect(() => {
-        loadSeatData();
-    }, []);
+    // useEffect(() => {
+    //     loadSeatData();
+    // }, []);
+
 
     ///////////////////////좌석관련 핸들러끝////////////////////////////
     useEffect(()=>{
         loadReservedDate();
     },[]);
+
 
 
       // 사용자가 원하는 버스노선 정보를 얻기 위한 백엔드로 정보 전달
@@ -592,12 +609,16 @@ const handleSeatClicks = (seat) => {
                                                         {/* 좌석 라이브러리 */}
                                                         <SeatGroup map={seats} setMap={setSeats}
                                                             fields={{
-                                                                no: 'seatNo',
-                                                                row: 'seatColumn',
-                                                                col: 'seatRow',
-                                                                reserved: 'seatReserved',
-                                                                disabled: 'seatDisabled',
-                                                                checked: 'seatChecked',
+
+                                                            no:'seatNo', 
+                                                            row:'seatColumn', 
+                                                            col:'seatRow', 
+                                                            reserved:'reservationSeatNo', 
+                                                            disabled:'seatDisabled',
+                                                            checked:'seatChecked',
+
+                                                               
+
                                                             }}
                                                             rows={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                                                             cols={[1, 2, '통로', 3, 4]}
