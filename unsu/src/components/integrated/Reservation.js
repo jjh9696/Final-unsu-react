@@ -42,20 +42,23 @@ const Reservation = () => {
     // 좌석띄우는 부분 
     const [seats, setSeats] = useState([]); // 좌석 정보를 담을 state
     const [selectedSeat, setSelectedSeat] = useState(null); // 선택된 좌석 번호를 담을 state
+
     // 버스번호에 대한 좌석정보가져오는 비동기에 넣을거
     const [seatBusNo, setSeatBusNo] = useState('');
 
     //예약된 좌석
     const [reservedSeats, setReservedSeats] = useState([])
 
+    //const [routeNo,setRouteNo]= useState([]);
+
     // 좌석을 선택했을 때 선택된 좌석만 추출
     const [selectedSeats, setSelectedSeats] = useState([])
 
     //예약된 좌석을 가져 오는 함수
-    const loadReservedDate = async () => {
-        const resp = await axios.get("/seat/reservation");
-        setReservedSeats(resp.data);
-        console.log(resp.data);
+    const loadReservedDate = async (routeNo) => {
+        const resp = await axios.get(`/seat/reservation/${routeNo}`);
+        //setRouteNo(resp.data);
+
     };
     // 좌석 선택 가능 여부를 확인하는 함수
     const isSeatSelectable = (seatNo) => {
@@ -86,7 +89,7 @@ const Reservation = () => {
     // 버스 클릭 이벤트 핸들러
     const handleBusClick = (e) => {
         setSeatBusNo(e.target.value);
-        console.log(seatBusNo);
+        
     };
     // const handleCombinedClick = (bus) => {
     //     openModalCreate();
@@ -94,21 +97,33 @@ const Reservation = () => {
     //     setSeatBusNo(bus.busNo);
     // };
     const handleCombinedClick = async (bus) => {
-        console.log(bus.busNo);
-        setSeatBusNo(bus.busNo);
-        handleSelectBus(bus)
+        
+        //setSeatBusNo(bus.busNo);
         // 데이터를 불러온 후에 모달을 열도록 선택
-        await loadSeatData();
+        await loadSeatData(bus.routeNo);
+        handleSelectBus();
         setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
         }, 500);
     };
 
     // 좌석 정보를 가져오는 함수
-    const loadSeatData = async () => {
+    const loadSeatData = async (routeNo) => {
         try {
-            const resp = await axios.get(`/seat/${seatBusNo}/seat`);
-            setSeats(resp.data); // 가져온 좌석 정보를 state에 설정
+            //const resp = await axios.get(`/seat/${routeNo}/seat`);
+            const resp = await axios.get(`/seat/reservation/${routeNo}`);
+
+            //여기서 잠깐! 이대로 설정하면 예약좌석을 좌석 라이브러리에서 인지를 못함
+            //reservationSeatNo에 들어있는 숫자를 논리로 수정하는 코드를 작성
+            const convert = resp.data.map(seat => {
+                return {
+                    ...seat,
+                    reservationSeatNo: seat.reservationSeatNo !== 0
+                }
+            });
+
+            setSeats(convert); // 가져온 좌석 정보를 state에 설정
+            //console.log(resp.data);
         } catch (error) {
             console.error("Error fetching seats:", error);
         }
@@ -126,14 +141,17 @@ const Reservation = () => {
         }
     }, [seatBusNo]);
 
-    useEffect(() => {
-        loadSeatData();
-    }, []);
+    // useEffect(() => {
+    //     loadSeatData();
+    // }, []);
+
 
     ///////////////////////좌석관련 핸들러끝////////////////////////////
-    useEffect(() => {
-        loadReservedDate();
-    }, []);
+    // useEffect(() => {
+    //     loadReservedDate();
+    // }, []);
+
+
 
 
     // 사용자가 원하는 버스노선 정보를 얻기 위한 백엔드로 정보 전달
@@ -142,7 +160,7 @@ const Reservation = () => {
         const dataToSend = formData.gradeType === "" || formData.gradeType === "전체" ?
             (({ gradeType, ...rest }) => rest)(formData) : formData; // 이렇게 하면 등급을 전체로 하면 데이터 전송시 등급이 빠지고 백엔드에서 where절에 등급 조건이 빠지게 함
 
-        console.log('전송되는 정보:', dataToSend);
+        // console.log('전송되는 정보:', dataToSend);
 
         try {
             const response = await axios.post('/search/', dataToSend);
@@ -366,7 +384,7 @@ const Reservation = () => {
     // 데이터 등록
     const saveInput = useCallback(async () => {
         try {
-            console.log('Sending input:', input); // 입력 값 로깅
+            // console.log('Sending input:', input); // 입력 값 로깅
             const resp = await axios.post("/reservation/", input);
             clearInput();
             closeModalCreate();
@@ -601,7 +619,7 @@ const Reservation = () => {
                                                 no: 'seatNo',
                                                 row: 'seatColumn',
                                                 col: 'seatRow',
-                                                reserved: 'seatReserved',
+                                                reserved: 'reservationSeatNo',
                                                 disabled: 'seatDisabled',
                                                 checked: 'seatChecked',
                                             }}
@@ -613,7 +631,9 @@ const Reservation = () => {
                                     </div>
                                 </div>
                                 <div className="row mt-4">
-                                    <button onClick={handleGoBack}>이전</button>
+                                    <div className="bus-details">
+                                        <button onClick={handleGoBack}>이전화면</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
