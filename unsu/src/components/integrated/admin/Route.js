@@ -141,6 +141,10 @@ const Route = () => {
             ...prevState,
             [name]: value
         }));
+
+        // 로그 추가
+        console.log(`선택된 ${name}:`, value);
+
         //선택한 시간과 동일한 노선번호로 세팅 되게
         if (name === "routeStartTime") {
             handleStartTimeChange(value);
@@ -157,6 +161,9 @@ const Route = () => {
                 routeStartTime: startTime,
                 routeEndTime: selectedRoute.routeEndTime
             }));
+
+            // 로그 추가
+            console.log("출발 시간 변경:", startTime);
         }
     }
     //같은 노선 번호의 시간이 선택 되게(도착)
@@ -168,6 +175,8 @@ const Route = () => {
                 routeEndTime: endTime,
                 routeStartTime: selectedRoute.routeStartTime
             }));
+            // 로그 추가
+            console.log("도착 시간 변경:", endTime);
         }
     }
 
@@ -180,6 +189,8 @@ const Route = () => {
             copy[e.target.name] = e.target.value;
         }
         setSelectRoute(copy);
+
+        console.log("변경된 노선 상태:", copy);
     }, [selectRoute]);
 
     //수정된 결과 저장하고 목록 갱신하기
@@ -190,6 +201,8 @@ const Route = () => {
         window.alert("수정이 완료되었습니다.");
         loadData();
         closeModalInfo();
+
+        console.log("서버로 전송된 데이터:", target);
     }, [selectRoute]);
 
     //수정 취소하기
