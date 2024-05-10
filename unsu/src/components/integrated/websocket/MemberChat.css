@@ -1,0 +1,35 @@
+.chat-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .message {
+    max-width: 80%;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+  
+  .sent {
+    align-self: flex-end;
+    background-color: #DCF8C6;
+  }
+  
+  .received {
+    align-self: flex-start;
+    background-color: #EAEAEA;
+  }
+  
+  .sender {
+    font-weight: bold;
+  }
+  
+  .content {
+    margin-top: 4px;
+  }
+  
+  .time {
+    font-size: 0.8rem;
+    color: #777;
+  }
+  
