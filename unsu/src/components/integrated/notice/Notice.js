@@ -15,18 +15,20 @@ const Notice = () => {
     const [notices, setNotices] = useState([]);
     //목록 페이징
     const [page, setPage] = useState(1);//현재 페이지 번호
-    const [size, setSize] = useState(10);//목록 개수
-    const [count, setCount] = useState(0);
-    
+    const [size, setSize] = useState(5);//목록 개수
+    const [count, setCount] = useState(0);    
     // 검색 기준과 검색어를 저장할 state
     const [defaultColumn, setDefaultColumn] = useState("notice_title");//기본값
     const [keyword, setKeyword] = useState(""); // 검색어는 빈 문자열로 초기화
-    const [column, setColumn] = useState(""); // 
+    const [column, setColumn] = useState("");
+    const [searched, setSearched] = useState(false); //검색 여부 상태 추가
     
     //effect
     useEffect(() => {
-        loadData();
-    }, [page, size]); // page가 변경될 때마다 loadData 호출
+        if (!searched) {
+            loadData(); // 검색하지 않은 경우 기본 목록 로딩
+        }
+    }, [page, size, searched]); // page가 변경될 때마다 loadData 호출
 
     //목록 불러오기
     const loadData = useCallback(async () => {
@@ -34,7 +36,6 @@ const Notice = () => {
         //setNotices([...notices, ...resp.data.list]);
         setNotices(resp.data.list);
         setCount(resp.data.pageVO.totalPage);//페이지 숫자 표시
-
     }, [page, size]);
 
     //조회수 목록 불러오기
@@ -61,32 +62,29 @@ const Notice = () => {
 
     //페이지네이션
     const previousPage = () => {
-        setPage(prevPage => Math.max(prevPage - 1, 1)); // 이전 페이지로 이동하는 함수
+        setPage(prevPage => Math.max(prevPage - 1, 1)); // 이전 페이지로 이동
     };
 
     const nextPage = () => {
-        setPage(prevPage => Math.min(prevPage + 1, count)); // 다음 페이지로 이동하는 함수
+        setPage(prevPage => Math.min(prevPage + 1, count)); // 다음 페이지로 이동
     };
 
     const pageChange = (pageNumber) => {
-        setPage(pageNumber); // 페이지 번호를 직접 선택하여 이동하는 함수
+        setPage(pageNumber); // 페이지 번호를 직접 선택하여 이동
     };
-
 
     //키워드 검색
     const handleSearch = useCallback(async () => {
         // console.log("search : " + handleSearch)
         // console.log("column : " + defaultColumn);
         // console.log("keyword : " + keyword);
-        const resp = await axios.get(`/notice/search/column/${defaultColumn}/keyword/${keyword}`,
-            { params: {
-                page: page, // 현재 페이지 번호
-                size: size  // 목록 개수
-            }}
-        );
+        const resp = await axios.get(`/notice/search/column/${defaultColumn}/keyword/${keyword}`,{
+             params: { page: page, size: size }
+        });
         setNotices(resp.data.list);
         setCount(resp.data.pageVO.totalPage); // 페이지 숫자 업데이트
-    }, [keyword, defaultColumn]);
+        setSearched(true);
+    }, [keyword, defaultColumn, page, size]);
     
     const keywordChange = (e) => {
         setKeyword(e.target.value);
@@ -94,7 +92,6 @@ const Notice = () => {
     const columnChange = (e) => {
         setDefaultColumn(e.target.value);
     };
-
 
     //화면 출력
     return (
