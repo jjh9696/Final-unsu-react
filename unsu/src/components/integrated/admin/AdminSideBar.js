@@ -119,6 +119,13 @@ import {
                           </Menu>
                       </SubMenu>
                   </Menu>
+                  <Menu>
+                      <SubMenu label="챗봇 관리" defaultClose>
+                          <Menu menuItemStyles={subItemStyles}>
+                              <MenuItem component={<Link to="/chatbotEdit" />}> 챗봇 수정 </MenuItem>
+                          </Menu>
+                      </SubMenu>
+                  </Menu>
                       <div className="logo-outline" />
                   <div className="logo-outline" />
           </Sidebar >
