@@ -87,9 +87,10 @@ const SideBar = () => {
                     </SubMenu>
                 </Menu>
                 <Menu>
-                    <SubMenu label="공지사항" defaultClose>
+                    <SubMenu label="게시판" defaultClose>
                         <Menu menuItemStyles={subItemStyles}>
                             <MenuItem component={<Link to="/notice" />}> 공지사항 </MenuItem>
+                            <MenuItem component={<Link to="/reviewList" />}> 이용후기 </MenuItem>
                         </Menu>
                     </SubMenu>
                 </Menu>
