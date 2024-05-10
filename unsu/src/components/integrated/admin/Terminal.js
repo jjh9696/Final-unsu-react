@@ -7,8 +7,8 @@ import { FaHouseCircleExclamation } from "react-icons/fa6";
 import { FaHouseCircleXmark } from "react-icons/fa6";
 import { FaHouseCircleCheck } from "react-icons/fa6";
 import { MdBackspace } from "react-icons/md";
-import Pagination from './../../utils/Pagination';
-
+import { GrFormPrevious } from "react-icons/gr";
+import { GrFormNext } from "react-icons/gr";
 
 
 const Terminal = () => {
@@ -20,13 +20,6 @@ const Terminal = () => {
         terminalRegion: ""
     });
     const [backup, setBackup] = useState(null); //백업
-    
-    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-    const [totalPages, setTotalPages] = useState([]); // 총 페이지 수
-     // 페이징 함수
-     const paginate = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
 
 
     useEffect(() => {
@@ -136,7 +129,6 @@ const Terminal = () => {
 
 
 
-
     //ref+Modal
     const bsModal1 = useRef(); //등록
 
@@ -230,7 +222,6 @@ const Terminal = () => {
             </div>
 
 
-            <Pagination currentPage={currentPage} totalPages={Math.ceil(terminals.length / 10)} paginate={paginate} />
 
 
 

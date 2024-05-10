@@ -134,13 +134,42 @@ const Route = () => {
     }, [selectRoute]);
 
 
+    //상세-선택창 값이 유지되고 출력가능하게 하기
     const handleChange = (e) => {
         const { name, value } = e.target;
         setSelectRoute(prevState => ({
             ...prevState,
             [name]: value
         }));
+        //선택한 시간과 동일한 노선번호로 세팅 되게
+        if (name === "routeStartTime") {
+            handleStartTimeChange(value);
+        } else if (name === "routeEndTime") {
+            handleEndTimeChange(value);
+        }
     };
+    //같은 노선 번호의 시간이 선택 되게(출발)
+    const handleStartTimeChange = (startTime) => {
+        const selectedRoute = routes.find(route => route.routeStartTime === startTime);
+        if (selectedRoute) {
+            setSelectRoute(prevState => ({
+                ...prevState,
+                routeStartTime: startTime,
+                routeEndTime: selectedRoute.routeEndTime
+            }));
+        }
+    }
+    //같은 노선 번호의 시간이 선택 되게(도착)
+    const handleEndTimeChange = (endTime) => {
+        const selectedRoute = routes.find(route => route.routeEndTime === endTime);
+        if (selectedRoute) {
+            setSelectRoute(prevState => ({
+                ...prevState,
+                routeEndTime: endTime,
+                routeStartTime: selectedRoute.routeStartTime
+            }));
+        }
+    }
 
     //입력한 내용 수정
     const changeRoute = useCallback((e, target) => {
@@ -152,15 +181,6 @@ const Route = () => {
         }
         setSelectRoute(copy);
     }, [selectRoute]);
-
-    // const changeRoute = useCallback((e, target) => {
-    //     console.log('Updating:', e.target.name, e.target.value);
-    //     setSelectRoute(prevState => {
-    //         const newState = {...prevState, [e.target.name]: e.target.value};
-    //         console.log('New state:', newState);
-    //         return newState;
-    //     });
-    // }, [selectRoute]);
 
     //수정된 결과 저장하고 목록 갱신하기
     const saveEditRoute = useCallback(async (target) => {
@@ -576,34 +596,36 @@ const Route = () => {
                                         <div className="col">
                                             <label>출발시간</label><br />
                                             <select className="form-select text-center"
-                                                    onChange={handleChange}
-                                                    name="routeStartTime"
-                                                    value={selectRoute.routeStartTime}
-                                                    id="routeNo"
-                                                    >
-                                            {routes.map(route => (
-                                                    route.startTerminal === selectRoute.startTerminal && selectRoute.endTerminal === route.endTerminal) && (
-                                                    <option key={route.routeNo} value={selectRoute.routeStartTime}>
-                                                        {route.routeStartTime}
-                                                    </option>
-                                                ))}
+                                                onChange={handleChange}
+                                                name="routeStartTime"
+                                                value={selectRoute.routeStartTime}>
+                                                {routes.filter(route => route.startTerminal === selectRoute.startTerminal &&
+                                                    route.endTerminal === selectRoute.endTerminal)
+                                                    .map(route => (
+                                                        <option key={route.routeNo} value={route.routeStartTime}>
+                                                            {route.routeStartTime}
+                                                        </option>
+                                                    ))
+                                                }
                                             </select>
                                         </div>
+
                                         <div className="col-2">
                                         </div>
                                         <div className="col">
                                             <label>도착시간</label><br />
                                             <select className="form-select text-center"
-                                                    onChange={handleChange}
-                                                    name="routeEndTime"
-                                                    value={routes.routeEndTime}
-                                                    >
-                                            {routes.map(route => (
-                                                    route.startTerminal === selectRoute.startTerminal && selectRoute.endTerminal === route.endTerminal) && (
-                                                    <option key={route.routeNo} value={selectRoute.routeEndTime}>
-                                                        {route.routeEndTime}
-                                                    </option>
-                                                ))}
+                                                onChange={handleChange}
+                                                name="routeEndTime"
+                                                value={selectRoute.routeEndTime}>
+                                                {routes.filter(route => route.startTerminal === selectRoute.startTerminal &&
+                                                    route.endTerminal === selectRoute.endTerminal)
+                                                    .map(route => (
+                                                        <option key={route.routeNo} value={route.routeEndTime}>
+                                                            {route.routeEndTime}
+                                                        </option>
+                                                    ))
+                                                }
                                             </select>
                                         </div>
                                     </div>
