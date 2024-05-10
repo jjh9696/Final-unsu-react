@@ -12,6 +12,8 @@ const Reservation = () => {
     const [endTerminals, setEndTerminals] = useState([]);
     const [selectedStartTerminal, setSelectedStartTerminal] = useState('');
     const [selectedEndTerminal, setSelectedEndTerminal] = useState('');
+    const [showDetails, setShowDetails] = useState(false); // 화면 전환을 관리하는 상태
+    const [selectedBus, setSelectedBus] = useState(null); // 선택된 버스의 상세 정보
     const [formData, setFormData] = useState({
         routeStart: "",
         routeEnd: "",
@@ -40,56 +42,54 @@ const Reservation = () => {
     // 좌석띄우는 부분 
     const [seats, setSeats] = useState([]); // 좌석 정보를 담을 state
     const [selectedSeat, setSelectedSeat] = useState(null); // 선택된 좌석 번호를 담을 state
-   
+
     // 버스번호에 대한 좌석정보가져오는 비동기에 넣을거
     const [seatBusNo, setSeatBusNo] = useState('');
 
     //예약된 좌석
     const [reservedSeats, setReservedSeats] = useState([])
-    
+
     //const [routeNo,setRouteNo]= useState([]);
 
     // 좌석을 선택했을 때 선택된 좌석만 추출
     const [selectedSeats, setSelectedSeats] = useState([])
 
     //예약된 좌석을 가져 오는 함수
-    const loadReservedDate = async(routeNo)=>{
+    const loadReservedDate = async (routeNo) => {
         const resp = await axios.get(`/seat/reservation/${routeNo}`);
         //setRouteNo(resp.data);
-       
-    };
-// 좌석 선택 가능 여부를 확인하는 함수
-const isSeatSelectable = (seatNo) => {
-    // 예약된 좌석 목록에서 선택된 좌석 번호를 검색
-    const reservedSeat = reservedSeats.find(seat => seat.seatNo === seatNo);
-    // 예약된 좌석이면 선택 불가능하므로 false 반환, 아니면 true 반환
-    return !reservedSeat;
-};
 
-// 좌석을 클릭할 때 실행되는 함수
-const handleSeatClicks = (seat) => {
-    // 선택된 좌석이 이미 예약된 좌석이라면 선택 취소
-    if (!isSeatSelectable(seat.seatNo)) {
-        return;
-    }
-    // 그 외의 경우에는 선택된 좌석으로 설정
-    setSelectedSeat(seat);
-    setSelectedSeats(prevSeats => [...prevSeats, seat]);
-};
+    };
+    // 좌석 선택 가능 여부를 확인하는 함수
+    const isSeatSelectable = (seatNo) => {
+        // 예약된 좌석 목록에서 선택된 좌석 번호를 검색
+        return !reservedSeats.includes(seatNo);
+    };
+
+    // 좌석을 클릭할 때 실행되는 함수
+    const handleSeatClicks = (seat) => {
+        // 선택된 좌석이 이미 예약된 좌석이라면 선택 취소
+        if (!isSeatSelectable(seat.seatNo)) {
+            return;
+        }
+        // 그 외의 경우에는 선택된 좌석으로 설정
+        setSelectedSeat(seat);
+        setSelectedSeats(prevSeats => [...prevSeats, seat]);
+    };
 
     // useMemo 훅을 사용하여 체크된 좌석 목록 불러온다
     const checkedSeats = useMemo(() => {
-    // seats 배열에서 seatChecked가 true인 좌석만 필터링하여 새로운 배열을 생성
-    // 즉, 체크된 좌석만 포함하는 새로운 배열이 생성
-    return seats.filter(seat => seat.seatChecked === true)
-        // 좌석을 정렬합니다. 정렬 기준은 좌석이 속한 행과 열
-        .sort((a, b) => a.seat_column === b.seat_column ? a.seat_row - b.seat_row : a.seat_column - b.seat_column);
-}, [seats]); // seats 배열이 변경될 때마다 캐싱된 값이 업데이트됩니다.
+        // seats 배열에서 seatChecked가 true인 좌석만 필터링하여 새로운 배열을 생성
+        // 즉, 체크된 좌석만 포함하는 새로운 배열이 생성
+        return seats.filter(seat => seat.seatChecked === true)
+            // 좌석을 정렬합니다. 정렬 기준은 좌석이 속한 행과 열
+            .sort((a, b) => a.seat_column === b.seat_column ? a.seat_row - b.seat_row : a.seat_column - b.seat_column);
+    }, [seats]); // seats 배열이 변경될 때마다 캐싱된 값이 업데이트됩니다.
 
     // 버스 클릭 이벤트 핸들러
     const handleBusClick = (e) => {
         setSeatBusNo(e.target.value);
-        console.log(seatBusNo);
+        
     };
     // const handleCombinedClick = (bus) => {
     //     openModalCreate();
@@ -97,11 +97,11 @@ const handleSeatClicks = (seat) => {
     //     setSeatBusNo(bus.busNo);
     // };
     const handleCombinedClick = async (bus) => {
-        console.log(bus.busNo);
+        
         //setSeatBusNo(bus.busNo);
         // 데이터를 불러온 후에 모달을 열도록 선택
         await loadSeatData(bus.routeNo);
-        openModalCreate();
+        handleSelectBus();
         setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
         }, 500);
@@ -115,10 +115,10 @@ const handleSeatClicks = (seat) => {
 
             //여기서 잠깐! 이대로 설정하면 예약좌석을 좌석 라이브러리에서 인지를 못함
             //reservationSeatNo에 들어있는 숫자를 논리로 수정하는 코드를 작성
-            const convert = resp.data.map(seat=>{
+            const convert = resp.data.map(seat => {
                 return {
                     ...seat,
-                    reservationSeatNo : seat.reservationSeatNo !== 0
+                    reservationSeatNo: seat.reservationSeatNo !== 0
                 }
             });
 
@@ -146,20 +146,24 @@ const handleSeatClicks = (seat) => {
     // }, []);
 
 
+
+
+
     ///////////////////////좌석관련 핸들러끝////////////////////////////
-    useEffect(()=>{
-        loadReservedDate();
-    },[]);
+    // useEffect(() => {
+    //     loadReservedDate();
+    // }, []);
 
 
 
-      // 사용자가 원하는 버스노선 정보를 얻기 위한 백엔드로 정보 전달
-      const handleSubmit = async () => {
+
+    // 사용자가 원하는 버스노선 정보를 얻기 위한 백엔드로 정보 전달
+    const handleSubmit = async () => {
         // 폼 데이터에서 gradeType이 "전체" 또는 빈 문자열인 경우 제거
         const dataToSend = formData.gradeType === "" || formData.gradeType === "전체" ?
             (({ gradeType, ...rest }) => rest)(formData) : formData; // 이렇게 하면 등급을 전체로 하면 데이터 전송시 등급이 빠지고 백엔드에서 where절에 등급 조건이 빠지게 함
 
-        console.log('전송되는 정보:', dataToSend);
+        // console.log('전송되는 정보:', dataToSend);
 
         try {
             const response = await axios.post('/search/', dataToSend);
@@ -180,7 +184,7 @@ const handleSeatClicks = (seat) => {
         premium: null
     });
     const [error, setError] = useState(null);
-    const [chargeNo, setChargeNo]= useState();
+    const [chargeNo, setChargeNo] = useState();
     useEffect(() => {
         const fetchFares = async (routeNo) => {
             try {
@@ -201,7 +205,7 @@ const handleSeatClicks = (seat) => {
 
     const fetchFare = async (chargeNo, routeNo) => {
         try {
-            const response = await axios.get(`/charge/${routeNo}/${chargeNo}`);
+            const response = await axios.get(`/charge/${chargeNo}/${routeNo}`);
             if (response.status === 200) {
                 return response.data;
             } else {
@@ -229,7 +233,7 @@ const handleSeatClicks = (seat) => {
             setFares({ standard: '에러', business: '에러', premium: '에러' });
         }
     };
-    
+
 
     ////////////////////////요금관련 끝//////////////////////////////////////
 
@@ -350,10 +354,19 @@ const handleSeatClicks = (seat) => {
         }
     };
 
-  
+
 
 
     ///////////////////////////////////////////// 버스 눌러서 예약 하는 모달 ////////////////////////////////////////////
+    const handleSelectBus = (bus) => {
+        setSelectedBus(bus);
+        setShowDetails(true); // 상세 화면으로 전환
+    };
+
+    // '이전' 버튼 클릭 핸들러
+    const handleGoBack = () => {
+        setShowDetails(false); // 초기 화면으로 돌아가기
+    };
     const [input, setInput] = useState({
         // 버스 예약 인서트 할것 넣기
     });
@@ -374,7 +387,7 @@ const handleSeatClicks = (seat) => {
     // 데이터 등록
     const saveInput = useCallback(async () => {
         try {
-            console.log('Sending input:', input); // 입력 값 로깅
+            // console.log('Sending input:', input); // 입력 값 로깅
             const resp = await axios.post("/reservation/", input);
             clearInput();
             closeModalCreate();
@@ -415,123 +428,127 @@ const handleSeatClicks = (seat) => {
     ///////////////////////////////////////////////// 아래부터 리턴 화면 /////////////////////////////////////////////////////
     return (
         <>
-            <>
-                <h1>버스조회</h1>
-                <hr />
-                <div className="container w-100 mt-4">
-                    <div className="row">
-                        <div className="col">
-                            <label>출발 지역 :</label>
-                            <select onChange={handleStartRegionChange} value={startRegion}>
-                                <option value="">지역을 선택하세요</option>
-                                {regions.map(region => (
-                                    <option key={region.key} value={region.value}>{region.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="col">
-                            <label>출발터미널 : </label>
-                            <select onChange={handleStartTerminalChange} value={selectedStartTerminal}>
-                                <option value="">터미널 선택</option>
-                                {startTerminals.map(terminal => (
-                                    <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="row mt-4">
-                        <div className="col">
-                            <label>도착 지역 : </label>
-                            <select onChange={handleEndRegionChange} value={endRegion}>
-                                <option value="">지역을 선택하세요</option>
-                                {/* 출발지 값 regions 배열에서 출발 지역과 같지 않은 지역만 필터링하여 보여줌 */}
-                                {/* {regions.filter(region => region.value !== startRegion).map(region => (
+            {!showDetails ? (
+                <>
+                    <>
+                        <h1>버스조회</h1>
+                        <hr />
+                        <div className="container w-100 mt-4">
+                            <div className="row">
+                                <div className="col">
+                                    <label>출발 지역 :</label>
+                                    <select onChange={handleStartRegionChange} value={startRegion}>
+                                        <option value="">지역을 선택하세요</option>
+                                        {regions.map(region => (
+                                            <option key={region.key} value={region.value}>{region.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="col">
+                                    <label>출발터미널 : </label>
+                                    <select onChange={handleStartTerminalChange} value={selectedStartTerminal}>
+                                        <option value="">터미널 선택</option>
+                                        {startTerminals.map(terminal => (
+                                            <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="row mt-4">
+                                <div className="col">
+                                    <label>도착 지역 : </label>
+                                    <select onChange={handleEndRegionChange} value={endRegion}>
+                                        <option value="">지역을 선택하세요</option>
+                                        {/* 출발지 값 regions 배열에서 출발 지역과 같지 않은 지역만 필터링하여 보여줌 */}
+                                        {/* {regions.filter(region => region.value !== startRegion).map(region => (
                                     <option key={region.key} value={region.value}>{region.name}</option>
                                 ))} */}
-                                {regions.map(region => (
-                                    <option key={region.key} value={region.value}>{region.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="col">
-                            <label>도착터미널 :</label>
-                            <select onChange={handleEndTerminalChange} value={selectedEndTerminal}>
-                                <option value="">터미널 선택</option>
-                                {endTerminals.map(terminal => (
-                                    <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div className='row mt-4 text-center'>
-                        <div className='col'>
-                            <select onChange={handleGradeTypeChange}>
-                                <option value="">전체</option>
-                                <option value="일반">일반</option>
-                                <option value="우등">우등</option>
-                                <option value="프리미엄">프리미엄</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className='row mt-4 text-center'>
-                        <div className='col'>
-                            <input type='date' onChange={handleStartDateChange} />
-                        </div>
-                    </div>
-                    <div className='row mt-4 text-center'>
-                        <div className='col'>
-                            <button className='btn btn-primary' onClick={handleSubmit}>조회</button>
-                        </div>
-                    </div>
-                </div>
-            </>
-            {submissionSuccess && (
-                <>
-                    <div className="container d-flex justify-content-end">
-                        <div className="row mt-5 w-25 text-center me-5">
-                            <div className="col">
-                                <label>출발터미널</label><div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
-                                <label>도착터미널</label><div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
-                                {busResults.length > 0 && (
-                                    <div key={busResults[0].routeNo}>
-                                        <div><label>소요시간</label>{busResults[0].routeTime}</div>
-                                        <div><label>킬로미터</label>{busResults[0].routeKm}</div>
-                                        <div className="col mt-4">
-                                            <hr />
-                                            요금
-                                        </div>
-                                        <div className="col mt-2">
-                                            <p>일반: {fares.standard}원</p>
-                                            <p>우등: {fares.business}원</p>
-                                            <p>프리미엄: {fares.premium}원</p>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        <div className="row mt-2 w-75 text-center">
-                            <div className="col">
-                                <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
-                                <hr />
-                                <div className="row mt-4">
-                                    <div className="col col-3">출발시각</div>
-                                    <div className="col col-3">등급</div>
-                                    <div className="col col-3">잔여석</div>
-                                    <div className="col col-3">선택</div>
+                                        {regions.map(region => (
+                                            <option key={region.key} value={region.value}>{region.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
-                                {busResults.map((bus, index) => (
-                                    <div key={index} className="row mt-4">
-                                        <div className="col col-3">{new Date(bus.routeStartTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                                        {/* YYYY-MM-DD HH24:MI 형식에서 시간만 출력하게 설정함 */}
-                                        <div className="col col-3">{bus.gradeType}</div>
-                                        <div className="col col-3">{bus.busSeat}석</div>
-                                        <div className="col col-3"><button className="btn btn-primary" onClick={e => handleCombinedClick(bus)}>선택{bus.busNo}</button></div>
-                                    </div>
-                                ))}
+                                <div className="col">
+                                    <label>도착터미널 :</label>
+                                    <select onChange={handleEndTerminalChange} value={selectedEndTerminal}>
+                                        <option value="">터미널 선택</option>
+                                        {endTerminals.map(terminal => (
+                                            <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className='row mt-4 text-center'>
+                                <div className='col'>
+                                    <select onChange={handleGradeTypeChange}>
+                                        <option value="">전체</option>
+                                        <option value="일반">일반</option>
+                                        <option value="우등">우등</option>
+                                        <option value="프리미엄">프리미엄</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className='row mt-4 text-center'>
+                                <div className='col'>
+                                    <input type='date' onChange={handleStartDateChange} />
+                                </div>
+                            </div>
+                            <div className='row mt-4 text-center'>
+                                <div className='col'>
+                                    <button className='btn btn-primary' onClick={handleSubmit}>조회</button>
+                                </div>
                             </div>
                         </div>
+                    </>
+                    {submissionSuccess && (
+                        <>
+                            <div className="container d-flex justify-content-end">
+                                <div className="row mt-5 w-25 text-center me-5">
+                                    <div className="col">
+                                        <label>출발터미널</label><div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
+                                        <label>도착터미널</label><div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
+                                        {busResults.length > 0 && (
+                                            <div key={busResults[0].routeNo} className='mt-3'>
+                                                <div><label>소요시간</label>{busResults[0].routeTime}</div>
+                                                <div>{busResults[0].routeKm}<label>Km</label></div>
+                                                <div className="col mt-4">
+                                                    <hr />
+                                                    요금
+                                                </div>
+                                                <div className="col mt-2">
+                                                    <p>프리미엄: {fares.premium}원</p>
+                                                    <p>우등: {fares.business}원</p>
+                                                    <p>일반: {fares.standard}원</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="row mt-2 w-75 text-center">
+                                    <div className="col">
+                                        <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
+                                        <hr />
+                                        <div className="row mt-4">
+                                            <div className="col col-3">출발시각</div>
+                                            <div className="col col-3">등급</div>
+                                            <div className="col col-3">잔여석</div>
+                                            <div className="col col-3">선택</div>
+                                        </div>
+                                        {busResults.map((bus, index) => (
+                                            <div key={index} className="row mt-4">
+                                                <div className="col col-3">{new Date(bus.routeStartTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                                {/* YYYY-MM-DD HH24:MI 형식에서 시간만 출력하게 설정함 */}
+                                                <div className="col col-3">{bus.gradeType}</div>
+                                                <div className="col col-3">{bus.busSeat}석</div>
+                                                <div className="col col-3"><button className="btn btn-primary" onClick={e => handleCombinedClick(bus)}>선택{bus.busNo}</button></div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </>
 
-                    </div>
+                    )}
                     {/* <div className='row mt-5'>
                         <div className='col'>
                             <SeatGroup map={seats} setMap={setSeats}
@@ -551,43 +568,36 @@ const handleSeatClicks = (seat) => {
                                                         />
                         </div>
                     </div> */}
-                    {/* 등록 모달 */}
 
-                    <div ref={bsModal} className="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" >
-                        <div className="modal-dialog modal-xl" >
-                            <div className="modal-content modal-xl" >
-                                <div className="modal-header">
-                                    <h1 className="modal-title fs-5" id="staticBackdropLabel">고속버스예약</h1>
-                                    <button type="button" className="btn-close" aria-label="Close" onClick={e => cancelInput()}></button>
+                </>
+            ) : (
+                <>
+                    <div className="container d-flex justify-content-end">
+                        <div className="row mt-5 w-25 text-center me-5">
+                            <div className="col">
+                                <label>출발터미널</label><div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
+                                <label>도착터미널</label><div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
+                                <div className="col mt-4">
+                                    요금
                                 </div>
-                                <div className="modal-body">
-                                    {/* 등록 */}
-                                    <div className="container d-flex justify-content-end">
-                                        <div className="row mt-5 w-25 text-center me-5">
-                                            <div className="col">
-                                                <label>출발터미널</label><div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
-                                                <label>도착터미널</label><div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
-                                                <div className="col mt-4">
-                                                    요금
-                                                </div>
-                                                <div className="col">
-                                                    <label>일반</label> xxxx원
-                                                </div>
-                                                <div className="col">
-                                                    <label>우등</label> xxxx원
-                                                </div>
-                                                <div className="col">
-                                                    <label>프리미엄</label> xxxx원
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="row mt-2 w-75 text-center">
-                                            <div className="col">
-                                                <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
-                                                <hr />
-                                                <div className="row mt-4">
-                                                    <div className="col off-set">
-                                                        {/* {seats.map((seat) => (
+                                <div className="col">
+                                    <label>일반</label> xxxx원
+                                </div>
+                                <div className="col">
+                                    <label>우등</label> xxxx원
+                                </div>
+                                <div className="col">
+                                    <label>프리미엄</label> xxxx원
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row mt-2 w-75 text-center">
+                            <div className="col">
+                                <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
+                                <hr />
+                                <div className="row mt-4">
+                                    <div className="col off-set">
+                                        {/* {seats.map((seat) => (
                                                             <button
                                                                 key={seat.seatNo}
                                                                 (seat.seatNo)}
@@ -606,42 +616,27 @@ const handleSeatClicks = (seat) => {
                                                             </button>
                                                         ))} */}
 
-                                                        {/* 좌석 라이브러리 */}
-                                                        <SeatGroup map={seats} setMap={setSeats}
-                                                            fields={{
-
-                                                            no:'seatNo', 
-                                                            row:'seatColumn', 
-                                                            col:'seatRow', 
-                                                            reserved:'reservationSeatNo', 
-                                                            disabled:'seatDisabled',
-                                                            checked:'seatChecked',
-
-                                                               
-
-                                                            }}
-                                                            rows={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                                                            cols={[1, 2, '통로', 3, 4]}
-                                                            showNames
-                                                            onSeatClick={handleSeatClicks}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="row mt-4">
-                                                </div>
-                                            </div>
-                                        </div>
+                                        {/* 좌석 라이브러리 */}
+                                        <SeatGroup map={seats} setMap={setSeats}
+                                            fields={{
+                                                no: 'seatNo',
+                                                row: 'seatColumn',
+                                                col: 'seatRow',
+                                                reserved: 'reservationSeatNo',
+                                                disabled: 'seatDisabled',
+                                                checked: 'seatChecked',
+                                            }}
+                                            rows={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                                            cols={[1, 2, '통로', 3, 4]}
+                                            showNames
+                                            onSeatClick={handleSeatClicks}
+                                        />
                                     </div>
                                 </div>
-                                <div className="modal-footer">
-                                    <button className="btn btn-success me-2"
-                                        onClick={e => saveInput()}>
-                                        등록
-                                    </button>
-                                    <button className="btn btn-danger"
-                                        onClick={e => cancelInput()}>
-                                        취소
-                                    </button>
+                                <div className="row mt-4">
+                                    <div className="bus-details">
+                                        <button onClick={handleGoBack}>이전화면</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
