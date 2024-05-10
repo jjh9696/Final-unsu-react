@@ -115,23 +115,6 @@ const Route = () => {
     }, [input]);
 
 
-    //수정상태로 바꾸기
-    const editRoute = useCallback((target) => {
-        const copy = { ...selectRoute };
-        if (copy.edit === true) { //수정중인 항목이 있다면
-            copy.edit = false; //백업으로 갱신 + 수정모드 취소
-        }
-
-        setBackup({ ...selectRoute }); //백업해두기 나중을 위해
-
-        //카피 고치기
-        if (target.RouteNo === copy.RouteNo) { //둘이 같다면
-            copy.edit = true; //정보유지하고 수정처리
-        }
-
-        //덮어쓰게 세팅
-        setSelectRoute(copy);
-    }, [selectRoute]);
 
 
     //상세-선택창 값이 유지되고 출력가능하게 하기
@@ -141,9 +124,27 @@ const Route = () => {
             ...prevState,
             [name]: value
         }));
+        // // 현재 선택된 노선 정보 복사
+        // const updatedRoute = { ...selectRoute };
 
-        // 로그 추가
-        console.log(`선택된 ${name}:`, value);
+        // // 각 select 요소의 name에 따라 해당 값 변경
+        // switch (name) {
+        //     case "routeStartTime":
+        //         updatedRoute.routeStartTime = value;
+        //         break;
+        //     case "routeEndTime":
+        //         updatedRoute.routeEndTime = value;
+        //         break;
+        //     default:
+        //         break;
+        // }
+        // // 변경된 노선 정보 설정
+        // setSelectRoute(updatedRoute);
+
+
+        // // 로그 추가
+        // console.log(`선택된 ${name}:`, value);
+
 
         //선택한 시간과 동일한 노선번호로 세팅 되게
         if (name === "routeStartTime") {
@@ -180,6 +181,25 @@ const Route = () => {
         }
     }
 
+
+    //수정상태로 바꾸기
+    const editRoute = useCallback((target) => {
+        const copy = { ...selectRoute };
+        if (copy.edit === true) { //수정중인 항목이 있다면
+            copy.edit = false; //백업으로 갱신 + 수정모드 취소
+        }
+
+        setBackup({ ...selectRoute }); //백업해두기 나중을 위해
+
+        //카피 고치기
+        if (target.RouteNo === copy.RouteNo) { //둘이 같다면
+            copy.edit = true; //정보유지하고 수정처리
+        }
+
+        //덮어쓰게 세팅
+        setSelectRoute(copy);
+    }, [selectRoute]);
+
     //입력한 내용 수정
     const changeRoute = useCallback((e, target) => {
         const copy = { ...selectRoute };
@@ -195,14 +215,28 @@ const Route = () => {
 
     //수정된 결과 저장하고 목록 갱신하기
     const saveEditRoute = useCallback(async (target) => {
-        //서버에 타겟 전달하고 수정처리
-        const resp = await axios.patch("/route/", target);
-        //목록갱신
-        window.alert("수정이 완료되었습니다.");
-        loadData();
-        closeModalInfo();
+        try {
+            //서버에 타겟 전달하고 수정처리
+            const resp = await axios.patch("/route/", target);
+            //목록갱신
+            window.alert("수정이 완료되었습니다.");
+            
+            loadData();
+            closeModalInfo();
+        } catch (error) {
+            console.error("수정 중 에러가 발생했습니다:", error);
+            window.alert("수정 중 에러가 발생했습니다.");
+        }
 
-        console.log("서버로 전송된 데이터:", target);
+        // //서버에 타겟 전달하고 수정처리
+        // const resp = await axios.patch("/route/", target);
+        // //목록갱신
+        // window.alert("수정이 완료되었습니다.");
+        // loadData();
+        // closeModalInfo();
+
+        // console.log("서버로 전송된 데이터:", target);
+
     }, [selectRoute]);
 
     //수정 취소하기
@@ -508,7 +542,7 @@ const Route = () => {
 
                                     <div className="row mt-4">
                                         <div className="col">
-                                            <label>출발시간 ~ 도착시간</label>
+                                            <label>출발시간</label>
                                             <input type="text" name="routeStartTime"
                                                 value={selectRoute.routeStartTime}
                                                 onChange={e => changeRoute(e, selectRoute)}
