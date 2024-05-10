@@ -20,6 +20,7 @@ const Notice = () => {
     const [keyword, setKeyword] = useState(""); // 검색어는 빈 문자열로 초기화
     const [column, setColumn] = useState("");
     const [searched, setSearched] = useState(false); //검색 여부 상태 추가
+
     const [searchStatus,setSearchStatus]  = useState(1);
     
     //effect
@@ -33,6 +34,7 @@ const Notice = () => {
             handleSearch(); // 검색어 조회
         }
     }, [page, size, searched, searchStatus]); // 상태값 searchStatus 감시
+
     //목록 불러오기
     const loadData = useCallback(async () => {
         const resp = await axios.get(`/notice/page/${page}/size/${size}`);
@@ -90,6 +92,7 @@ const Notice = () => {
         setNotices(resp.data.list);
         setCount(resp.data.pageVO.totalPage); // 페이지 숫자 업데이트
         setSearched(true);
+
     }, [keyword, defaultColumn, size]);
     
     const keywordChange = (e) => {
