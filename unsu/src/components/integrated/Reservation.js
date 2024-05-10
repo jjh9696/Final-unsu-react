@@ -40,10 +40,12 @@ const Reservation = () => {
         setReservedSeats(resp.data);
         console.log(resp.data);
     };
-    // 좌석 선택 가능 여부를 확인하는 함수
+// 좌석 선택 가능 여부를 확인하는 함수
 const isSeatSelectable = (seatNo) => {
     // 예약된 좌석 목록에서 선택된 좌석 번호를 검색
-    return !reservedSeats.includes(seatNo);
+    const reservedSeat = reservedSeats.find(seat => seat.seatNo === seatNo);
+    // 예약된 좌석이면 선택 불가능하므로 false 반환, 아니면 true 반환
+    return !reservedSeat;
 };
 
 // 좌석을 클릭할 때 실행되는 함수
