@@ -25,9 +25,48 @@ const Reservation = () => {
     // 좌석띄우는 부분 
     const [seats, setSeats] = useState([]); // 좌석 정보를 담을 state
     const [selectedSeat, setSelectedSeat] = useState(null); // 선택된 좌석 번호를 담을 state
-    // 버스번호를 좌석정보가져오는 비동기에 넣을거
+    // 버스번호에 대한 좌석정보가져오는 비동기에 넣을거
     const [seatBusNo, setSeatBusNo] = useState('');
-    // qjtm 클릭 이벤트 핸들러
+
+    //예약된 좌석
+    const [reservedSeats, setReservedSeats] = useState([])
+
+    // 좌석을 선택했을 때 선택된 좌석만 추출
+    const [selectedSeats, setSelectedSeats] = useState([])
+
+    //예약된 좌석을 가져 오는 함수
+    const loadReservedDate = async()=>{
+        const resp = await axios.get("/seat/reservation");
+        setReservedSeats(resp.data);
+        console.log(resp.data);
+    };
+    // 좌석 선택 가능 여부를 확인하는 함수
+const isSeatSelectable = (seatNo) => {
+    // 예약된 좌석 목록에서 선택된 좌석 번호를 검색
+    return !reservedSeats.includes(seatNo);
+};
+
+// 좌석을 클릭할 때 실행되는 함수
+const handleSeatClicks = (seat) => {
+    // 선택된 좌석이 이미 예약된 좌석이라면 선택 취소
+    if (!isSeatSelectable(seat.seatNo)) {
+        return;
+    }
+    // 그 외의 경우에는 선택된 좌석으로 설정
+    setSelectedSeat(seat);
+    setSelectedSeats(prevSeats => [...prevSeats, seat]);
+};
+
+    // useMemo 훅을 사용하여 체크된 좌석 목록 불러온다
+    const checkedSeats = useMemo(() => {
+    // seats 배열에서 seatChecked가 true인 좌석만 필터링하여 새로운 배열을 생성
+    // 즉, 체크된 좌석만 포함하는 새로운 배열이 생성
+    return seats.filter(seat => seat.seatChecked === true)
+        // 좌석을 정렬합니다. 정렬 기준은 좌석이 속한 행과 열
+        .sort((a, b) => a.seat_column === b.seat_column ? a.seat_row - b.seat_row : a.seat_column - b.seat_column);
+}, [seats]); // seats 배열이 변경될 때마다 캐싱된 값이 업데이트됩니다.
+
+    // 버스 클릭 이벤트 핸들러
     const handleBusClick = (e) => {
         setSeatBusNo(e.target.value); 
         console.log(seatBusNo);
@@ -73,6 +112,10 @@ const Reservation = () => {
     useEffect(() => {
         loadSeatData();
     }, []);
+
+    useEffect(()=>{
+        loadReservedDate();
+    },[]);
 
 
 
@@ -482,7 +525,7 @@ const Reservation = () => {
                                                         {/* {seats.map((seat) => (
                                                             <button
                                                                 key={seat.seatNo}
-                                                                onClick={() => handleSeatClick(seat.seatNo)}
+                                                                (seat.seatNo)}
                                                                 style={{
                                                                     backgroundColor:
                                                                         selectedSeat === seat.seatNo ? "green" : "lightgray",
@@ -511,6 +554,7 @@ const Reservation = () => {
                                                             rows={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                                                             cols={[1, 2, '통로', 3, 4]} 
                                                             showNames
+                                                            onSeatClick={handleSeatClicks}
                                                         />
                                                         </div>
                                                     </div>
