@@ -33,7 +33,9 @@ const Reservation = lazy(()=>import("./components/integrated/Reservation"));
 const Terminal = lazy(()=>import("./components/integrated/admin/Terminal"));
 const TestPrice = lazy(()=>import("./components/TestPrice"));
 const ReviewList= lazy(()=>import("./components/integrated/review/ReviewList"));
-
+const Chatbot = lazy(() => import("./components/integrated/websocket/chatbot"));
+const ChatbotEdit = lazy(() => import("./components/integrated/websocket/chatbotEdit"));
+const MemberChat = lazy(() => import("./components/integrated/websocket/memberChat"));
 
 
 const App = () => {
@@ -107,6 +109,9 @@ const App = () => {
                 <Route path="/terminal" element={<Terminal/>}/>
                 <Route path="/testPrice" element={<TestPrice/>}/>
                 <Route path="/reviewList" element={<ReviewList />} />
+                <Route path="/chatbot" element={<Chatbot />} />
+                <Route path="/chatbotEdit" element={<ChatbotEdit />} />
+                <Route path="/memberChat" element={<MemberChat />} />
               </Routes>
             </Suspense>
             </div>

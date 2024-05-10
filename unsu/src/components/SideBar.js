@@ -8,6 +8,10 @@ import {
 } from "react-pro-sidebar";
 import { Link } from 'react-router-dom';
 import "./SideBar";
+import React, { useState } from 'react';
+import { Modal, Button } from 'react-bootstrap';
+import Chatbot from './integrated/websocket/chatbot';
+import MemberChat from './integrated/websocket/memberChat';
 
 const basicTheme = {
   sidebar: {
@@ -31,6 +35,25 @@ const basicTheme = {
 }
 
 const SideBar = () => {
+
+  const [isChatbotModalOpen, setIsChatbotModalOpen] = useState(false);
+  const [isMemberChatModalOpen, setIsMemberChatModalOpen] = useState(false);
+
+  const openChatbotModal = () => {
+    setIsChatbotModalOpen(true);
+  };
+
+  const closeChatbotModal = () => {
+    setIsChatbotModalOpen(false);
+  };
+
+  const openMemberChatModal = () => {
+    setIsMemberChatModalOpen(true);
+  };
+
+  const closeMemberChatModal = () => {
+    setIsMemberChatModalOpen(false);
+  };
 
   const sidebarStyles = {
     height: '1000px',
@@ -63,48 +86,67 @@ const SideBar = () => {
 
   return (
     <>
-        <Sidebar rootStyles={sidebarStyles}>
-                <div className="text-center py-4">
-                    <Link to="/"><img src="https://picsum.photos/100/100" /></Link>
-                </div>
-                <div className="logo-outline" />
-                <Menu>
-                    <SubMenu label="운행정보" defaultClose>
-                        <Menu menuItemStyles={subItemStyles}>
-                            <MenuItem component={<Link to="/" />}> 시간표 조회 </MenuItem>
-                            <MenuItem component={<Link to="/" />}> 도착시간 안내</MenuItem>
-                        </Menu>
-                    </SubMenu>
-                </Menu>
-                <Menu>
-                    <SubMenu label="이용안내" defaultClose>
-                        <Menu menuItemStyles={subItemStyles}>
-                            <MenuItem component={<Link to="/reservation" />}> 예매  </MenuItem>
-                            <MenuItem component={<Link to="/testPrice" />}> 결제수단 안내</MenuItem>
-                            <MenuItem component={<Link to="/" />}> 승차권 환불 안내</MenuItem>
-                            <MenuItem component={<Link to="/" />}> 고속버스터미널 안내</MenuItem>
-                        </Menu>
-                    </SubMenu>
-                </Menu>
-                <Menu>
-                    <SubMenu label="게시판" defaultClose>
-                        <Menu menuItemStyles={subItemStyles}>
-                            <MenuItem component={<Link to="/notice" />}> 공지사항 </MenuItem>
-                            <MenuItem component={<Link to="/reviewList" />}> 이용후기 </MenuItem>
-                        </Menu>
-                    </SubMenu>
-                </Menu>
-                <Menu>
-                    <SubMenu label="고객센터" defaultClose>
-                        <Menu menuItemStyles={subItemStyles}>
-                            <MenuItem component={<Link to="/" />}> 자주하는 질문  </MenuItem>
-                            <MenuItem component={<Link to="/" />}> 유실물센터 안내</MenuItem>
-                        </Menu>
-                    </SubMenu>
-                </Menu>
-                    <div className="logo-outline" />
-                <div className="logo-outline" />
-        </Sidebar >
+      <Sidebar rootStyles={sidebarStyles}>
+        <div className="text-center py-4">
+          <Link to="/"><img src="https://picsum.photos/100/100" /></Link>
+        </div>
+        <div className="logo-outline" />
+        <Menu>
+          <SubMenu label="운행정보" >
+            <Menu menuItemStyles={subItemStyles}>
+              <MenuItem component={<Link to="/" />}> 시간표 조회 </MenuItem>
+              <MenuItem component={<Link to="/" />}> 도착시간 안내</MenuItem>
+            </Menu>
+          </SubMenu>
+        </Menu>
+        <Menu>
+          <SubMenu label="이용안내" >
+            <Menu menuItemStyles={subItemStyles}>
+              <MenuItem component={<Link to="/reservation" />}> 예매  </MenuItem>
+              <MenuItem component={<Link to="/testPrice" />}> 결제수단 안내</MenuItem>
+              <MenuItem component={<Link to="/" />}> 승차권 환불 안내</MenuItem>
+              <MenuItem component={<Link to="/" />}> 고속버스터미널 안내</MenuItem>
+            </Menu>
+          </SubMenu>
+        </Menu>
+        <Menu>
+          <SubMenu label="게시판" >
+            <Menu menuItemStyles={subItemStyles}>
+              <MenuItem component={<Link to="/notice" />}> 공지사항 </MenuItem>
+              <MenuItem component={<Link to="/reviewList" />}> 이용후기 </MenuItem>
+            </Menu>
+          </SubMenu>
+        </Menu>
+        <Menu>
+          <SubMenu label="고객센터" >
+            <Menu menuItemStyles={subItemStyles}>
+              <MenuItem component={<Link to="/" />}> 자주하는 질문  </MenuItem>
+              <MenuItem component={<Link to="/" />}> 유실물센터 안내</MenuItem>
+              <MenuItem component={<Link to="/" />}> <button onClick={openChatbotModal}>챗봇</button>  </MenuItem>
+              <MenuItem component={<Link to="/" />}> <button onClick={openMemberChatModal}>문의채팅</button></MenuItem>
+            </Menu>
+          </SubMenu>
+        </Menu>
+        <Modal show={isChatbotModalOpen} onHide={closeChatbotModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>운수좋은날 챗봇</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Chatbot />
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={isMemberChatModalOpen} onHide={closeMemberChatModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>운수좋은날 문의</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <MemberChat />
+        </Modal.Body>
+      </Modal>
+        <div className="logo-outline" />
+        <div className="logo-outline" />
+      </Sidebar >
     </>
   );
 }

@@ -115,6 +115,73 @@ const Route = () => {
     }, [input]);
 
 
+
+
+    //상세-선택창 값이 유지되고 출력가능하게 하기
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setSelectRoute(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+        // // 현재 선택된 노선 정보 복사
+        // const updatedRoute = { ...selectRoute };
+
+        // // 각 select 요소의 name에 따라 해당 값 변경
+        // switch (name) {
+        //     case "routeStartTime":
+        //         updatedRoute.routeStartTime = value;
+        //         break;
+        //     case "routeEndTime":
+        //         updatedRoute.routeEndTime = value;
+        //         break;
+        //     default:
+        //         break;
+        // }
+        // // 변경된 노선 정보 설정
+        // setSelectRoute(updatedRoute);
+
+
+        // // 로그 추가
+        // console.log(`선택된 ${name}:`, value);
+
+
+        //선택한 시간과 동일한 노선번호로 세팅 되게
+        if (name === "routeStartTime") {
+            handleStartTimeChange(value);
+        } else if (name === "routeEndTime") {
+            handleEndTimeChange(value);
+        }
+    };
+    //같은 노선 번호의 시간이 선택 되게(출발)
+    const handleStartTimeChange = (startTime) => {
+        const selectedRoute = routes.find(route => route.routeStartTime === startTime);
+        if (selectedRoute) {
+            setSelectRoute(prevState => ({
+                ...prevState,
+                routeStartTime: startTime,
+                routeEndTime: selectedRoute.routeEndTime
+            }));
+
+            // 로그 추가
+            console.log("출발 시간 변경:", startTime);
+        }
+    }
+    //같은 노선 번호의 시간이 선택 되게(도착)
+    const handleEndTimeChange = (endTime) => {
+        const selectedRoute = routes.find(route => route.routeEndTime === endTime);
+        if (selectedRoute) {
+            setSelectRoute(prevState => ({
+                ...prevState,
+                routeEndTime: endTime,
+                routeStartTime: selectedRoute.routeStartTime
+            }));
+            // 로그 추가
+            console.log("도착 시간 변경:", endTime);
+        }
+    }
+
+
     //수정상태로 바꾸기
     const editRoute = useCallback((target) => {
         const copy = { ...selectRoute };
@@ -133,15 +200,6 @@ const Route = () => {
         setSelectRoute(copy);
     }, [selectRoute]);
 
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setSelectRoute(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
-
     //입력한 내용 수정
     const changeRoute = useCallback((e, target) => {
         const copy = { ...selectRoute };
@@ -151,25 +209,34 @@ const Route = () => {
             copy[e.target.name] = e.target.value;
         }
         setSelectRoute(copy);
-    }, [selectRoute]);
 
-    // const changeRoute = useCallback((e, target) => {
-    //     console.log('Updating:', e.target.name, e.target.value);
-    //     setSelectRoute(prevState => {
-    //         const newState = {...prevState, [e.target.name]: e.target.value};
-    //         console.log('New state:', newState);
-    //         return newState;
-    //     });
-    // }, [selectRoute]);
+        console.log("변경된 노선 상태:", copy);
+    }, [selectRoute]);
 
     //수정된 결과 저장하고 목록 갱신하기
     const saveEditRoute = useCallback(async (target) => {
-        //서버에 타겟 전달하고 수정처리
-        const resp = await axios.patch("/route/", target);
-        //목록갱신
-        window.alert("수정이 완료되었습니다.");
-        loadData();
-        closeModalInfo();
+        try {
+            //서버에 타겟 전달하고 수정처리
+            const resp = await axios.patch("/route/", target);
+            //목록갱신
+            window.alert("수정이 완료되었습니다.");
+            
+            loadData();
+            closeModalInfo();
+        } catch (error) {
+            console.error("수정 중 에러가 발생했습니다:", error);
+            window.alert("수정 중 에러가 발생했습니다.");
+        }
+
+        // //서버에 타겟 전달하고 수정처리
+        // const resp = await axios.patch("/route/", target);
+        // //목록갱신
+        // window.alert("수정이 완료되었습니다.");
+        // loadData();
+        // closeModalInfo();
+
+        // console.log("서버로 전송된 데이터:", target);
+
     }, [selectRoute]);
 
     //수정 취소하기
@@ -475,7 +542,7 @@ const Route = () => {
 
                                     <div className="row mt-4">
                                         <div className="col">
-                                            <label>출발시간 ~ 도착시간</label>
+                                            <label>출발시간</label>
                                             <input type="text" name="routeStartTime"
                                                 value={selectRoute.routeStartTime}
                                                 onChange={e => changeRoute(e, selectRoute)}
@@ -576,34 +643,36 @@ const Route = () => {
                                         <div className="col">
                                             <label>출발시간</label><br />
                                             <select className="form-select text-center"
-                                                    onChange={handleChange}
-                                                    name="routeStartTime"
-                                                    value={selectRoute.routeStartTime}
-                                                    id="routeNo"
-                                                    >
-                                            {routes.map(route => (
-                                                    route.startTerminal === selectRoute.startTerminal && selectRoute.endTerminal === route.endTerminal) && (
-                                                    <option key={route.routeNo} value={selectRoute.routeStartTime}>
-                                                        {route.routeStartTime}
-                                                    </option>
-                                                ))}
+                                                onChange={handleChange}
+                                                name="routeStartTime"
+                                                value={selectRoute.routeStartTime}>
+                                                {routes.filter(route => route.startTerminal === selectRoute.startTerminal &&
+                                                    route.endTerminal === selectRoute.endTerminal)
+                                                    .map(route => (
+                                                        <option key={route.routeNo} value={route.routeStartTime}>
+                                                            {route.routeStartTime}
+                                                        </option>
+                                                    ))
+                                                }
                                             </select>
                                         </div>
+
                                         <div className="col-2">
                                         </div>
                                         <div className="col">
                                             <label>도착시간</label><br />
                                             <select className="form-select text-center"
-                                                    onChange={handleChange}
-                                                    name="routeEndTime"
-                                                    value={routes.routeEndTime}
-                                                    >
-                                            {routes.map(route => (
-                                                    route.startTerminal === selectRoute.startTerminal && selectRoute.endTerminal === route.endTerminal) && (
-                                                    <option key={route.routeNo} value={selectRoute.routeEndTime}>
-                                                        {route.routeEndTime}
-                                                    </option>
-                                                ))}
+                                                onChange={handleChange}
+                                                name="routeEndTime"
+                                                value={selectRoute.routeEndTime}>
+                                                {routes.filter(route => route.startTerminal === selectRoute.startTerminal &&
+                                                    route.endTerminal === selectRoute.endTerminal)
+                                                    .map(route => (
+                                                        <option key={route.routeNo} value={route.routeEndTime}>
+                                                            {route.routeEndTime}
+                                                        </option>
+                                                    ))
+                                                }
                                             </select>
                                         </div>
                                     </div>
