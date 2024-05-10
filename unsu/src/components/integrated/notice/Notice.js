@@ -7,8 +7,6 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import { GrFormPrevious } from "react-icons/gr";
 import { GrFormNext } from "react-icons/gr";
 
-
-
 const Notice = () => {
 
     //state
@@ -22,14 +20,19 @@ const Notice = () => {
     const [keyword, setKeyword] = useState(""); // 검색어는 빈 문자열로 초기화
     const [column, setColumn] = useState("");
     const [searched, setSearched] = useState(false); //검색 여부 상태 추가
+    const [searchStatus,setSearchStatus]  = useState(1);
     
     //effect
     useEffect(() => {
-        if (!searched) {
-            loadData(); // 검색하지 않은 경우 기본 목록 로딩
+        console.log("searced: " + searched);
+        if (searchStatus === 1) {
+            loadData(); // 최신순 조회
+        } else if (searchStatus === 2) {
+            mostView(); // 조회순 조회
+        } else if (searchStatus === 3) {
+            handleSearch(); // 검색어 조회
         }
-    }, [page, size, searched]); // page가 변경될 때마다 loadData 호출
-
+    }, [page, size, searched, searchStatus]); // 상태값 searchStatus 감시
     //목록 불러오기
     const loadData = useCallback(async () => {
         const resp = await axios.get(`/notice/page/${page}/size/${size}`);
@@ -62,19 +65,22 @@ const Notice = () => {
 
     //페이지네이션
     const previousPage = () => {
-        setPage(prevPage => Math.max(prevPage - 1, 1)); // 이전 페이지로 이동
+        setPage(prevPage => Math.max(prevPage - 1, 1)); // 이전 페이지로 이동하는 함수
     };
 
     const nextPage = () => {
-        setPage(prevPage => Math.min(prevPage + 1, count)); // 다음 페이지로 이동
+        setPage(prevPage => Math.min(prevPage + 1, count)); // 다음 페이지로 이동하는 함수
     };
 
     const pageChange = (pageNumber) => {
-        setPage(pageNumber); // 페이지 번호를 직접 선택하여 이동
+        setPage(pageNumber); // 페이지 번호를 직접 선택하여 이동하는 함수
     };
 
     //키워드 검색
     const handleSearch = useCallback(async () => {
+        setPage(1);
+
+        console.log("searched2 : " + searched)
         // console.log("search : " + handleSearch)
         // console.log("column : " + defaultColumn);
         // console.log("keyword : " + keyword);
@@ -84,7 +90,7 @@ const Notice = () => {
         setNotices(resp.data.list);
         setCount(resp.data.pageVO.totalPage); // 페이지 숫자 업데이트
         setSearched(true);
-    }, [keyword, defaultColumn, page, size]);
+    }, [keyword, defaultColumn, size]);
     
     const keywordChange = (e) => {
         setKeyword(e.target.value);

@@ -69,7 +69,7 @@ const SideBar = () => {
                 </div>
                 <div className="logo-outline" />
                 <Menu>
-                    <SubMenu label="운행정보" defaultClose>
+                    <SubMenu label="운행정보" >
                         <Menu menuItemStyles={subItemStyles}>
                             <MenuItem component={<Link to="/" />}> 시간표 조회 </MenuItem>
                             <MenuItem component={<Link to="/" />}> 도착시간 안내</MenuItem>
@@ -77,7 +77,7 @@ const SideBar = () => {
                     </SubMenu>
                 </Menu>
                 <Menu>
-                    <SubMenu label="이용안내" defaultClose>
+                    <SubMenu label="이용안내" >
                         <Menu menuItemStyles={subItemStyles}>
                             <MenuItem component={<Link to="/reservation" />}> 예매  </MenuItem>
                             <MenuItem component={<Link to="/testPrice" />}> 결제수단 안내</MenuItem>
@@ -87,7 +87,7 @@ const SideBar = () => {
                     </SubMenu>
                 </Menu>
                 <Menu>
-                    <SubMenu label="게시판" defaultClose>
+                    <SubMenu label="게시판" >
                         <Menu menuItemStyles={subItemStyles}>
                             <MenuItem component={<Link to="/notice" />}> 공지사항 </MenuItem>
                             <MenuItem component={<Link to="/reviewList" />}> 이용후기 </MenuItem>
@@ -95,7 +95,7 @@ const SideBar = () => {
                     </SubMenu>
                 </Menu>
                 <Menu>
-                    <SubMenu label="고객센터" defaultClose>
+                    <SubMenu label="고객센터" >
                         <Menu menuItemStyles={subItemStyles}>
                             <MenuItem component={<Link to="/" />}> 자주하는 질문  </MenuItem>
                             <MenuItem component={<Link to="/" />}> 유실물센터 안내</MenuItem>
