@@ -182,7 +182,7 @@ const handleSeatClicks = (seat) => {
 
     const fetchFare = async (chargeNo, routeNo) => {
         try {
-            const response = await axios.get(`/charge/${routeNo}/${chargeNo}`);
+            const response = await axios.get(`/charge/${chargeNo}/${routeNo}`);
             if (response.status === 200) {
                 return response.data;
             } else {
@@ -474,17 +474,17 @@ const handleSeatClicks = (seat) => {
                                 <label>출발터미널</label><div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
                                 <label>도착터미널</label><div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
                                 {busResults.length > 0 && (
-                                    <div key={busResults[0].routeNo}>
+                                    <div key={busResults[0].routeNo} className='mt-3'>
                                         <div><label>소요시간</label>{busResults[0].routeTime}</div>
-                                        <div><label>킬로미터</label>{busResults[0].routeKm}</div>
+                                        <div>{busResults[0].routeKm}<label>Km</label></div>
                                         <div className="col mt-4">
                                             <hr />
                                             요금
                                         </div>
                                         <div className="col mt-2">
-                                            <p>일반: {fares.standard}원</p>
-                                            <p>우등: {fares.business}원</p>
                                             <p>프리미엄: {fares.premium}원</p>
+                                            <p>우등: {fares.business}원</p>
+                                            <p>일반: {fares.standard}원</p>
                                         </div>
                                     </div>
                                 )}
