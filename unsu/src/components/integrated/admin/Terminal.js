@@ -194,10 +194,12 @@ const Terminal = () => {
                                             </td>
                                             <td>
                                                 <FaHouseCircleCheck className="text-success"
-                                                    onClick={e => saveEditTerminal(terminal)} />
+                                                    onClick={e => saveEditTerminal(terminal)}
+                                                    style={{ cursor: 'pointer' }} />
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <MdBackspace className="text-warning"
-                                                    onClick={e => cancelEditTerminal(terminal)} />
+                                                    onClick={e => cancelEditTerminal(terminal)}
+                                                    style={{ cursor: 'pointer' }} />
                                             </td>
                                         </>
                                     ) : (
@@ -207,10 +209,12 @@ const Terminal = () => {
                                             <td>{terminal.terminalRegion}</td>
                                             <td>
                                                 <FaHouseCircleExclamation className="text-primary"
-                                                    onClick={e => editTerminal(terminal)} />
+                                                    onClick={e => editTerminal(terminal)}
+                                                    style={{ cursor: 'pointer' }} />
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <FaHouseCircleXmark className="text-danger"
-                                                    onClick={e => deleteTerminal(terminal)} />
+                                                    onClick={e => deleteTerminal(terminal)}
+                                                    style={{ cursor: 'pointer' }} />
                                             </td>
                                         </>
                                     )}
