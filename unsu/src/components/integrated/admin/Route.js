@@ -124,35 +124,26 @@ const Route = () => {
             ...prevState,
             [name]: value
         }));
-        // // 현재 선택된 노선 정보 복사
-        // const updatedRoute = { ...selectRoute };
 
-        // // 각 select 요소의 name에 따라 해당 값 변경
-        // switch (name) {
-        //     case "routeStartTime":
-        //         updatedRoute.routeStartTime = value;
-        //         break;
-        //     case "routeEndTime":
-        //         updatedRoute.routeEndTime = value;
-        //         break;
-        //     default:
-        //         break;
-        // }
-        // // 변경된 노선 정보 설정
-        // setSelectRoute(updatedRoute);
+        // 선택한 시간에 해당하는 노선 번호 설정
+        const selectedRoute = routes.find(route => (route.routeStartTime === value || route.routeEndTime === value) &&
+            route.startTerminal === selectRoute.startTerminal &&
+            route.endTerminal === selectRoute.endTerminal);
+        if (selectedRoute) {
+            setSelectRoute(prevState => ({
+                ...prevState,
+                routeNo: selectedRoute.routeNo
+            }));
+        }
 
-
-        // // 로그 추가
-        // console.log(`선택된 ${name}:`, value);
-
-
-        //선택한 시간과 동일한 노선번호로 세팅 되게
+        // 선택한 시간과 동일한 노선 번호로 세팅되게 하기
         if (name === "routeStartTime") {
             handleStartTimeChange(value);
         } else if (name === "routeEndTime") {
             handleEndTimeChange(value);
         }
     };
+
     //같은 노선 번호의 시간이 선택 되게(출발)
     const handleStartTimeChange = (startTime) => {
         const selectedRoute = routes.find(route => route.routeStartTime === startTime);
@@ -220,7 +211,7 @@ const Route = () => {
             const resp = await axios.patch("/route/", target);
             //목록갱신
             window.alert("수정이 완료되었습니다.");
-            
+
             loadData();
             closeModalInfo();
         } catch (error) {
@@ -508,7 +499,7 @@ const Route = () => {
                             <button type="button" className="btn-close" aria-label="Close" onClick={e => closeModalInfo()}></button>
                         </div>
                         <div className="modal-body" key={routes.routeNo}>
-                            {selectRoute && selectRoute.edit === true ? (
+                            {routes && selectRoute && selectRoute.edit === true ? (
                                 <>
                                     <div className="row mt-4">
                                         <div className="col">
@@ -659,6 +650,7 @@ const Route = () => {
 
                                         <div className="col-2">
                                         </div>
+
                                         <div className="col">
                                             <label>도착시간</label><br />
                                             <select className="form-select text-center"
