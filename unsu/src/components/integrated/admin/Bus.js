@@ -230,10 +230,12 @@ const Bus = () => {
                                             </td>
                                             <td>
                                                 <FaRegSave className="text-success"
-                                                    onClick={e => saveEditBus(bus)} />
+                                                    onClick={e => saveEditBus(bus)}
+                                                    style={{ cursor: 'pointer' }} />
                                                 &nbsp; &nbsp; &nbsp;
                                                 <MdCancelPresentation className="text-danger"
-                                                    onClick={e => cancelEditBus(bus)} />
+                                                    onClick={e => cancelEditBus(bus)}
+                                                    style={{ cursor: 'pointer' }} />
                                             </td>
                                         </>
                                     ) : (
@@ -251,10 +253,12 @@ const Bus = () => {
                                                 }} >{bus.busStatus}</td>
                                             <td>
                                                 <MdBusAlert className="text-primary"
-                                                    onClick={e => editBus(bus)} />
+                                                    onClick={e => editBus(bus)} 
+                                                    style={{ cursor: 'pointer' }}/>
                                                 &nbsp; &nbsp; &nbsp;
                                                 <TbHttpDelete className="text-danger"
-                                                    onClick={e => deleteBus(bus)} />
+                                                    onClick={e => deleteBus(bus)}
+                                                    style={{ cursor: 'pointer' }} />
                                             </td>
                                         </>
                                     )}
