@@ -21,17 +21,55 @@ const Reservation = () => {
         gradeType: ""
     });
 
-    const [count, setCount] = useState(0);  // 초기값을 0으로 설정
+    /////////////////////////// 예매창에서 인원 선택관련 내용/////////////////////////////////
+    const [adultCount, setAdultCount] = useState(0);  // 초기값을 0으로 설정
+    const [teenCount, setTeenCount] = useState(0);  // 초기값을 0으로 설정
+    const [kidCount, setKidCount] = useState(0);  // 초기값을 0으로 설정
 
     // 숫자를 증가시키는 함수
-    const incrementCount = () => {
-        setCount(prevCount => prevCount + 1);
+    const incrementAdultCount = () => {
+        setAdultCount(prevCount => {// 좌석이 4장 이상 선택하지 않게 지정해줌
+            if (prevCount >= 4) {
+                return prevCount;
+            } else {
+                return prevCount + 1;
+            }
+        });
     };
+    const decrementAdultCount = () => {
+        setAdultCount(prevCount => prevCount > 0 ? prevCount - 1 : prevCount);
+    };
+    
+    const incrementTeenCount = () => {
+        setTeenCount(prevCount => {
+            if (prevCount >= 4) {
+                return prevCount;
+            } else {
+                return prevCount + 1;
+            }
+        });
+    };
+    
+    const decrementTeenCount = () => {
+        setTeenCount(prevCount => prevCount > 0 ? prevCount - 1 : prevCount);
+    };
+    
+    const incrementKidCount = () => {
+        setKidCount(prevCount => {
+            if (prevCount >= 4) {
+                return prevCount;
+            } else {
+                return prevCount + 1;
+            }
+        });
+    };
+    
+    const decrementKidCount = () => {
+        setKidCount(prevCount => prevCount > 0 ? prevCount - 1 : prevCount);
+    };
+    
 
-    // 숫자를 감소시키는 함수, 0보다 클 때만 감소
-    const decrementCount = () => {
-        setCount(prevCount => prevCount > 0 ? prevCount - 1 : prevCount);
-    };
+    /////////////////////////////////////////////////////////////////////////////////
     // 지역은 미리 지정해둠 아래에 regions에 셀렉트로 보이게 설정해둠
     const regions = [
         { key: "2", value: "광주/전남", name: "광주/전남" },
@@ -595,13 +633,13 @@ const Reservation = () => {
                                     <div className="col w-50 text-center mb-4">
                                         <div className="mt-3">
                                             <label>성인</label><br /><br />
-                                            <label>{count}</label>
+                                            <label>{adultCount}</label>
                                         </div>
                                     </div>
                                     <div className="col w-50">
                                         <div className="mt-2 me-3">
-                                            <button className="btn" onClick={incrementCount}>+</button><br /><br />
-                                            <button className="btn" onClick={decrementCount}>-</button><br />
+                                            <button className="btn" onClick={incrementAdultCount}>+</button><br /><br />
+                                            <button className="btn" onClick={decrementAdultCount}>-</button><br />
                                         </div>
                                     </div>
                                 </div>
@@ -609,13 +647,13 @@ const Reservation = () => {
                                     <div className="col w-50 text-center mb-4">
                                         <div className="mt-3">
                                             <label>청소년</label><br /><br />
-                                            <label>{count}</label>
+                                            <label>{teenCount}</label>
                                         </div>
                                     </div>
                                     <div className="col w-75">
                                         <div className="mt-2 me-3">
-                                            <button className="btn" onClick={incrementCount}>+</button><br /><br />
-                                            <button className="btn" onClick={decrementCount}>-</button><br />
+                                            <button className="btn" onClick={incrementTeenCount}>+</button><br /><br />
+                                            <button className="btn" onClick={decrementTeenCount}>-</button><br />
                                         </div>
                                     </div>
                                 </div>
@@ -623,13 +661,13 @@ const Reservation = () => {
                                     <div className="col w-25 text-center mb-4">
                                         <div className="mt-3">
                                             <label>아동</label><br /><br />
-                                            <label>{count}</label>
+                                            <label>{kidCount}</label>
                                         </div>
                                     </div>
                                     <div className="col w-75">
                                         <div className="mt-2 me-3">
-                                            <button className="btn" onClick={incrementCount}>+</button><br /><br />
-                                            <button className="btn" onClick={decrementCount}>-</button><br />
+                                            <button className="btn" onClick={incrementKidCount}>+</button><br /><br />
+                                            <button className="btn" onClick={decrementKidCount}>-</button><br />
                                         </div>
                                     </div>
                                 </div>
@@ -692,7 +730,7 @@ const Reservation = () => {
                                 <hr />
                                 <label>탑승인원 및 요금</label>
                                 <div className='col'>
-                                    <label>성인 : 0</label>원 <br />
+                                    <label>성인 : {fares.premium}</label>원 <br />
                                     <label>청소년 : 0</label>원 <br />
                                     <label>아동 : 0</label>원 <br />
                                 </div>
