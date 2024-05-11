@@ -38,6 +38,7 @@ const ChatbotEdit = lazy(() => import("./components/integrated/websocket/chatbot
 const MemberChat = lazy(() => import("./components/integrated/websocket/memberChat"));
 const RefundInfo = lazy(()=>import("./components/doc/RefundInfo"));
 const TerminalInfo = lazy(()=>import("./components/doc/TerminalInfo"));
+const PayInfo = lazy(()=>import("./components/doc/PayInfo"));
 const Charge= lazy(()=>import("./components/integrated/admin/Charge"));
 
 
@@ -118,6 +119,7 @@ const App = () => {
                 <Route path="/refundInfo" element={<RefundInfo />} />
                 <Route path="/terminalInfo" element={<TerminalInfo />} />
                 <Route path="/charge" element={<Charge/>} />
+                <Route path="/payInfo" element={<PayInfo/>} />
               </Routes>
             </Suspense>
             </div>
