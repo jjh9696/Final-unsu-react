@@ -40,6 +40,7 @@ const RefundInfo = lazy(()=>import("./components/doc/RefundInfo"));
 const TerminalInfo = lazy(()=>import("./components/doc/TerminalInfo"));
 const PayInfo = lazy(()=>import("./components/doc/PayInfo"));
 const Charge= lazy(()=>import("./components/integrated/admin/Charge"));
+const MemberList= lazy(()=>import("./components/integrated/admin/MemberList"));
 
 
 const App = () => {
@@ -120,6 +121,7 @@ const App = () => {
                 <Route path="/terminalInfo" element={<TerminalInfo />} />
                 <Route path="/charge" element={<Charge/>} />
                 <Route path="/payInfo" element={<PayInfo/>} />
+                <Route path="/memberList" element={<MemberList/>} />
               </Routes>
             </Suspense>
             </div>
