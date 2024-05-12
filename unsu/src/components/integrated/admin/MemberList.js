@@ -25,8 +25,9 @@ const MemberList = () => {
         memberPrivacyAgree:"",
         memberPrivacyDate:"",
         memberServiceAgree:"",
-        memberBysAgree:""
+        memberBusAgree:""
     });
+    
 
 
     //불러와
@@ -38,6 +39,7 @@ const MemberList = () => {
         const resp = await axios.get("/member/");
         setMembers(resp.data);
     }, [members]);
+
 
 
     //모달세트
@@ -79,7 +81,8 @@ const MemberList = () => {
                                     <td>{member.memberEmail}</td>
                                     <td>
                                         <FaUserShield onClick={e => openModalInfo(member)}
-                                            style={{ cursor: 'pointer' }} />
+                                            style={{ cursor: 'pointer' }} 
+                                            className="text-primary"/>
                                     </td>
                                 </tr>
                             ))}
@@ -111,6 +114,83 @@ const MemberList = () => {
                                 <div className="col">
                                     <label>이름</label>
                                     <h3>{selectMember.memberName}</h3>
+                                </div>
+                                <div className="col">
+                                    <label>등급</label>
+                                    <h3>{selectMember.memberLevel}</h3>
+                                </div>
+                            </div>
+
+                            <div className="row mt-4">
+                                <div className="col">
+                                    <label>생년월일</label>
+                                    <h3>{selectMember.memberBirth}</h3>
+                                </div>
+                            </div>
+
+                            <div className="row mt-4">
+                                <div className="col">
+                                    <label>이메일</label>
+                                    <h3>{selectMember.memberEmail}</h3>
+                                </div>
+                            </div>
+
+                            <div className="row mt-4">
+                                <div className="col">
+                                    <label>연락처</label>
+                                    <h3>{selectMember.memberPhone}</h3>
+                                </div>
+                            </div>
+
+                            <div className="row mt-4">
+                                <div className="col">
+                                    <label>포인트</label>
+                                    <h3>{selectMember.memberPoint} Point</h3>
+                                </div>
+                            </div>
+
+                            <div className="row mt-4">
+                                <div className="col">
+                                    <label>주소</label>
+                                    <h3>[{selectMember.memberZip}] &nbsp;
+                                        {selectMember.memberAddr1} &nbsp;
+                                        {selectMember.memberAddr2}</h3>
+                                </div>
+                            </div>
+
+                            <div className="row mt-4">
+                                <div className="col">
+                                    <label>개인정보 수집 동의</label>
+                                    <h3>{selectMember.memberPrivacyAgree}</h3>
+                                </div>
+                                <div className="col">
+                                    <label>동의일자</label>
+                                    <h3>{selectMember.memberPrivacyDate}</h3>
+                                </div>
+                            </div>
+
+                            <div className="row mt-4">
+                                <div className="col">
+                                    <label>메일 수신 동의</label>
+                                    <h3>{selectMember.memberServiceAgree}</h3>
+                                </div>
+                                <div className="col">
+                                    <label>버스 탑승 동의</label>
+                                    <h3>{selectMember.memberBusAgree}</h3>
+                                </div>
+                            </div>
+
+                            <div className="row mt-4">
+                                <div className="col">
+                                    <label>가입 일시</label>
+                                    <h3>{selectMember.memberJoinDate}</h3>
+                                </div>
+                            </div>
+
+                            <div className="row mt-4">
+                                <div className="col">
+                                    <label>최근 로그인</label>
+                                    <h3>{selectMember.memberLoginDate}</h3>
                                 </div>
                             </div>
                         </div>

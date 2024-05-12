@@ -68,16 +68,17 @@ import {
                   </div>
                   <div className="logo-outline" />
                   <Menu>
-                      <SubMenu label="회원관리" defaultClose>
+                      <SubMenu label="회원 관리" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
                               <MenuItem component={<Link to="/memberList" />}> 회원 조회 </MenuItem>
+                              <MenuItem component={<Link to="/pointList" />}> 포인트 관리 </MenuItem>
                               <MenuItem component={<Link to="/" />}> 메세지 보내기 </MenuItem>
                               <MenuItem component={<Link to="/" />}> 고객 예약 관리 </MenuItem>
                           </Menu>
                       </SubMenu>
                   </Menu>
                   <Menu>
-                      <SubMenu label="관리" defaultClose>
+                      <SubMenu label="운수 관리" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
                               <MenuItem component={<Link to="/driver" />}> 기사님 관리 </MenuItem>
                               <MenuItem component={<Link to="/bus" />}> 버스차량 관리 </MenuItem>
