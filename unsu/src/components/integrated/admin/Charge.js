@@ -148,7 +148,7 @@ const Charge = () => {
 
             <div className="row mt-4">
                 <div className="col text-end">
-                    <button className="btn btn-success" onClick={e => openModalCreate()}>
+                    <button className="btn btn-light" onClick={e => openModalCreate()}>
                         <FcMoneyTransfer /> &nbsp;
                         요금 등록
                     </button>
