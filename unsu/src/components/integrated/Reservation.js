@@ -231,17 +231,27 @@ const Reservation = () => {
     const [fares, setFares] = useState({
         standard: null,
         business: null,
-        premium: null
+        premium: null,
+        premiumTeenFare: null,
+        businessTeenFare: null,
+        standardTeenFare:null
     });
     const [error, setError] = useState(null);
     const [chargeNo, setChargeNo] = useState();
     useEffect(() => {
         const fetchFares = async (routeNo) => {
             try {
-                const standardFare = await fetchFare(3, routeNo);
-                const businessFare = await fetchFare(2, routeNo);
                 const premiumFare = await fetchFare(1, routeNo);
-                setFares({ standard: standardFare, business: businessFare, premium: premiumFare });
+                const businessFare = await fetchFare(2, routeNo);
+                const standardFare = await fetchFare(3, routeNo);
+                const premiumTeenFare = await fetchFare(4, routeNo);
+                const businessTeenFare = await fetchFare(5, routeNo);
+                const standardTeenFare = await fetchFare(6, routeNo);
+                setFares({ 
+                    standard: standardFare, business: businessFare, premium: premiumFare ,
+                    standardTeenFare: standardTeenFare, businessTeenFare: businessTeenFare, premiumTeenFare: premiumTeenFare 
+                
+                });
             } catch (error) {
                 console.error('에러발생:', error);
                 setError('에러발생');
@@ -268,19 +278,29 @@ const Reservation = () => {
     };
     const fetchFareDetails = async (routeNo) => {
         try {
-            const [standard, business, premium] = await Promise.all([
+            const [standard, business, premium, standardTeenFare,businessTeenFare,premiumTeenFare] = await Promise.all([
                 fetchFare(1, routeNo),
                 fetchFare(2, routeNo),
-                fetchFare(3, routeNo)
+                fetchFare(3, routeNo),
+                fetchFare(4, routeNo),
+                fetchFare(5, routeNo),
+                fetchFare(6, routeNo)
             ]);
             setFares({
                 standard: standard,
                 business: business,
-                premium: premium
+                premium: premium,
+                standardTeenFare: standardTeenFare,
+                businessTeenFare: businessTeenFare,
+                premiumTeenFare: premiumTeenFare
             });
         } catch (error) {
             console.error('요금 계산 중 에러 발생:', error);
-            setFares({ standard: '에러', business: '에러', premium: '에러' });
+            setFares({ 
+                standard: '에러', business: '에러', premium: '에러' ,
+                standard: '에러', business: '에러', premium: '에러' 
+
+            });
         }
     };
 
@@ -569,6 +589,7 @@ const Reservation = () => {
                                                     <p>프리미엄: {fares.premium}원</p>
                                                     <p>우등: {fares.business}원</p>
                                                     <p>일반: {fares.standard}원</p>
+                                                    <p>청소년일반: {fares.standardTeenFare}원</p>
                                                 </div>
                                             </div>
                                         )}
