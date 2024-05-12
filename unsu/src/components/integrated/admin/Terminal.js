@@ -210,11 +210,13 @@ const Terminal = () => {
                                             <td>
                                                 <FaHouseCircleExclamation className="text-primary"
                                                     onClick={e => editTerminal(terminal)}
-                                                    style={{ cursor: 'pointer' }} />
+                                                    style={{ cursor: 'pointer' }}
+                                                    title="수정" />
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <FaHouseCircleXmark className="text-danger"
                                                     onClick={e => deleteTerminal(terminal)}
-                                                    style={{ cursor: 'pointer' }} />
+                                                    style={{ cursor: 'pointer' }}
+                                                    title="삭제" />
                                             </td>
                                         </>
                                     )}

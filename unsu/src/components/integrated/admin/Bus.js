@@ -254,11 +254,13 @@ const Bus = () => {
                                             <td>
                                                 <MdBusAlert className="text-primary"
                                                     onClick={e => editBus(bus)} 
-                                                    style={{ cursor: 'pointer' }}/>
+                                                    style={{ cursor: 'pointer' }}
+                                                    title="수정"/>
                                                 &nbsp; &nbsp; &nbsp;
                                                 <TbHttpDelete className="text-danger"
                                                     onClick={e => deleteBus(bus)}
-                                                    style={{ cursor: 'pointer' }} />
+                                                    style={{ cursor: 'pointer' }}
+                                                    title="삭제"/>
                                             </td>
                                         </>
                                     )}

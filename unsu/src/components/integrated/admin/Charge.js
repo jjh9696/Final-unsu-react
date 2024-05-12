@@ -123,6 +123,11 @@ const Charge = () => {
         loadData();
     }, [charges]);
 
+    //원화로 포맷하기
+    const formatCurrency = (value) => {
+        return value.toLocaleString('ko-KR', { currency: 'KRW' });
+      };
+
 
     //모달
     const bsModal = useRef(); //등록
@@ -206,14 +211,17 @@ const Charge = () => {
                                             <td>{charge.chargeNo}</td>
                                             <td>{charge.chargeType}</td>
                                             <td>{charge.gradeType}</td>
-                                            <td>{charge.chargePrice}</td>
+                                            <td>{formatCurrency(charge.chargePrice)}원</td>
                                             <td>
                                                 <MdEdit className="text-primary"
-                                                    style={{ cursor: 'pointer' }} />
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={e=>editCharge(charge)}
+                                                    title="수정" />
                                                 &nbsp;&nbsp;&nbsp;
                                                 <MdOutlineCreditCardOff className="text-danger"
                                                     onClick={e => deleteCharge(charge)}
-                                                    style={{ cursor: 'pointer' }} />
+                                                    style={{ cursor: 'pointer' }} 
+                                                    title="삭제"/>
                                             </td>
                                         </>
                                     )}
@@ -230,7 +238,7 @@ const Charge = () => {
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h1 className="modal-title fs-5" id="staticBackdropLabel">신규 기사님 등록</h1>
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel">요금 정보 추가 등록</h1>
                             <button type="button" className="btn-close" aria-label="Close" onClick={e => cancelInput()}></button>
                         </div>
                         <div className="modal-body">
