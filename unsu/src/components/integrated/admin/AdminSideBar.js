@@ -70,7 +70,7 @@ import {
                   <Menu>
                       <SubMenu label="회원관리" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
-                              <MenuItem component={<Link to="/" />}> 회원 조회 </MenuItem>
+                              <MenuItem component={<Link to="/memberList" />}> 회원 조회 </MenuItem>
                               <MenuItem component={<Link to="/" />}> 메세지 보내기 </MenuItem>
                               <MenuItem component={<Link to="/" />}> 고객 예약 관리 </MenuItem>
                           </Menu>

@@ -204,7 +204,8 @@ const Driver = () => {
                                         {/* 삭제버튼 */}
                                         <TiUserDelete className="text-danger"
                                             style={{ cursor: 'pointer' }}
-                                            onClick={e => deleteDriver(driver)} />
+                                            onClick={e => deleteDriver(driver)}
+                                            title="삭제" />
                                     </td>
                                 </tr>
                             ))}
