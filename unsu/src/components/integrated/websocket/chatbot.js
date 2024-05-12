@@ -8,7 +8,7 @@ function Chatbot() {
   const [answer, setAnswer] = useState('');
 
   useEffect(() => {
-    const newSocket = new SockJS("http://localhost:8080/ws/chatbot");
+    const newSocket = new SockJS(`${process.env.REACT_APP_BASE_URL}/ws/chatbot`);
     newSocket.onmessage = handleMessage;
     setSocket(newSocket);
 

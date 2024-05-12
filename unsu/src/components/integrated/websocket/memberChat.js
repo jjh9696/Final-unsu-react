@@ -19,7 +19,7 @@ const MemberChat = () => {
 
   useEffect(() => {
     // 페이지에 들어갈 때 웹소켓 연결 생성
-    const newSocket = new SockJS("http://localhost:8080/ws/memberChat");
+    const newSocket = new SockJS(`${process.env.REACT_APP_BASE_URL}/ws/memberChat`);
 
     // 메세지 표시
     newSocket.onmessage = (e) => {
@@ -91,10 +91,11 @@ const MemberChat = () => {
             />
             <select value={selectedMemberId} onChange={handleSelectMember}>
               <option value="">회원을 선택하세요</option>
-              {filteredMembers.map((member) => (
+              {filteredMembers.filter(member => member.memberLevel !== '관리자').map((member) => (
                 <option key={member.memberId} value={member.memberId}>{member.memberId}</option>
               ))}
             </select>
+            
           </div>
         )}
 
@@ -113,7 +114,7 @@ const MemberChat = () => {
           // 관리자인 경우에는 선택된 회원과의 채팅만 보여줌
           if (loginLevel === "관리자" && selectedMemberId && (message.message_sender === selectedMemberId || message.message_receiver === selectedMemberId)) {
             return (
-              <div key={index} className={message.message_sender === loginId ? 'message sent' : 'message received'}>
+              <div key={index} className={message.message_sender_level === '관리자' ? 'message sent' : 'message received'}>
                 <div className="sender">{message.message_sender}</div>
                 <div className="content">{message.message_content}</div>
                 <div className="time">{moment(message.message_time).format("YY/MM/DD HH:mm")}</div>
@@ -124,7 +125,7 @@ const MemberChat = () => {
           // 관리자가 보낸 채팅은 상담사가 보냈다고 표시
           else if (loginLevel !== "관리자" && (message.message_sender === loginId || message.message_receiver === loginId)) {
             return (
-              <div key={index} className={message.message_sender === loginId ? 'message sent' : 'message received'}>
+              <div key={index} className={message.message_sender_level === '일반회원' ? 'message sent' : 'message received'}>
                 <div className="sender">{message.message_sender === loginId ? loginId : '상담사'}</div>
                 <div className="content">{message.message_content}</div>
                 <div className="time">{moment(message.message_time).format("YY/MM/DD HH:mm")}</div>
