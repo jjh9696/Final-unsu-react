@@ -42,6 +42,7 @@
   const Charge= lazy(()=>import("./components/integrated/admin/Charge"));
   const MemberList= lazy(()=>import("./components/integrated/admin/MemberList"));
   const PointList= lazy(()=>import("./components/integrated/admin/PointList"));
+  const Point = lazy(()=> import("./components/integrated/member/Point"));
 
 
   const App = () => {
@@ -124,6 +125,7 @@
                   <Route path="/payInfo" element={<PayInfo/>} />
                   <Route path="/memberList" element={<MemberList/>} />
                   <Route path="/pointList" element={<PointList/>} />
+                  <Route path="/point" element={<Point/>} />
                 </Routes>
               </Suspense>
               </div>
