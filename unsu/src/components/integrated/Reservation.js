@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import axios from '../utils/CustomAxios';
 import { useNavigate } from "react-router";
-import { Modal } from 'bootstrap';
 import { SeatGroup } from "hacademy-cinema-seat";
 
 const Reservation = () => {
@@ -30,12 +29,21 @@ const Reservation = () => {
         teen: 0,
         kid: 0
     });
+    const [pay, setPay] = useState({
+        adult: '',
+        teen: '',
+        kid: ''
+    });
+    useEffect(() => {
+        // pay 상태가 변경될 때마다 실행되는 로직
+        console.log('pay 상태가 변경되었습니다:', pay);
+    }, [pay]);
     // 성인 수를 증가시키는 함수
     const incrementAdultCount = (routeNo) => {
         setCount(prevCount => {
             const newCount = prevCount.adult >= 4 ? 4 : prevCount.adult + 1;
             if (newCount > prevCount.adult) {  // 변경 사항이 있을 때만 요금 계산 요청
-                calculateFare('성인', newCount, routeNo);
+                calculateFare('성인', newCount, 16);
             }
             return {
                 ...prevCount,
@@ -57,7 +65,7 @@ const Reservation = () => {
         setCount(prevCount => {
             const newCount = prevCount.teen >= 4 ? 4 : prevCount.teen + 1;
             if (newCount > prevCount.teen) {
-                calculateFare('청소년', newCount, routeNo);
+                calculateFare('청소년', newCount, 16);
             }
             return {
                 ...prevCount,
@@ -74,12 +82,12 @@ const Reservation = () => {
         }));
     };
 
-    // 아동 수를 증가시키는 함수
+    // 어린이 수를 증가시키는 함수
     const incrementKidCount = (routeNo) => {
         setCount(prevCount => {
             const newCount = prevCount.kid >= 4 ? 4 : prevCount.kid + 1;
             if (newCount > prevCount.kid) {
-                calculateFare('아동', newCount, routeNo);
+                calculateFare('어린이', newCount, routeNo);
             }
             return {
                 ...prevCount,
@@ -87,7 +95,7 @@ const Reservation = () => {
             };
         });
     };
-    // 아동 수를 감소시키는 함수
+    // 어린이 수를 감소시키는 함수
     const decrementKidCount = () => {
         setCount(prevCount => ({
             ...prevCount,
@@ -95,17 +103,40 @@ const Reservation = () => {
         }));
     };
     // 요금 계산을 위해 백엔드로 데이터를 전송하는 함수
+    const chargeTypeMapping = {
+        '성인': 'adult',
+        '청소년': 'teen',
+        '어린이': 'kid'
+    };
+
     const calculateFare = async (chargeType, count, routeNo) => {
-        console.log(`chargeType: ${chargeType}, count: ${count}, routeNo: ${routeNo}`);
+        const url = '/charge/calculateFare';
+        const payload = {
+            chargeType: chargeType,
+            routeNo: routeNo,
+            count: count
+        };
         try {
-            const url = `/charge/calculateFare/${chargeType}/${routeNo}/${count}`;
-            const response = await axios.get(url);
-            console.log('Fare Calculation Response:', response.data);
+            const response = await axios.post(url, payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.status === 200) {
+                // 동적으로 키 업데이트를 영문으로 매핑
+                const mappedKey = chargeTypeMapping[chargeType];
+                setPay(prev => ({
+                    ...prev,
+                    [mappedKey]: response.data
+                }));
+                console.log('Updated pay state for', chargeType, ':', response.data);
+            } else {
+                throw new Error('Failed to fetch fare');
+            }
         } catch (error) {
-            console.error('Error calculating fare:', error);
+            console.error('Error fetching fare data:', error);
         }
     };
-    
 
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -119,11 +150,6 @@ const Reservation = () => {
         { key: "7", value: "서울", name: "서울" }
     ];
     const [submissionSuccess, setSubmissionSuccess] = useState(false); // 버스조회가 정상적으로 이루어 지면 사용자가 조회한 내용을 바탕으로 다른 컴포넌트를 보여주기 위한 상태
-    // 요금계산을 위한 빌드업
-    const [priceData, setPriceData] = useState({
-        routeNo: '',
-        chargeNo: ''
-    });
 
     const [selectedStartTerminalName, setSelectedStartTerminalName] = useState('');
     const [selectedEndTerminalName, setSelectedEndTerminalName] = useState('');
@@ -191,7 +217,6 @@ const Reservation = () => {
         // 데이터를 불러온 후에 모달을 열도록 선택
         await loadSeatData(bus.routeNo);
         handleSelectBus();
-        calculateFare();
         setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
         }, 500);
@@ -223,6 +248,10 @@ const Reservation = () => {
     const handleSeatClick = (seatNumber) => {
         setSelectedSeat(seatNumber); // 선택한 좌석 번호를 state에 설정
     };
+    //좌석을 선택했을 때 선택된 좌석만 추출
+    const checkSeats = useMemo(() => {
+        return seats.filter(seat => seat.seatChecked === true);
+    }, [seats]);
 
 
     useEffect(() => {
@@ -462,49 +491,18 @@ const Reservation = () => {
             teen: 0,
             kid: 0
         });// 선택한 좌석 초기화
+        setPay({
+            adult: 0,
+            teen: 0,
+            kid: 0
+        }); // 요금을 초기화합니다.
     };
     const [input, setInput] = useState({
         // 버스 예약 인서트 할것 넣기
     });
     const bsModal = useRef(); //등록
 
-    // 예약 모달 열기
-    const openModalCreate = useCallback(() => {
-        const modal = new Modal(bsModal.current);
-        modal.show();
-    }, [bsModal]);
 
-    // 예약 모달 닫기
-    const closeModalCreate = useCallback(() => {
-        const modal = Modal.getInstance(bsModal.current);
-        modal.hide();
-    }, [bsModal]);
-
-    // 데이터 등록
-    const saveInput = useCallback(async () => {
-        try {
-            // console.log('Sending input:', input); // 입력 값 로깅
-            const resp = await axios.post("/reservation/", input);
-            clearInput();
-            closeModalCreate();
-        } catch (error) {
-            console.error('Error saving input:', error); // 에러 발생 시 콘솔에 에러 메시지 출력
-        }
-    }, [input]);
-
-    // 예약창 닫기
-    const cancelInput = useCallback(() => {
-        const choice = window.confirm("예약을 취소하시겠습니까?");
-        if (choice === false) return;
-        clearInput();
-        closeModalCreate();
-    }, [input]);
-    const changeInput = useCallback((e) => {
-        setInput({
-            ...input,
-            [e.target.name]: e.target.value
-        });
-    }, [input]);
 
     //입력값 초기화
     const clearInput = useCallback(() => {
@@ -515,10 +513,6 @@ const Reservation = () => {
 
 
 
-    //좌석을 선택했을 때 선택된 좌석만 추출
-    const checkSeats = useMemo(() => {
-        return seats.filter(seat => seat.seatChecked === true);
-    }, [seats]);
 
 
     ///////////////////////////////////////////////// 아래부터 리턴 화면 /////////////////////////////////////////////////////
@@ -706,7 +700,7 @@ const Reservation = () => {
                                 <div className="row">
                                     <div className="col w-50 text-center mb-4">
                                         <div className="mt-3">
-                                            <label>아동</label><br /><br />
+                                            <label>어린이</label><br /><br />
                                             <label>{count.kid}</label>
                                         </div>
                                     </div>
@@ -776,15 +770,16 @@ const Reservation = () => {
                                 <hr />
                                 <label>탑승인원 및 요금</label>
                                 <div className='col'>
-                                    <label>성인 : {fares.premium}</label>원 <br />
-                                    <label>청소년 : 0</label>원 <br />
-                                    <label>아동 : 0</label>원 <br />
+                                    <label>성인 : {pay.adult}원</label> <br />
+                                    <label>청소년 : {pay.teen}원</label> <br />
+                                    <label>어린이 : {pay.kid}원</label> <br />
+                                    <label>합계 :{pay.kid + pay.teen + pay.adult}원</label> <br />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </>
-            )};
+            )}
         </>
     );
 };
