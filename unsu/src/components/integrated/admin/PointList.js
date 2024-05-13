@@ -12,7 +12,7 @@ const PointList = () => {
     //수정을 위한 백업
     const [backup, setBackup] = useState(null);
     //포인트상태
-    const [pointState, setPointState] = useState([]);
+    const [pointState, setPointState] = useState('');
 
     //
     useEffect(() => {
@@ -57,7 +57,7 @@ const PointList = () => {
     //승인버튼
     const pointStateOk = async (pointNo, newState) => {
         const choice = window.confirm("해당 건을 승인하시겠습니까?");
-        if(choice === false) return;
+        if (choice === false) return;
 
         try {
             const resp = await axios.patch("/point/", { pointNo, pointState: newState });
@@ -73,7 +73,7 @@ const PointList = () => {
     //반려버튼
     const pointStateNo = async (pointNo, newState) => {
         const choice = window.confirm("해당 건을 반려하시겠습니까?");
-        if(choice === false) return;
+        if (choice === false) return;
 
         try {
             const resp = await axios.patch("/point/", { pointNo, pointState: newState });
@@ -89,7 +89,7 @@ const PointList = () => {
     //결제대기로 가기 버튼
     const pointStateBack = async (pointNo, newState) => {
         const choice = window.confirm("실행을 취소하시겠습니까?");
-        if(choice === false) return;
+        if (choice === false) return;
 
         try {
             const resp = await axios.patch("/point/", { pointNo, pointState: newState });
@@ -142,21 +142,43 @@ const PointList = () => {
                                     <td>{formatCurrency(point.pointAmount)} Point</td>
                                     <td style={{
                                         color: point.pointState === "승인" ? "green" :
-                                                point.pointState === "반려" ? "red" :
+                                            point.pointState === "반려" ? "red" :
                                                 point.pointState === "결제대기" ? "orange" : "black"
                                     }}>
                                         {point.pointState}
                                     </td>
-                                    <td>
-                                        <MdPublishedWithChanges className="text-success me-3"
-                                                onClick={()=>pointStateOk(point.pointNo, "승인")}
-                                                title="승인" style={{ cursor: 'pointer' }}/>
-                                        <MdCancel className="text-danger me-3"
-                                                onClick={()=>pointStateNo(point.pointNo, "반려")}
-                                                title="반려" style={{ cursor: 'pointer' }}/>
-                                        <RiArrowGoBackFill onClick={()=>pointStateBack(point.pointNo, '결제대기')}
-                                                title="되돌리기" style={{ cursor: 'pointer' }}/>
-                                    </td>
+                                    {point.pointState === '결제대기' && (
+                                        <>
+                                            <td>
+                                                <MdPublishedWithChanges className="text-success me-4"
+                                                    onClick={() => pointStateOk(point.pointNo, "승인")}
+                                                    title="승인" style={{ cursor: 'pointer' }} />
+                                                <MdCancel className="text-danger me-3"
+                                                    onClick={() => pointStateNo(point.pointNo, "반려")}
+                                                    title="반려" style={{ cursor: 'pointer' }} />
+                                            </td>
+                                        </>
+                                    )}
+                                    {/* 여기서부터는 백엔드 구현 안되면 지워도 될듯 */}
+                                    {point.pointState === '승인' && (
+                                        <>
+                                            <td>
+                                                <RiArrowGoBackFill
+                                                    onClick={() => pointStateBack(point.pointNo, "결제대기")}
+                                                    title="되돌리기" style={{ cursor: 'pointer' }} />
+                                            </td>
+                                        </>
+                                    )}
+                                    {point.pointState === '반려' && (
+                                        <>
+                                            <td>
+                                                <RiArrowGoBackFill
+                                                    onClick={() => pointStateBack(point.pointNo, "결제대기")}
+                                                    title="되돌리기" style={{ cursor: 'pointer' }} />
+                                            </td>
+                                        </>
+                                    )}
+                                    {/* 여기까지 */}
                                 </tr>
                             ))}
                         </tbody>
