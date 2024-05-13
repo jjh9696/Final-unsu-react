@@ -16,6 +16,8 @@ const MemberChat = () => {
   const [selectedMemberId, setSelectedMemberId] = useState(''); // 초기에 빈 문자열로 설정
   const [memberList, setMemberList] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]); // 검색된 회원 목록
+  const [recentSender, setRecentSender] = useState(''); // 최근 메시지를 보낸 사람
+  const [recentReceiver, setRecentReceiver] = useState(''); // 최근 메시지를 받은 사람
 
   useEffect(() => {
     // 페이지에 들어갈 때 웹소켓 연결 생성
@@ -95,6 +97,16 @@ const MemberChat = () => {
                 <option key={member.memberId} value={member.memberId}>{member.memberId}</option>
               ))}
             </select>
+
+            
+            <div>
+              {recentSender && (
+                <p>최근 메시지를 보낸 사람: {recentSender}</p>
+              )}
+              {recentReceiver && (
+                <p>최근 메시지를 받은 사람: {recentReceiver}</p>
+              )}
+            </div>
             
           </div>
         )}
