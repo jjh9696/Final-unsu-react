@@ -22,52 +22,91 @@ const Reservation = () => {
     });
 
     /////////////////////////// 예매창에서 인원 선택관련 내용/////////////////////////////////
-    const [adultCount, setAdultCount] = useState(0);  // 초기값을 0으로 설정
-    const [teenCount, setTeenCount] = useState(0);  // 초기값을 0으로 설정
-    const [kidCount, setKidCount] = useState(0);  // 초기값을 0으로 설정
-
-    // 숫자를 증가시키는 함수
-    const incrementAdultCount = () => {
-        setAdultCount(prevCount => {// 좌석이 4장 이상 선택하지 않게 지정해줌
-            if (prevCount >= 4) {
-                return prevCount;
-            } else {
-                return prevCount + 1;
+    // const [adultCount, setAdultCount] = useState(0);  // 초기값을 0으로 설정
+    // const [teenCount, setTeenCount] = useState(0);  // 초기값을 0으로 설정
+    // const [kidCount, setKidCount] = useState(0);  // 초기값을 0으로 설정
+    const [count, setCount] = useState({
+        adult: 0,
+        teen: 0,
+        kid: 0
+    });
+    // 성인 수를 증가시키는 함수
+    const incrementAdultCount = (routeNo) => {
+        setCount(prevCount => {
+            const newCount = prevCount.adult >= 4 ? 4 : prevCount.adult + 1;
+            if (newCount > prevCount.adult) {  // 변경 사항이 있을 때만 요금 계산 요청
+                calculateFare('성인', newCount, routeNo);
             }
+            return {
+                ...prevCount,
+                adult: newCount
+            };
         });
     };
+    // 성인 수를 감소시키는 함수
     const decrementAdultCount = () => {
-        setAdultCount(prevCount => prevCount > 0 ? prevCount - 1 : prevCount);
+        setCount(prevCount => ({
+            ...prevCount,
+            adult: Math.max(0, prevCount.adult - 1)
+        }));
     };
-    
-    const incrementTeenCount = () => {
-        setTeenCount(prevCount => {
-            if (prevCount >= 4) {
-                return prevCount;
-            } else {
-                return prevCount + 1;
+
+    // 청소년 수를 증가시키는 함수
+
+    const incrementTeenCount = (routeNo) => {
+        setCount(prevCount => {
+            const newCount = prevCount.teen >= 4 ? 4 : prevCount.teen + 1;
+            if (newCount > prevCount.teen) {
+                calculateFare('청소년', newCount, routeNo);
             }
+            return {
+                ...prevCount,
+                teen: newCount
+            };
         });
     };
-    
+
+    // 청소년 수를 감소시키는 함수
     const decrementTeenCount = () => {
-        setTeenCount(prevCount => prevCount > 0 ? prevCount - 1 : prevCount);
+        setCount(prevCount => ({
+            ...prevCount,
+            teen: Math.max(0, prevCount.teen - 1)
+        }));
     };
-    
-    const incrementKidCount = () => {
-        setKidCount(prevCount => {
-            if (prevCount >= 4) {
-                return prevCount;
-            } else {
-                return prevCount + 1;
+
+    // 아동 수를 증가시키는 함수
+    const incrementKidCount = (routeNo) => {
+        setCount(prevCount => {
+            const newCount = prevCount.kid >= 4 ? 4 : prevCount.kid + 1;
+            if (newCount > prevCount.kid) {
+                calculateFare('아동', newCount, routeNo);
             }
+            return {
+                ...prevCount,
+                kid: newCount
+            };
         });
     };
-    
+    // 아동 수를 감소시키는 함수
     const decrementKidCount = () => {
-        setKidCount(prevCount => prevCount > 0 ? prevCount - 1 : prevCount);
+        setCount(prevCount => ({
+            ...prevCount,
+            kid: Math.max(0, prevCount.kid - 1)
+        }));
+    };
+    // 요금 계산을 위해 백엔드로 데이터를 전송하는 함수
+    const calculateFare = async (chargeType, count, routeNo) => {
+        console.log(`chargeType: ${chargeType}, count: ${count}, routeNo: ${routeNo}`);
+        try {
+            const url = `/charge/calculateFare/${chargeType}/${routeNo}/${count}`;
+            const response = await axios.get(url);
+            console.log('Fare Calculation Response:', response.data);
+        } catch (error) {
+            console.error('Error calculating fare:', error);
+        }
     };
     
+
 
     /////////////////////////////////////////////////////////////////////////////////
     // 지역은 미리 지정해둠 아래에 regions에 셀렉트로 보이게 설정해둠
@@ -152,6 +191,7 @@ const Reservation = () => {
         // 데이터를 불러온 후에 모달을 열도록 선택
         await loadSeatData(bus.routeNo);
         handleSelectBus();
+        calculateFare();
         setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
         }, 500);
@@ -218,7 +258,7 @@ const Reservation = () => {
         try {
             const response = await axios.post('/search/', dataToSend);
             const price =
-            console.log('Server Response:', response.data);
+                console.log('Server Response:', response.data);
             setBusResults(response.data);
             setSubmissionSuccess(true);  // 제출 성공 상태를 true로 설정
             setError(null);  // 에러 상태 초기화
@@ -417,6 +457,11 @@ const Reservation = () => {
     // '이전' 버튼 클릭 핸들러
     const handleGoBack = () => {
         setShowDetails(false); // 초기 화면으로 돌아가기
+        setCount({
+            adult: 0,
+            teen: 0,
+            kid: 0
+        });// 선택한 좌석 초기화
     };
     const [input, setInput] = useState({
         // 버스 예약 인서트 할것 넣기
@@ -634,7 +679,7 @@ const Reservation = () => {
                                     <div className="col w-50 text-center mb-4">
                                         <div className="mt-3">
                                             <label>성인</label><br /><br />
-                                            <label>{adultCount}</label>
+                                            <label>{count.adult}</label>
                                         </div>
                                     </div>
                                     <div className="col w-50">
@@ -644,28 +689,28 @@ const Reservation = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="row" >
+                                <div className="row">
                                     <div className="col w-50 text-center mb-4">
                                         <div className="mt-3">
                                             <label>청소년</label><br /><br />
-                                            <label>{teenCount}</label>
+                                            <label>{count.teen}</label>
                                         </div>
                                     </div>
-                                    <div className="col w-75">
+                                    <div className="col w-50">
                                         <div className="mt-2 me-3">
                                             <button className="btn" onClick={incrementTeenCount}>+</button><br /><br />
                                             <button className="btn" onClick={decrementTeenCount}>-</button><br />
                                         </div>
                                     </div>
                                 </div>
-                                <div className="row" >
-                                    <div className="col w-25 text-center mb-4">
+                                <div className="row">
+                                    <div className="col w-50 text-center mb-4">
                                         <div className="mt-3">
                                             <label>아동</label><br /><br />
-                                            <label>{kidCount}</label>
+                                            <label>{count.kid}</label>
                                         </div>
                                     </div>
-                                    <div className="col w-75">
+                                    <div className="col w-50">
                                         <div className="mt-2 me-3">
                                             <button className="btn" onClick={incrementKidCount}>+</button><br /><br />
                                             <button className="btn" onClick={decrementKidCount}>-</button><br />
