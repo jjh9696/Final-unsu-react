@@ -587,74 +587,66 @@ const Reservation = () => {
             {!showDetails ? (
                 <>
                     <>
-                        <h1>버스조회</h1>
-                        <hr />
-                        <div className="container w-100 mt-4">
-                            <div className="row">
-                                <div className="col">
-                                    <label>출발 지역 :</label>
-                                    <select onChange={handleStartRegionChange} value={startRegion}>
-                                        <option value="">지역을 선택하세요</option>
-                                        {regions.map(region => (
-                                            <option key={region.key} value={region.value}>{region.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="col">
-                                    <label>출발터미널 : </label>
-                                    <select onChange={handleStartTerminalChange} value={selectedStartTerminal}>
-                                        <option value="">터미널 선택</option>
-                                        {startTerminals.map(terminal => (
-                                            <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="row mt-4">
-                                <div className="col">
-                                    <label>도착 지역 : </label>
-                                    <select onChange={handleEndRegionChange} value={endRegion}>
-                                        <option value="">지역을 선택하세요</option>
-                                        {/* 출발지 값 regions 배열에서 출발 지역과 같지 않은 지역만 필터링하여 보여줌 */}
-                                        {/* {regions.filter(region => region.value !== startRegion).map(region => (
-                                    <option key={region.key} value={region.value}>{region.name}</option>
-                                ))} */}
-                                        {regions.map(region => (
-                                            <option key={region.key} value={region.value}>{region.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="col">
-                                    <label>도착터미널 :</label>
-                                    <select onChange={handleEndTerminalChange} value={selectedEndTerminal}>
-                                        <option value="">터미널 선택</option>
-                                        {endTerminals.map(terminal => (
-                                            <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                            <div className='row mt-4 text-center'>
-                                <div className='col'>
-                                    <select onChange={handleGradeTypeChange}>
-                                        <option value="">전체</option>
-                                        <option value="일반">일반</option>
-                                        <option value="우등">우등</option>
-                                        <option value="프리미엄">프리미엄</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div className='row mt-4 text-center'>
-                                <div className='col'>
-                                    <input type='date' onChange={handleStartDateChange} />
-                                </div>
-                            </div>
-                            <div className='row mt-4 text-center'>
-                                <div className='col'>
-                                    <button className='btn btn-primary' onClick={handleSubmit}>조회</button>
-                                </div>
-                            </div>
-                        </div>
+                    <div className="container mt-5">
+    <h1 className="text-center">버스 조회</h1>
+    <hr />
+    <div className="row">
+        <div className="col-md-3">
+            <label htmlFor="startRegion" className="form-label">출발 지역</label>
+            <select id="startRegion" className="form-select" onChange={handleStartRegionChange} value={startRegion}>
+                <option value="">지역을 선택하세요</option>
+                {regions.map(region => (
+                    <option key={region.key} value={region.value}>{region.name}</option>
+                ))}
+            </select>
+        </div>
+        <div className="col-md-3">
+            <label htmlFor="startTerminal" className="form-label">출발 터미널</label>
+            <select id="startTerminal" className="form-select" onChange={handleStartTerminalChange} value={selectedStartTerminal}>
+                <option value="">터미널 선택</option>
+                {startTerminals.map(terminal => (
+                    <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
+                ))}
+            </select>
+        </div>
+        <div className="col-md-3">
+            <label htmlFor="endRegion" className="form-label">도착 지역</label>
+            <select id="endRegion" className="form-select" onChange={handleEndRegionChange} value={endRegion}>
+                <option value="">지역을 선택하세요</option>
+                {regions.map(region => (
+                    <option key={region.key} value={region.value}>{region.name}</option>
+                ))}
+            </select>
+        </div>
+        <div className="col-md-3">
+            <label htmlFor="endTerminal" className="form-label">도착 터미널</label>
+            <select id="endTerminal" className="form-select" onChange={handleEndTerminalChange} value={selectedEndTerminal}>
+                <option value="">터미널 선택</option>
+                {endTerminals.map(terminal => (
+                    <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
+                ))}
+            </select>
+        </div>
+    </div>
+    <div className="row mt-3">
+        <div className="col-md-3">
+            <label htmlFor="gradeType" className="form-label">등급</label>
+            <select id="gradeType" className="form-select" onChange={handleGradeTypeChange}>
+                <option value="">전체</option>
+                <option value="일반">일반</option>
+                <option value="우등">우등</option>
+                <option value="프리미엄">프리미엄</option>
+            </select>
+        </div>
+        <div className="col-md-3">
+            <label htmlFor="startDate" className="form-label">출발 날짜</label>
+            <input type="date" id="startDate" className="form-control" onChange={handleStartDateChange} />
+        </div>
+        <div className="col-md-3 d-flex align-items-end">
+            <button className="btn btn-danger" onClick={handleSubmit}>조회</button>
+        </div>
+    </div>
+</div>
                     </>
                     {submissionSuccess && (
                         <>
