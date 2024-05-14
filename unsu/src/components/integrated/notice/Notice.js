@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import Jumbotron from "../../../Jumbotron";
 import axios from "../../utils/CustomAxios";
 import { useNavigate } from 'react-router';
 import moment from "moment";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { GrFormPrevious } from "react-icons/gr";
 import { GrFormNext } from "react-icons/gr";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { isLoginState, loginIdState, loginLevelState } from "../../utils/RecoilData";
 
 const Notice = () => {
 
@@ -22,6 +23,9 @@ const Notice = () => {
     const [searched, setSearched] = useState(false); //검색 여부 상태 추가
 
     const [searchStatus,setSearchStatus]  = useState(1);
+    
+    //recoil state
+    const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
     
     //effect
     useEffect(() => {
@@ -109,6 +113,17 @@ const Notice = () => {
                 <div className="col">
                     <h2>공지사항</h2>
                 </div>
+                
+                <div className="col">
+                    <div className="text-end">
+                        {loginLevel === '관리자' && (
+                            <button className="btn btn-primary" onClick={e => redirectAdd()}>
+                                새 공지사항
+                            </button>
+                        )}
+                    </div>
+                </div>
+
             </div>
             <hr />
 
@@ -216,16 +231,7 @@ const Notice = () => {
             </div>
             {/* 페이지네이션 UI 끝 */}
 
-            <div className="row mt-2">
-                <div className="col">
-
-                    <div className="text-end">
-                        <button className="btn btn-primary" onClick={e => redirectAdd()}>
-                            새 공지사항
-                        </button>
-                    </div>
-                </div>
-            </div>
+            
         </>
 
     );
