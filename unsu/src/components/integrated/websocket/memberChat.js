@@ -16,8 +16,7 @@ const MemberChat = () => {
   const [selectedMemberId, setSelectedMemberId] = useState(''); // 초기에 빈 문자열로 설정
   const [memberList, setMemberList] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]); // 검색된 회원 목록
-  const [recentSender, setRecentSender] = useState(''); // 최근 메시지를 보낸 사람
-  const [recentReceiver, setRecentReceiver] = useState(''); // 최근 메시지를 받은 사람
+  const [recentSender, setRecentSender] = useState([]); // 최근 메시지를 보낸 사람
 
   useEffect(() => {
     // 페이지에 들어갈 때 웹소켓 연결 생성
@@ -25,14 +24,15 @@ const MemberChat = () => {
 
     // 메세지 표시
     newSocket.onmessage = (e) => {
-      const data = JSON.parse(e.data);
+      const { messageType, data } = JSON.parse(e.data);
 
-      if (Array.isArray(data)) {//목록
+      if (messageType === "memberList") {
         setMemberList(data);
         setFilteredMembers(data);
-      }
-      else {//메세지
+      } else if (messageType === "message") {
         setMessages((prevMessages) => [data, ...prevMessages]);
+      } else if (messageType === "recentSenderList") {
+        setRecentSender(data);
       }
     };
 
@@ -79,18 +79,41 @@ const MemberChat = () => {
     setFilteredMembers(filtered);
   };
 
+  // 클릭 및 키 이벤트 핸들러
+  const handleSendMessage = () => {
+    sendMessage();
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  };
+
   return (
     <div>
       <div>
         {/* 관리자인 경우에만 회원 선택 UI를 표시 */}
         {loginLevel === '관리자' && (
           <div className="member-list">
+
+            {/* 최근 메시지를 보낸 사람 표시 */}
+            <div>
+              {recentSender && recentSender.length > 0 ? (
+                <p>최근 메시지를 보낸 사람: {JSON.stringify(recentSender)}</p>
+              ) : (
+                <p>최근 메시지를 보낸 사람이 없습니다.</p>
+              )}
+            </div>
+
+            {/* 회원 검색창 */}
             <input
               type="text"
               className="search-input"
               placeholder="회원 검색"
               onChange={handleSearchMember}
             />
+            {/* 회원 선택창 */}
             <select value={selectedMemberId} onChange={handleSelectMember}>
               <option value="">회원을 선택하세요</option>
               {filteredMembers.filter(member => member.memberLevel !== '관리자').map((member) => (
@@ -98,16 +121,8 @@ const MemberChat = () => {
               ))}
             </select>
 
-            
-            <div>
-              {recentSender && (
-                <p>최근 메시지를 보낸 사람: {recentSender}</p>
-              )}
-              {recentReceiver && (
-                <p>최근 메시지를 받은 사람: {recentReceiver}</p>
-              )}
-            </div>
-            
+
+
           </div>
         )}
 
@@ -117,8 +132,9 @@ const MemberChat = () => {
           placeholder="메세지 작성"
           value={inputValue}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown} // 엔터 키 이벤트 핸들러
         />
-        <button className="btn-send" onClick={sendMessage}>전송</button>
+        <div className="btn-send" onClick={handleSendMessage}>전송</div> {/* 클릭 이벤트 핸들러 */}
       </div>
       <hr />
       <div className="chat-wrapper">
