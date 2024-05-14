@@ -58,15 +58,22 @@ const PointList = () => {
     const pointStateOk = async (pointNo, newState) => {
         const choice = window.confirm("해당 건을 승인하시겠습니까?");
         if (choice === false) return;
-
+    
         try {
-            const resp = await axios.patch("/point/", { pointNo, pointState: newState });
+            const resp = await axios.patch(`/point/${pointNo}`, { pointNo, pointState: newState });
             if (resp.status === 200) {
                 // 업데이트가 성공하면 포인트 목록 다시 불러오기
-                loadData();
+                const respPoint = await axios.patch(`/member/point/${pointNo}`);
+                if (respPoint.status === 200) {
+                    loadData();
+                } else {
+                    console.error("포인트멤버목록오류?:", respPoint.data);
+                }
+            } else {
+                console.error("포인트 오류", resp.data);
             }
         } catch (error) {
-            console.error("Error updating point state:", error);
+            console.error("걍다오류:", error);
         }
     };
 
