@@ -208,8 +208,7 @@ const Reservation = () => {
             // 좌석을 정렬합니다. 정렬 기준은 좌석이 속한 행과 열
             .sort((a, b) => a.seat_column === b.seat_column ? a.seat_row - b.seat_row : a.seat_column - b.seat_column);
     }, [seats]); // seats 배열이 변경될 때마다 캐싱된 값이 업데이트됩니다.
-    console.log(checkedSeats);
-
+    
     // 버스 클릭 이벤트 핸들러
     const handleBusClick = (e) => {
         setSeatBusNo(e.target.value);
@@ -264,9 +263,16 @@ const Reservation = () => {
     };
 
     // 좌석 클릭 이벤트 핸들러
-    const handleSeatClick = (seatNumber) => {
-        setSelectedSeat(seatNumber); // 선택한 좌석 번호를 state에 설정
-    };
+    // const handleSeatClick = (seatNumber) => {
+    //     setSelectedSeat(seatNumber); // 선택한 좌석 번호를 state에 설정
+    //     setReservationData(prevData => {
+    //         const newData = {
+    //             ...prevData,
+    //             seatNo: checkedSeat.seatNo
+    //         };
+    //         return newData;
+    // })
+    // };
     //좌석을 선택했을 때 선택된 좌석만 추출
     const checkSeats = useMemo(() => {
         return seats.filter(seat => seat.seatChecked === true);
@@ -531,10 +537,34 @@ const Reservation = () => {
 
 
     ////////////////////////////////////예약 비동기/////////////////////////////////////////////////////////
-    // 예약을 서버로 전송
+    // // 예약을 서버로 전송
+    // const saveInput = useCallback(async () => {
+    //     try {
+    //         const resp = await axios.post("/reservation/save", reservationData, {
+    //             headers: {
+    //                 Authorization: axios.defaults.headers.common['Authorization']
+    //             }
+    //         });
+    //         alert('예약이 완료되었습니다');
+    //     } catch (error) {
+    //         console.log('저기요');
+    //         console.error('Error creating reservation:', error);
+    //         alert(`띠로리: ${error.response ? error.response.data.message : error.message}`);
+    //     }
+    // }, [reservationData]);
+
+
+
     const saveInput = useCallback(async () => {
         try {
-            const resp = await axios.post("/reservation/save", reservationData, {
+            // 버스 예약 데이터에 선택된 좌석 정보를 추가하여 업데이트
+            const updatedData = {
+                ...reservationData,
+                seatNo: checkedSeats.map(checkedSeat => checkedSeat.seatNo).join(',') // 여러 좌석을 선택할 경우를 고려하여 좌석 번호들을 쉼표로 구분하여 문자열로 결합
+            };
+    
+            // 업데이트된 예약 데이터를 서버로 전송
+            const resp = await axios.post("/reservation/save", updatedData, {
                 headers: {
                     Authorization: axios.defaults.headers.common['Authorization']
                 }
@@ -545,7 +575,7 @@ const Reservation = () => {
             console.error('Error creating reservation:', error);
             alert(`띠로리: ${error.response ? error.response.data.message : error.message}`);
         }
-    }, [reservationData]);
+    }, [checkedSeats, reservationData]);
 
     /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -792,6 +822,9 @@ const Reservation = () => {
                                         />
                                     </div>
                                 </div>
+                                {checkedSeats.map(checkedSeat =>(
+                                    <td>{checkedSeat.seatNo}</td>
+                                ))}
                                 <div className="row mt-4">
                                     <div className="bus-details">
                                         <button onClick={handleGoBack}>이전화면</button>
