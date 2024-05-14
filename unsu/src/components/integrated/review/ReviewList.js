@@ -7,6 +7,9 @@ import { Rating } from "react-simple-star-rating";
 import { Modal } from "bootstrap";
 import { IoMdAdd } from "react-icons/io";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { MdOutlineExpandMore } from "react-icons/md";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { isLoginState, loginIdState, loginLevelState } from "../../utils/RecoilData";
 
 const ReviewList = () => {
 
@@ -20,7 +23,11 @@ const ReviewList = () => {
         reviewTitle: "", reviewContent: "", reviewStar: 0
     });
     const [firstLoad, setFirstLoad] = useState(true);
-    const [currentUser, setCurrentUser] = useState(null); // 로그인한 사용자 정보
+
+    //recoil state
+    const [loginId, setLoginId] = useRecoilState(loginIdState);
+    const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
+
 
     //ref 변형 사용
     const loading = useRef(false);
@@ -154,24 +161,17 @@ const ReviewList = () => {
     const deleteReview = useCallback(async (target) => {
         const choice = window.confirm("확인을 누르시면 완전히 삭제됩니다.")
         if (choice === false) return;
-        const resp = await axios.delete("/review/" + target.reviewNo);
-        loadData();
-    }, [reviews]);
 
-    const fetchCurrentUser = async () => {
-        try {
-            const response = await axios.get("/user/current"); // 현재 로그인한 사용자 정보를 가져오는 API 엔드포인트
-            setCurrentUser(response.data); // 가져온 사용자 정보를 상태에 저장
-        } catch (error) {
-            console.error("Failed to fetch current user:", error);
+        // 로그인한 사용자의 아이디와 리뷰 작성자의 아이디가 같은지 확인
+        if (loginId === target.reviewWriter || loginLevel === '관리자') {
+            const resp = await axios.delete("/review/" + target.reviewNo);
+            loadData();
+        } else {
+            alert("본인이 작성한 리뷰만 삭제할 수 있습니다.");
+            //리뷰쓰러가기 or login화면 보여주기
         }
-    };
-
-    useEffect(() => {
-        fetchCurrentUser();
-        //use아이디 확인
-        console.log("currentUser" + currentUser);
-    }, []);
+    }, [loginId, loadData]);
+    //console.log("loginId = " + loginId);
 
     //화면
     return (
@@ -210,7 +210,8 @@ const ReviewList = () => {
                                         placeholder="제목을 입력하세요."
                                         value={input.reviewTitle}
                                         onChange={e => changeInput(e)}
-                                        className="form-control" />
+                                        className="form-control"
+                                    />
                                 </div>
                             </div>
 
@@ -222,9 +223,9 @@ const ReviewList = () => {
                                         initialValue={input.reviewStar}// 입력 값
                                         size={40} // 별 크기
                                         transition // 애니메이션 효과
-
                                         // 변경된 별점 값을 state에 업데이트
-                                        value={input.reviewStar} onChange={e => setInput({ ...input, reviewStar: e.target.value })}
+                                        value={input.reviewStar}
+                                        onChange={e => setInput({ ...input, reviewStar: e.target.value })}
                                     />
                                 </div>
                             </div>
@@ -235,7 +236,9 @@ const ReviewList = () => {
                                         placeholder="내용을 입력하세요."
                                         value={input.reviewContent}
                                         onChange={e => changeInput(e)}
-                                        className="form-control" />
+                                        className="form-control"
+                                        style={{ height: "210px" }}
+                                        />
                                 </div>
                             </div>
 
@@ -258,7 +261,7 @@ const ReviewList = () => {
                         {reviews.map((review) => (
                             <div className="accordion-item" key={review.reviewNo}>
                                 <h2 className="accordion-header" id={`heading${review.reviewNo}`}>
-                                    <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target={`#collapse${review.reviewNo}`} aria-expanded="true" aria-controls={`collapse${review.reviewNo}`}>
+                                    <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#collapse${review.reviewNo}`} aria-expanded="true" aria-controls={`collapse${review.reviewNo}`}>
                                         <div className="col">
                                             <p>
                                                 {review.reviewWriter.replace(review.reviewWriter.substring(1, review.reviewWriter.length - 1), '***')}
@@ -281,10 +284,10 @@ const ReviewList = () => {
                                 <div id={`collapse${review.reviewNo}`} className="accordion-collapse collapse" aria-labelledby={`heading${review.reviewNo}`} data-bs-parent="#reviewAccordion">
                                     <div className="accordion-body">
                                         <p>{review.reviewContent}</p>
-                                        {/* <p><strong><MdOutlineRemoveRedEye /></strong> &nbsp; {review.reviewViewCount}</p> */}
-                                        {currentUser && currentUser.userId === review.reviewWriter && (
-                                            <button className="btn text-end" onClick={e => deleteReview(review)}>삭제</button>
+                                        {loginLevel === '관리자' && (//조건으로 버튼 보여주기
+                                            <span className="text-danger text-end" style={{ cursor: 'pointer' }} onClick={e => deleteReview(review)}>삭제</span>
                                         )}
+                                        {/* <p><strong><MdOutlineRemoveRedEye /></strong> &nbsp; {review.reviewViewCount}</p> */}
                                     </div>
                                 </div>
                             </div>
@@ -297,9 +300,9 @@ const ReviewList = () => {
             <div className="row mt-3 mb-5">
                 <div className="col">
                     {last === false &&
-                        <button className="btn btn-primary btn-lg w-100"
+                        <button className="btn w-100"
                             onClick={loadMoreReviews}>
-                            더보기
+                            이용후기 더 보기<MdOutlineExpandMore />
                         </button>
                     }
                 </div>
