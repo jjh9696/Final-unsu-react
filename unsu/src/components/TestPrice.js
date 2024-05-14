@@ -1,55 +1,71 @@
+import React, { useState, useCallback } from 'react';
 import axios from "./utils/CustomAxios";
-import React, { useCallback, useState } from 'react';
 
 
-function TestPrice() {
-
-    const [pointTest, setPointTest] = useState({
-        pointNo:'',
-        memberId:'',
-        pointAmount:''
+const TestPrice = () => {
+    const [reservationData, setReservationData] = useState({
+        gradeType: '',
+        routeNo: '',
+        busNo: '',
+        seatNo: ''
     });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setPointTest(prevState => ({
+        setReservationData(prevState => ({
             ...prevState,
             [name]: value
         }));
     };
-
     const saveInput = useCallback(async () => {
         try {
-            const response = await axios.post("/point/", pointTest, {
+            const resp = await axios.post("/reservation/save", reservationData, {
                 headers: {
-                    Authorization: axios.defaults.headers.common['Authorization'] // 기본 헤더에서 토큰을 가져옴
+                    Authorization: axios.defaults.headers.common['Authorization']
                 }
             });
-            console.log('ㅇ:', response.data);
-            alert('됨');
+
+            alert('Reservation successfully created!');
         } catch (error) {
-            console.error('ㄹ:', error);
-            alert('안됨');
+            console.error('Error creating reservation:', error);
+            alert(`Failed to create reservation: ${error.response.data.message}`);
         }
-    }, [pointTest]); // 의존성 배열에 추가
+    }, [reservationData]);
 
     return (
-        <>
-            <h1>포인트 테스트할게요~</h1>
-            
-            <div className='row mt-4'>
-                <div className='col'>
-                    <label>충전금액</label>
-                    <input type="text" name="pointAmount"
-                        className="form-control"
-                        value={pointTest.pointAmount}
-                        onChange={handleInputChange}
-                        />
-                </div>
-            </div>
-            <button onClick={saveInput}>포인트 충전</button>
-        </>
+        <div>
+            <h2>Make a Reservation</h2>
+            <input
+                type="text"
+                name="gradeType"
+                value={reservationData.gradeType}
+                onChange={handleInputChange}
+                placeholder="Grade Type"
+            />
+            <input
+                type="text"
+                name="routeNo"
+                value={reservationData.routeNo}
+                onChange={handleInputChange}
+                placeholder="Route Number"
+            />
+            <input
+                type="number"
+                name="busNo"
+                value={reservationData.busNo}
+                onChange={handleInputChange}
+                placeholder="Bus Number"
+            />
+            <input
+                type="number"
+                name="seatNo"
+                value={reservationData.seatNo}
+                onChange={handleInputChange}
+                placeholder="Seat Number"
+            />
+            <button onClick={saveInput}>Submit Reservation</button>
+        </div>
     );
-}
+};
 
 export default TestPrice;

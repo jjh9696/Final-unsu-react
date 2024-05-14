@@ -19,6 +19,14 @@ const Reservation = () => {
         routeStartTime: "",
         gradeType: ""
     });
+    // 버스예약 전송날릴 데이터
+    const [reservationData, setReservationData] = useState({
+        gradeType: '',
+        routeNo: '',
+        busNo: '',
+        seatNo: ''
+    });
+
 
     /////////////////////////// 예매창에서 인원 선택관련 내용/////////////////////////////////
     // const [adultCount, setAdultCount] = useState(0);  // 초기값을 0으로 설정
@@ -172,7 +180,7 @@ const Reservation = () => {
     //예약된 좌석을 가져 오는 함수
     const loadReservedDate = async (routeNo) => {
         const resp = await axios.get(`/seat/reservation/${routeNo}`);
-        //setRouteNo(resp.data);
+        // setRouteNo(resp.data);
     };
 
     // 좌석 선택 가능 여부를 확인하는 함수
@@ -200,6 +208,7 @@ const Reservation = () => {
             // 좌석을 정렬합니다. 정렬 기준은 좌석이 속한 행과 열
             .sort((a, b) => a.seat_column === b.seat_column ? a.seat_row - b.seat_row : a.seat_column - b.seat_column);
     }, [seats]); // seats 배열이 변경될 때마다 캐싱된 값이 업데이트됩니다.
+    console.log(checkedSeats);
 
     // 버스 클릭 이벤트 핸들러
     const handleBusClick = (e) => {
@@ -212,16 +221,26 @@ const Reservation = () => {
     //     setSeatBusNo(bus.busNo);
     // };
     const handleCombinedClick = async (bus) => {
-
-        //setSeatBusNo(bus.busNo);
         // 데이터를 불러온 후에 모달을 열도록 선택
         await loadSeatData(bus.routeNo);
+
+        // reservationData 업데이트 후 로그 찍기
+        setReservationData(prevData => {
+            const newData = {
+                ...prevData,
+                routeNo: bus.routeNo,
+                busNo: bus.busNo,
+                gradeType: bus.gradeType
+            };
+            console.log("Updated reservationData:", newData);  // 변경된 상태 로깅
+            return newData;
+        });
+
         handleSelectBus();
         setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
         }, 500);
     };
-
     // 좌석 정보를 가져오는 함수
     const loadSeatData = async (routeNo) => {
         try {
@@ -438,12 +457,6 @@ const Reservation = () => {
         setEndRegion(e.target.value);
     };
 
-    const [reservationData, setReservationData] = useState({
-        gradeType: '',
-        routeNo: '',
-        busNo: '',
-        seatNo: ''
-    });
 
     // 도착 터미널 변경하는거 관리
     const handleEndTerminalChange = (e) => {
@@ -516,6 +529,7 @@ const Reservation = () => {
         });
     }, [input]);
 
+
     ////////////////////////////////////예약 비동기/////////////////////////////////////////////////////////
     // 예약을 서버로 전송
     const saveInput = useCallback(async () => {
@@ -525,23 +539,13 @@ const Reservation = () => {
                     Authorization: axios.defaults.headers.common['Authorization']
                 }
             });
-            alert('Reservation successfully created!');
+            alert('예약이 완료되었습니다');
         } catch (error) {
+            console.log('저기요');
             console.error('Error creating reservation:', error);
-            alert(`Failed to create reservation: ${error.response ? error.response.data.message : error.message}`);
+            alert(`띠로리: ${error.response ? error.response.data.message : error.message}`);
         }
     }, [reservationData]);
-    const handleSeatSelection = (seatInfo) => {
-        setReservationData(prev => ({
-            ...prev,
-            gradeType: seatInfo.gradeType,
-            routeNo: seatInfo.routeNo,
-            busNo: seatInfo.busNo,
-            seatNo: seatInfo.seatNo
-        }));
-        console.log(selectedSeat);
-        console.log(seatBusNo);
-    };
 
     /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -806,14 +810,6 @@ const Reservation = () => {
                                     <label>청소년 : {pay.teen}원</label> <br />
                                     <label>어린이 : {pay.kid}원</label> <br />
                                     <label>합계 :{pay.kid + pay.teen + pay.adult}원</label> <br />
-                                    <button onClick={() => handleSeatSelection({
-                                        gradeType: '프리미엄',
-                                        routeNo: 16,
-                                        busNo: 4,
-                                        seatNo: 7
-                                    })}>
-                                        Select Seat
-                                    </button>
                                     <button onClick={saveInput} >예약</button>
                                 </div>
                             </div>
