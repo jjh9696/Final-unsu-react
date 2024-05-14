@@ -6,7 +6,6 @@ const LoadingScreen = ()=>{
 
     return (
         <>
-            <Jumbotron title="Lorem ipsum"/>
 
             <div className="row mt-4">
                 <div className="col">
