@@ -14,11 +14,11 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
   };
 
   return (
-    <div className="row justify-content-center">
-      <div className="col-lg-8 text-center">
-          <nav className="nav-center">
+    <div className="pagination-container">
+      <div className="pagination d-flex justify-content-center">
+        <nav className="nav-center">
           <ul className="pagination">
-            <li className="page-item">
+            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
               <button className="page-link" onClick={prevPage}>이전</button>
             </li>
             {[...Array(totalPages)].map((_, index) => (
@@ -26,11 +26,11 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
                 <button className="page-link" onClick={() => paginate(index + 1)}>{index + 1}</button>
               </li>
             ))}
-            <li className="page-item">
+            <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
               <button className="page-link" onClick={nextPage}>다음</button>
             </li>
           </ul>
-        </nav>        
+        </nav>
       </div>
     </div>
 

@@ -4,6 +4,7 @@ import Jumbotron from "../../../Jumbotron";
 import { Modal } from "bootstrap";
 import { FaRoad } from "react-icons/fa";
 import { FaRightLong } from "react-icons/fa6";
+import Pagination from "../../utils/Pagination";
 
 
 const Route = () => {
@@ -38,6 +39,11 @@ const Route = () => {
         routeWay: "",
         edit: false
     });
+    //출발,도착 터미널 같을 때 담기
+    const [filteredRoutes, setFilteredRoutes] = useState([]);
+    //페이징
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage, setPostsPerPage] = useState(10);
 
 
     //effect
@@ -46,6 +52,9 @@ const Route = () => {
         loadTerminalData();
         loadBusData();
     }, []);
+    useEffect(() => {
+        filterRoutes();
+    }, [routes]);
     //노선 목록
     const loadData = useCallback(async () => {
         const resp = await axios.get("/route/");
@@ -115,7 +124,15 @@ const Route = () => {
     }, [input]);
 
 
-
+    //출발,도착 터미널명이 같을 경우 목록에 한 번씩 출력해주는 코드
+    const filterRoutes = () => {
+        const filtered = routes.filter((route, index) => {
+            return index === 0 || 
+                (routes[index - 1].startTerminal !== route.startTerminal || 
+                 routes[index - 1].endTerminal !== route.endTerminal);
+        });
+        setFilteredRoutes(filtered);
+    };
 
     //상세-선택창 값이 유지되고 출력가능하게 하기
     const handleChange = (e) => {
@@ -300,6 +317,11 @@ const Route = () => {
         modal.hide();
     }, [bsModal2]);
 
+    //페이징계산
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = filteredRoutes.slice(indexOfFirstPost, indexOfLastPost);
+
     return (
         <>
             <Jumbotron title="노선 관리" />
@@ -329,8 +351,8 @@ const Route = () => {
                         </thead>
                         <tbody>
                             {/* 출발지,도착지 같으면 한 번만 출력되게 */}
-                            {routes.map((route, index) => (
-                                (index === 0 || routes[index - 1].startTerminal !== route.startTerminal || routes[index - 1].endTerminal !== route.endTerminal) && (
+                            {currentPosts.map((route, index) => (
+                                // (index === 0 || routes[index - 1].startTerminal !== route.startTerminal || routes[index - 1].endTerminal !== route.endTerminal) && (
                                     <tr key={route.routeNo}>
                                         <td onClick={e => openModalInfo(route)}
                                             style={{ cursor: 'pointer' }}>
@@ -350,11 +372,21 @@ const Route = () => {
                                         </td>
                                     </tr>
                                 )
-                            ))}
+                            // )
+                        )}
                         </tbody>
                     </table>
                 </div>
             </div>
+
+
+            {/* Pagination */}
+            <Pagination
+                postsPerPage={postsPerPage}
+                totalPages={Math.ceil(filteredRoutes.length / postsPerPage)}
+                paginate={setCurrentPage}
+                currentPage={currentPage}
+            />
 
 
 

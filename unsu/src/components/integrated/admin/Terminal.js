@@ -248,20 +248,21 @@ const Terminal = () => {
                                 </button>
                             </li>
                             {Array.from({ length: Math.ceil(terminals.length / postPerPages) }, (_, index) => {
-    const startPage = (Math.floor(currentPages / 10) * 10) + 1;
-    const endPage = Math.min(startPage + 9, Math.ceil(terminals.length / postPerPages));
-    return (
-        (index + 1 >= startPage && index + 1 <= endPage) && (
-            <li key={index} className={`page-item ${currentPages === index + 1 ? 'active' : ''}`}>
-                <button className="page-link" onClick={() => setCurrentPages(index + 1)}>
-                    {index + 1}
-                </button>
-            </li>
-        )
-    );
-})}
+                                const totalPages = Math.ceil(terminals.length / postPerPages);
+                                const startPage = Math.floor((currentPages - 1) / 10) * 10 + 1;
+                                const endPage = Math.min(startPage + 9, totalPages);
+                                return (
+                                    (index + 1 >= startPage && index + 1 <= endPage) && (
+                                        <li key={index} className={`page-item ${currentPages === index + 1 ? 'active' : ''}`}>
+                                            <button className="page-link" onClick={() => setCurrentPages(index + 1)}>
+                                                {index + 1}
+                                            </button>
+                                        </li>
+                                    )
+                                );
+                            })}
                             <li className={`page-item ${currentPages === Math.ceil(terminals.length / postPerPages) ? 'disabled' : ''}`}>
-                                <button className="page-link" onClick={() => setCurrentPages(prev => Math.min(prev + 1, Math.ceil(terminals.length / postPerPages)))}>
+                                <button className="page-link" onClick={() => setCurrentPages(prev => Math.min(prev + 1),Math.ceil(terminals.length / postPerPages))}>
                                     다음
                                 </button>
                             </li>
@@ -269,6 +270,7 @@ const Terminal = () => {
                     </nav>
                 </div>
             </div>
+
 
 
 

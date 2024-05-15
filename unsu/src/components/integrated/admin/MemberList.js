@@ -3,6 +3,7 @@ import Jumbotron from "../../../Jumbotron";
 import axios from "../../utils/CustomAxios";
 import { FaUserShield } from "react-icons/fa";
 import { Modal } from "bootstrap";
+import Pagination from '../../utils/Pagination';
 
 
 
@@ -27,6 +28,9 @@ const MemberList = () => {
         memberServiceAgree:"",
         memberBusAgree:""
     });
+    //페이징
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage, setPostsPerPage] = useState(10);
     
 
 
@@ -40,7 +44,9 @@ const MemberList = () => {
         setMembers(resp.data);
     }, [members]);
 
-
+    useEffect(() => {
+        setPostsPerPage(10);
+    }, [members]);
 
     //모달세트
     const bsModal = useRef(); //상세모달을 위한거
@@ -54,6 +60,11 @@ const MemberList = () => {
         const modal = Modal.getInstance(bsModal.current);
         modal.hide();
     }, [bsModal]);
+
+    //pagination
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPost = members.slice(indexOfFirstPost, indexOfLastPost);
 
 
     return (
@@ -73,7 +84,7 @@ const MemberList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {members.map(member => (
+                            {currentPost.map(member => (
                                 <tr>
                                     <td>{member.memberId}</td>
                                     <td>{member.memberName}</td>
@@ -90,6 +101,15 @@ const MemberList = () => {
                     </table>
                 </div>
             </div>
+
+
+            {/* Pagination */}
+            <Pagination
+                postsPerPage={postsPerPage}
+                totalPages={Math.ceil(members.length / postsPerPage)}
+                paginate={setCurrentPage}
+                currentPage={currentPage}
+            />
 
 
 
