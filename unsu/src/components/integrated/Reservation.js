@@ -208,7 +208,7 @@ const Reservation = () => {
             // 좌석을 정렬합니다. 정렬 기준은 좌석이 속한 행과 열
             .sort((a, b) => a.seat_column === b.seat_column ? a.seat_row - b.seat_row : a.seat_column - b.seat_column);
     }, [seats]); // seats 배열이 변경될 때마다 캐싱된 값이 업데이트됩니다.
-    
+
     // 버스 클릭 이벤트 핸들러
     const handleBusClick = (e) => {
         setSeatBusNo(e.target.value);
@@ -562,7 +562,7 @@ const Reservation = () => {
                 ...reservationData,
                 seatNo: checkedSeats.map(checkedSeat => checkedSeat.seatNo).join(',') // 여러 좌석을 선택할 경우를 고려하여 좌석 번호들을 쉼표로 구분하여 문자열로 결합
             };
-    
+
             // 업데이트된 예약 데이터를 서버로 전송
             const resp = await axios.post("/reservation/save", updatedData, {
                 headers: {
@@ -573,7 +573,7 @@ const Reservation = () => {
         } catch (error) {
             console.log('저기요');
             console.error('Error creating reservation:', error);
-            alert(`띠로리: ${error.response ? error.response.data.message : error.message}`);
+            alert(`좌석을 선택해주세요`);
         }
     }, [checkedSeats, reservationData]);
 
@@ -587,66 +587,66 @@ const Reservation = () => {
             {!showDetails ? (
                 <>
                     <>
-                    <div className="container mt-5">
-    <h1 className="text-center">버스 조회</h1>
-    <hr />
-    <div className="row">
-        <div className="col-md-3">
-            <label htmlFor="startRegion" className="form-label">출발 지역</label>
-            <select id="startRegion" className="form-select" onChange={handleStartRegionChange} value={startRegion}>
-                <option value="">지역을 선택하세요</option>
-                {regions.map(region => (
-                    <option key={region.key} value={region.value}>{region.name}</option>
-                ))}
-            </select>
-        </div>
-        <div className="col-md-3">
-            <label htmlFor="startTerminal" className="form-label">출발 터미널</label>
-            <select id="startTerminal" className="form-select" onChange={handleStartTerminalChange} value={selectedStartTerminal}>
-                <option value="">터미널 선택</option>
-                {startTerminals.map(terminal => (
-                    <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
-                ))}
-            </select>
-        </div>
-        <div className="col-md-3">
-            <label htmlFor="endRegion" className="form-label">도착 지역</label>
-            <select id="endRegion" className="form-select" onChange={handleEndRegionChange} value={endRegion}>
-                <option value="">지역을 선택하세요</option>
-                {regions.map(region => (
-                    <option key={region.key} value={region.value}>{region.name}</option>
-                ))}
-            </select>
-        </div>
-        <div className="col-md-3">
-            <label htmlFor="endTerminal" className="form-label">도착 터미널</label>
-            <select id="endTerminal" className="form-select" onChange={handleEndTerminalChange} value={selectedEndTerminal}>
-                <option value="">터미널 선택</option>
-                {endTerminals.map(terminal => (
-                    <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
-                ))}
-            </select>
-        </div>
-    </div>
-    <div className="row mt-3">
-        <div className="col-md-3">
-            <label htmlFor="gradeType" className="form-label">등급</label>
-            <select id="gradeType" className="form-select" onChange={handleGradeTypeChange}>
-                <option value="">전체</option>
-                <option value="일반">일반</option>
-                <option value="우등">우등</option>
-                <option value="프리미엄">프리미엄</option>
-            </select>
-        </div>
-        <div className="col-md-3">
-            <label htmlFor="startDate" className="form-label">출발 날짜</label>
-            <input type="date" id="startDate" className="form-control" onChange={handleStartDateChange} />
-        </div>
-        <div className="col-md-3 d-flex align-items-end">
-            <button className="btn btn-danger" onClick={handleSubmit}>조회</button>
-        </div>
-    </div>
-</div>
+                        <div className="container mt-5">
+                            <h1 className="text-center">버스 조회</h1>
+                            <hr />
+                            <div className="row">
+                                <div className="col-md-3">
+                                    <label htmlFor="startRegion" className="form-label">출발 지역</label>
+                                    <select id="startRegion" className="form-select" onChange={handleStartRegionChange} value={startRegion}>
+                                        <option value="">지역을 선택하세요</option>
+                                        {regions.map(region => (
+                                            <option key={region.key} value={region.value}>{region.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="col-md-3">
+                                    <label htmlFor="startTerminal" className="form-label">출발 터미널</label>
+                                    <select id="startTerminal" className="form-select" onChange={handleStartTerminalChange} value={selectedStartTerminal}>
+                                        <option value="">터미널 선택</option>
+                                        {startTerminals.map(terminal => (
+                                            <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="col-md-3">
+                                    <label htmlFor="endRegion" className="form-label">도착 지역</label>
+                                    <select id="endRegion" className="form-select" onChange={handleEndRegionChange} value={endRegion}>
+                                        <option value="">지역을 선택하세요</option>
+                                        {regions.map(region => (
+                                            <option key={region.key} value={region.value}>{region.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="col-md-3">
+                                    <label htmlFor="endTerminal" className="form-label">도착 터미널</label>
+                                    <select id="endTerminal" className="form-select" onChange={handleEndTerminalChange} value={selectedEndTerminal}>
+                                        <option value="">터미널 선택</option>
+                                        {endTerminals.map(terminal => (
+                                            <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="row mt-3">
+                                <div className="col-md-3">
+                                    <label htmlFor="gradeType" className="form-label">등급</label>
+                                    <select id="gradeType" className="form-select" onChange={handleGradeTypeChange}>
+                                        <option value="">전체</option>
+                                        <option value="일반">일반</option>
+                                        <option value="우등">우등</option>
+                                        <option value="프리미엄">프리미엄</option>
+                                    </select>
+                                </div>
+                                <div className="col-md-3">
+                                    <label htmlFor="startDate" className="form-label">출발 날짜</label>
+                                    <input type="date" id="startDate" className="form-control" onChange={handleStartDateChange} />
+                                </div>
+                                <div className="col-md-3 d-flex align-items-end">
+                                    <button className="btn btn-danger" onClick={handleSubmit}>조회</button>
+                                </div>
+                            </div>
+                        </div>
                     </>
                     {submissionSuccess && (
                         <>
@@ -729,43 +729,10 @@ const Reservation = () => {
                                 </div>
                                 <div className="row" >
                                     <div className="col w-50 text-center mb-4">
-                                        <div className="mt-3">
-                                            <label>성인</label><br /><br />
-                                            <label>{count.adult}</label>
-                                        </div>
-                                    </div>
-                                    <div className="col w-50">
-                                        <div className="mt-2 me-3">
-                                            <button className="btn" onClick={incrementAdultCount}>+</button><br /><br />
-                                            <button className="btn" onClick={decrementAdultCount}>-</button><br />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col w-50 text-center mb-4">
-                                        <div className="mt-3">
-                                            <label>청소년</label><br /><br />
-                                            <label>{count.teen}</label>
-                                        </div>
-                                    </div>
-                                    <div className="col w-50">
-                                        <div className="mt-2 me-3">
-                                            <button className="btn" onClick={incrementTeenCount}>+</button><br /><br />
-                                            <button className="btn" onClick={decrementTeenCount}>-</button><br />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col w-50 text-center mb-4">
-                                        <div className="mt-3">
-                                            <label>어린이</label><br /><br />
-                                            <label>{count.kid}</label>
-                                        </div>
-                                    </div>
-                                    <div className="col w-50">
-                                        <div className="mt-2 me-3">
-                                            <button className="btn" onClick={incrementKidCount}>+</button><br /><br />
-                                            <button className="btn" onClick={decrementKidCount}>-</button><br />
+                                        <div className="col mt-2">
+                                            <p>프리미엄: {fares.premium}원</p>
+                                            <p>우등: {fares.business}원</p>
+                                            <p>일반: {fares.standard}원</p>
                                         </div>
                                     </div>
                                 </div>
@@ -814,32 +781,21 @@ const Reservation = () => {
                                         />
                                     </div>
                                 </div>
-                                {checkedSeats.map(checkedSeat =>(
+                                {checkedSeats.map(checkedSeat => (
                                     <td>{checkedSeat.seatNo}</td>
                                 ))}
                                 <div className="row mt-4">
                                     <div className="bus-details">
-                                        <button onClick={handleGoBack}>이전화면</button>
+                                        <button className='btn btn-primary' onClick={handleGoBack}>이전화면</button>&nbsp;&nbsp;&nbsp;
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className='row w-75 text-center alert alert-primary' >
-                            <div className='col mt-4'>
-                                <label>선택좌석</label><br />
-                                좌석을 선택해주세요
-                                <hr />
-                                <label>탑승인원 및 요금</label>
-                                <div className='col'>
-                                    <label>성인 : {pay.adult}원</label> <br />
-                                    <label>청소년 : {pay.teen}원</label> <br />
-                                    <label>어린이 : {pay.kid}원</label> <br />
-                                    <label>합계 :{pay.kid + pay.teen + pay.adult}원</label> <br />
-                                    <button onClick={saveInput} >예약</button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
+                    <>
+                        <h1>여기에 예약관련 만들거임</h1>
+                        <button className='btn btn-primary' onClick={saveInput} >예약</button>
+                    </>
                 </>
             )}
         </>
