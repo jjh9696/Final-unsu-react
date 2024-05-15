@@ -123,8 +123,10 @@ const SideBar = () => {
             <Menu menuItemStyles={subItemStyles}>
               <MenuItem component={<Link to="/" />}> 자주하는 질문  </MenuItem>
               <MenuItem component={<Link to="/" />}> 유실물센터 안내</MenuItem>
-              <MenuItem component={<Link to="/" />}> <button onClick={openChatbotModal}>챗봇</button>  </MenuItem>
-              <MenuItem component={<Link to="/" />}> <button onClick={openMemberChatModal}>문의채팅</button></MenuItem>
+              {/* <MenuItem component={<Link to="/" />}> <button onClick={openChatbotModal}>챗봇</button>  </MenuItem>
+              <MenuItem component={<Link to="/" />}> <button onClick={openMemberChatModal}>문의채팅</button></MenuItem> */}
+              <MenuItem component={<Link to="/" />} onClick={openChatbotModal}> 챗봇 </MenuItem>
+              <MenuItem component={<Link to="/" />} onClick={openMemberChatModal}> 문의채팅 </MenuItem>
             </Menu>
           </SubMenu>
         </Menu>
