@@ -7,8 +7,7 @@ import { FaHouseCircleExclamation } from "react-icons/fa6";
 import { FaHouseCircleXmark } from "react-icons/fa6";
 import { FaHouseCircleCheck } from "react-icons/fa6";
 import { MdBackspace } from "react-icons/md";
-import { GrFormPrevious } from "react-icons/gr";
-import { GrFormNext } from "react-icons/gr";
+import Pagination from "../../utils/Pagination";
 
 
 const Terminal = () => {
@@ -20,11 +19,17 @@ const Terminal = () => {
         terminalRegion: ""
     });
     const [backup, setBackup] = useState(null); //백업
+    const [currentPages, setCurrentPages] = useState(1);
+    const [postPerPages, setPostPerPages] = useState(10);
 
 
     useEffect(() => {
         loadData();
     }, []);
+    useEffect(() => {
+        setPostPerPages(10);
+    }, [terminals]);
+
     //터미널정보 불러오기
     const loadData = useCallback(async () => {
         const resp = await axios.get("/terminal/");
@@ -143,7 +148,10 @@ const Terminal = () => {
         modal.hide();
     }, [bsModal1]);
 
-
+    //페이징
+    const indexOfLastPost = currentPages * postPerPages;
+    const indexOfFirstPost = indexOfLastPost - postPerPages;
+    const currentPost = terminals.slice(indexOfFirstPost, indexOfLastPost);
 
     return (
         <>
@@ -175,7 +183,7 @@ const Terminal = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {terminals.map(terminal => (
+                            {currentPost.map(terminal => (
                                 <tr key={terminal.terminalId}>
                                     {terminal.edit === true ? (
                                         <>
@@ -187,7 +195,7 @@ const Terminal = () => {
                                                     onChange={e => changeTerminal(e, terminal)} />
                                             </td>
                                             <td>
-                                            <input type="text" className="form-control rounded"
+                                                <input type="text" className="form-control rounded"
                                                     name="terminalRegion"
                                                     value={terminal.terminalRegion}
                                                     onChange={e => changeTerminal(e, terminal)} />
@@ -224,6 +232,41 @@ const Terminal = () => {
                             ))}
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+
+
+            {/* 페이지네이션 */}
+            <div className="pagination-container">
+                <div className="pagination d-flex justify-content-center">
+                    <nav aria-label="Page navigation">
+                        <ul className="pagination">
+                            <li className={`page-item ${currentPages === 1 ? 'disabled' : ''}`}>
+                                <button className="page-link" onClick={() => setCurrentPages(prev => Math.max(prev - 1, 1))}>
+                                    이전
+                                </button>
+                            </li>
+                            {Array.from({ length: Math.ceil(terminals.length / postPerPages) }, (_, index) => {
+    const startPage = (Math.floor(currentPages / 10) * 10) + 1;
+    const endPage = Math.min(startPage + 9, Math.ceil(terminals.length / postPerPages));
+    return (
+        (index + 1 >= startPage && index + 1 <= endPage) && (
+            <li key={index} className={`page-item ${currentPages === index + 1 ? 'active' : ''}`}>
+                <button className="page-link" onClick={() => setCurrentPages(index + 1)}>
+                    {index + 1}
+                </button>
+            </li>
+        )
+    );
+})}
+                            <li className={`page-item ${currentPages === Math.ceil(terminals.length / postPerPages) ? 'disabled' : ''}`}>
+                                <button className="page-link" onClick={() => setCurrentPages(prev => Math.min(prev + 1, Math.ceil(terminals.length / postPerPages)))}>
+                                    다음
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
 

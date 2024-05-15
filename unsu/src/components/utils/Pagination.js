@@ -1,29 +1,20 @@
 import React from 'react';
 
-
-
 const Pagination = ({ currentPage, totalPages, paginate }) => {
-  
-    const prevPage = () => {
-        if (currentPage > 1) {
-            paginate(currentPage - 1);
-        }
-    };
+  const prevPage = () => {
+    if (currentPage > 1) {
+      paginate(currentPage - 1);
+    }
+  };
 
-    const nextPage = () => {
-        if (currentPage < totalPages) {
-            paginate(currentPage + 1);
-        }
-    };
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      paginate(currentPage + 1);
+    }
+  };
 
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-    const indexOfLastPost = currentPage * postsPerPage;
-    const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = personals.slice(indexOfFirstPost, indexOfLastPost);
-
-    return (
-        <div className="row justify-content-center">
+  return (
+    <div className="row justify-content-center">
       <div className="col-lg-8 text-center">
           <nav className="nav-center">
           <ul className="pagination">
@@ -42,7 +33,8 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
         </nav>        
       </div>
     </div>
-    );
+
+  );
 };
 
 export default Pagination;

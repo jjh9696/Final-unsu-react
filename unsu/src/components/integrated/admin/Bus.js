@@ -28,12 +28,21 @@ const Bus = () => {
     const [drivers, setDrivers] = useState([]);
     //수정을 위한 백업
     const [backup, setBackup] = useState(null);
+    //state
+    const [currentPages, setCurrentPages] = useState(1);
+    const [postPerPages, setPostPerPages] = useState(5);
+
 
     //버스목록 + 기사목록
     useEffect(() => {
         loadData();
         loadDriverData();
     }, []);
+
+    //유즈이펙트
+    useEffect(() => {
+        setPostPerPages(15);
+    }, [buses]);
     //버스목록
     const loadData = useCallback(async () => {
         const resp = await axios.get("/bus/");
@@ -169,6 +178,13 @@ const Bus = () => {
         modal.hide();
     }, [bsModal]);
 
+
+    //페이징 계산
+    const indexOfLastPost = currentPages * postPerPages;
+    const indexOfFirstPost = indexOfLastPost - postPerPages;
+    const currentPost = buses.slice(indexOfFirstPost, indexOfLastPost);
+
+
     return (
         <>
             <Jumbotron title="버스 관리" />
@@ -200,7 +216,7 @@ const Bus = () => {
                             </tr>
                         </thead>
                         <tbody className="text-center">
-                            {buses.map(bus => (
+                            {currentPost.map(bus => (
                                 <tr key={bus.busNo}>
                                     {bus.edit === true ? (
                                         <>
@@ -249,18 +265,18 @@ const Bus = () => {
                                             <td style={{
                                                 color: bus.busStatus === "운행중" ? "green" :
                                                     bus.busStatus === "운행종료" ? "red" :
-                                                    bus.busStatus === "수리중" ? "orange" : "black"
-                                                }} >{bus.busStatus}</td>
+                                                        bus.busStatus === "수리중" ? "orange" : "black"
+                                            }} >{bus.busStatus}</td>
                                             <td>
                                                 <MdBusAlert className="text-primary"
-                                                    onClick={e => editBus(bus)} 
+                                                    onClick={e => editBus(bus)}
                                                     style={{ cursor: 'pointer' }}
-                                                    title="수정"/>
+                                                    title="수정" />
                                                 &nbsp; &nbsp; &nbsp;
                                                 <TbHttpDelete className="text-danger"
                                                     onClick={e => deleteBus(bus)}
                                                     style={{ cursor: 'pointer' }}
-                                                    title="삭제"/>
+                                                    title="삭제" />
                                             </td>
                                         </>
                                     )}
@@ -268,6 +284,34 @@ const Bus = () => {
                             ))}
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+
+            {/* 페이지네이션 */}
+            <div className="pagination-container">
+                <div className="pagination d-flex justify-content-center">
+                    <nav aria-label="Page navigation">
+                        <ul className="pagination">
+                            <li className={`page-item ${currentPages === 1 ? 'disabled' : ''}`}>
+                                <button className="page-link" onClick={() => setCurrentPages(prev => Math.max(prev - 1, 1))}>
+                                    이전
+                                </button>
+                            </li>
+                            {Array.from({ length: Math.ceil(buses.length / postPerPages) }, (_, index) => (
+                                <li key={index} className={`page-item ${currentPages === index + 1 ? 'active' : ''}`}>
+                                    <button className="page-link" onClick={() => setCurrentPages(index + 1)}>
+                                        {index + 1}
+                                    </button>
+                                </li>
+                            ))}
+                            <li className={`page-item ${currentPages === Math.ceil(buses.length / postPerPages) ? 'disabled' : ''}`}>
+                                <button className="page-link" onClick={() => setCurrentPages(prev => Math.min(prev + 1, Math.ceil(buses.length / postPerPages)))}>
+                                    다음
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
 
