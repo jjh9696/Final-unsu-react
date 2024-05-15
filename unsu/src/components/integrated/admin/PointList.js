@@ -9,8 +9,6 @@ import { RiArrowGoBackFill } from "react-icons/ri";
 const PointList = () => {
     //state
     const [points, setPoints] = useState([]);
-    //수정을 위한 백업
-    const [backup, setBackup] = useState(null);
     //포인트상태
     const [pointState, setPointState] = useState('');
 
@@ -27,20 +25,20 @@ const PointList = () => {
     //     setPoints(resp.data);
     // },[]);
 
-    const waitPoint = async (token, pointAmount) => {
-        try {
-            const resp = await axios.post(`member/${token}/${pointAmount}`, {}, {
-                headers: {
-                    'Authorization': token
-                }
-            });
-            if (resp.data) {
-                // 서버로부터 받은 응답 데이터 처리
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
+    // const waitPoint = async (token, pointAmount) => {
+    //     try {
+    //         const resp = await axios.post(`member/${token}/${pointAmount}`, {}, {
+    //             headers: {
+    //                 'Authorization': token
+    //             }
+    //         });
+    //         if (resp.data) {
+    //             // 서버로부터 받은 응답 데이터 처리
+    //         }
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //     }
+    // };
 
     //등록 된 목록 불러오기
     const loadData = useCallback(async () => {
@@ -48,7 +46,7 @@ const PointList = () => {
         setPoints(resp.data);
     }, [points]);
 
-    //금액 포맷하기
+    //금액 단위 포맷하기
     const formatCurrency = (value) => {
         return value.toLocaleString('ko-KR', { currency: 'KRW' });
     };
@@ -56,24 +54,24 @@ const PointList = () => {
 
     //승인버튼
     const pointStateOk = async (pointNo, newState) => {
-        const choice = window.confirm("해당 건을 승인하시겠습니까?");
+        const choice = window.confirm("해당 구매 건을 승인하시겠습니까?");
         if (choice === false) return;
     
         try {
-            const resp = await axios.patch(`/point/${pointNo}`, { pointNo, pointState: newState });
+            const resp = await axios.patch("/point/", { pointNo, pointState: newState });
             if (resp.status === 200) {
-                // 업데이트가 성공하면 포인트 목록 다시 불러오기
-                const respPoint = await axios.patch(`/member/point/${pointNo}`);
-                if (respPoint.status === 200) {
+                const respPlusMemberPoint = await axios.get("/member/points/"+pointNo);
+                if(respPlusMemberPoint.status === 200){
                     loadData();
-                } else {
-                    console.error("포인트멤버목록오류?:", respPoint.data);
+                    console.log("아싸 ㅠㅠ! 성공!!!!!!!!!!");
                 }
-            } else {
-                console.error("포인트 오류", resp.data);
+                else{
+                    console.error("안됨.포인트안올라감.",respPlusMemberPoint.data);
+                }
             }
+            else{console.error("상태업데이트 오류", resp.data);}
         } catch (error) {
-            console.error("걍다오류:", error);
+            console.error("Error updating point state:", error);
         }
     };
 
@@ -149,7 +147,7 @@ const PointList = () => {
                                     <td>{formatCurrency(point.pointAmount)} Point</td>
                                     <td style={{
                                         color: point.pointState === "승인" ? "green" :
-                                            point.pointState === "반려" ? "red" :
+                                                point.pointState === "반려" ? "red" :
                                                 point.pointState === "결제대기" ? "orange" : "black"
                                     }}>
                                         {point.pointState}
