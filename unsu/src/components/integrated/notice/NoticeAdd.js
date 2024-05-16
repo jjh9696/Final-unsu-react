@@ -88,7 +88,8 @@ const NoticeAdd = ()=>{
                         placeholder="내용을 입력하세요"
                         value={input.noticeContent}
                         onChange={e => changeInput(e)}
-                        className="form-control">
+                        className="form-control"
+                        style={{ height: "400px" }}>
                     </textarea>
                 </div>
             </div>
