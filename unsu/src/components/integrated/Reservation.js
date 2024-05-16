@@ -79,16 +79,14 @@ const Reservation = () => {
                 }
             });
             if (response.status === 200) {
-                return response.data; // 결제 금액 반환
+                console.log('Member point updated:', response.data);
             } else {
-                throw new Error('Failed to fetch fare');
+                throw new Error('Failed to update member point');
             }
         } catch (error) {
-            console.error('Error fetching fare data:', error);
-            throw error;
+            console.error('Error updating member point:', error);
         }
     };
-
     // 승객 타입 변경 핸들러
     const handleReservationTypeChange = async (e) => {
         const value = e.target.value;
@@ -104,10 +102,14 @@ const Reservation = () => {
 
             // 요금을 상태로 설정
             setFare(fareData);
+
+            // 요금 정보를 '/member/memberPoint'로 전송
+            await sendMemberPoint(value, reservationData.routeNo);
         } catch (error) {
             console.error('Error fetching fare data:', error);
         }
     };
+
 
     /////////////////////////////////////////////////////////////////////////////////
     // 지역은 미리 지정해둠 아래에 regions에 셀렉트로 보이게 설정해둠
@@ -181,29 +183,29 @@ const Reservation = () => {
     //     console.log(bus.busNo);
     //     setSeatBusNo(bus.busNo);
     // };
+    // 버스 클릭 이벤트 핸들러
     const handleCombinedClick = async (bus) => {
         // 데이터를 불러온 후에 모달을 열도록 선택
         await loadSeatData(bus.routeNo);
 
         // reservationData 업데이트 후 로그 찍기
-        setReservationData(prevData => {
-            const newData = {
-                ...prevData,
-                routeNo: bus.routeNo,
-                busNo: bus.busNo,
-                gradeType: bus.gradeType
-            };
-            console.log("Updated reservationData:", newData);  // 변경된 상태 로깅
-            return newData;
-        });
+        const updatedReservationData = {
+            ...reservationData,
+            routeNo: bus.routeNo,
+            busNo: bus.busNo,
+            gradeType: bus.gradeType
+        };
+        setReservationData(updatedReservationData);
+        console.log("Updated reservationData:", updatedReservationData);  // 변경된 상태 로깅
 
         handleSelectBus();
         setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
         }, 500);
     };
-    // 좌석 정보를 가져오는 함수
-    const loadSeatData = async (routeNo) => {
+
+     // 좌석 정보를 가져오는 함수
+     const loadSeatData = async (routeNo) => {
         try {
             //const resp = await axios.get(`/seat/${routeNo}/seat`);
             const resp = await axios.get(`/seat/reservation/${routeNo}`);
@@ -223,6 +225,7 @@ const Reservation = () => {
             console.error("Error fetching seats:", error);
         }
     };
+
 
     // 좌석 클릭 이벤트 핸들러
     // const handleSeatClick = (seatNumber) => {
@@ -519,8 +522,6 @@ const Reservation = () => {
                 ...reservationData,
                 seatNo: checkedSeats.map(checkedSeat => checkedSeat.seatNo).join(','), // 여러 좌석을 선택할 경우를 고려하여 좌석 번호들을 쉼표로 구분하여 문자열로 결합
             };
-            // 요금 정보를 '/member/memberPoint'로 전송
-            await sendMemberPoint(fare);
             // 업데이트된 예약 데이터를 서버로 전송
             const resp = await axios.post("/reservation/save", updatedData, {
                 headers: {
