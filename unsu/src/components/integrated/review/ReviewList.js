@@ -173,6 +173,10 @@ const ReviewList = () => {
     }, [loginId, loadData]);
     //console.log("loginId = " + loginId);
 
+    const inputFunc = (rating) =>{
+        setInput({ ...input, reviewStar: rating });
+    }
+
     //화면
     return (
         <>
@@ -218,14 +222,14 @@ const ReviewList = () => {
                             <div className="row mt-3">
                                 <div className="col text- center">
                                     <strong>이용은 만족하셨나요??</strong><br />
-                                    <input type="text" value={input.reviewStar} onChange={e => setInput({ ...input, reviewStar: e.target.value })} />
+                                    {/* <input type="text" value={input.reviewStar} onChange={e => setInput({ ...input, reviewStar: e.target.value })} /> */}
                                     <Rating
                                         initialValue={input.reviewStar}// 입력 값
                                         size={40} // 별 크기
                                         transition // 애니메이션 효과
                                         // 변경된 별점 값을 state에 업데이트
-                                        value={input.reviewStar}
-                                        onChange={e => setInput({ ...input, reviewStar: e.target.value })}
+                                        // 변경된 별점 값을 state에 업데이트
+                                        value={input.reviewStar} onClick={inputFunc}
                                     />
                                 </div>
                             </div>
