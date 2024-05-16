@@ -3,19 +3,27 @@ import axios from "../../utils/CustomAxios";
 import Jumbotron from "../../../Jumbotron";
 import { MdPublishedWithChanges } from "react-icons/md";
 import { MdCancel } from "react-icons/md";
-import { RiArrowGoBackFill } from "react-icons/ri";
+import Pagination from '../../utils/Pagination';
 
 
 const PointList = () => {
     //state
     const [points, setPoints] = useState([]);
     //포인트상태
-    const [pointState, setPointState] = useState('');
+    const [pointState, setPointState] = useState('결제대기'); //결제대기를 기본창으로 띄어줌
+    //state
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPages, setPostsPerPages] = useState(5);
 
     //
     useEffect(() => {
         loadData();
     }, []);
+
+    //유즈이펙트
+    useEffect(() => {
+        setPostsPerPages(5);
+    }, [points]);
 
     // //토큰 받아오기
     // const loadTokenData = useCallback(async()=>{
@@ -56,20 +64,21 @@ const PointList = () => {
     const pointStateOk = async (pointNo, newState) => {
         const choice = window.confirm("해당 구매 건을 승인하시겠습니까?");
         if (choice === false) return;
-    
+
         try {
             const resp = await axios.patch("/point/", { pointNo, pointState: newState });
             if (resp.status === 200) {
-                const respPlusMemberPoint = await axios.get("/member/points/"+pointNo);
-                if(respPlusMemberPoint.status === 200){
+                const respPlusMemberPoint = await axios.get("/member/points/" + pointNo);
+                if (respPlusMemberPoint.status === 200) {
+                    alert("승인하셨습니다.");
                     loadData();
                     console.log("아싸 ㅠㅠ! 성공!!!!!!!!!!");
                 }
-                else{
-                    console.error("안됨.포인트안올라감.",respPlusMemberPoint.data);
+                else {
+                    console.error("안됨.포인트안올라감.", respPlusMemberPoint.data);
                 }
             }
-            else{console.error("상태업데이트 오류", resp.data);}
+            else { console.error("상태업데이트 오류", resp.data); }
         } catch (error) {
             console.error("Error updating point state:", error);
         }
@@ -77,13 +86,14 @@ const PointList = () => {
 
     //반려버튼
     const pointStateNo = async (pointNo, newState) => {
-        const choice = window.confirm("해당 건을 반려하시겠습니까?");
+        const choice = window.confirm("해당 구매 건을 반려하시겠습니까?");
         if (choice === false) return;
 
         try {
             const resp = await axios.patch("/point/", { pointNo, pointState: newState });
             if (resp.status === 200) {
                 // 업데이트가 성공하면 포인트 목록 다시 불러오기
+                alert("거절되었습니다.");
                 loadData();
             }
         } catch (error) {
@@ -91,26 +101,49 @@ const PointList = () => {
         }
     };
 
-    //결제대기로 가기 버튼
-    const pointStateBack = async (pointNo, newState) => {
-        const choice = window.confirm("실행을 취소하시겠습니까?");
-        if (choice === false) return;
+    // //결제대기로 가기 버튼
+    // const pointStateBack = async (pointNo, newState) => {
+    //     const choice = window.confirm("실행을 취소하시겠습니까?");
+    //     if (choice === false) return;
 
-        try {
-            const resp = await axios.patch("/point/", { pointNo, pointState: newState });
-            if (resp.status === 200) {
-                // 업데이트가 성공하면 포인트 목록 다시 불러오기
-                loadData();
+    //     try {
+    //         const resp = await axios.patch("/point/", { pointNo, pointState: newState });
+    //         if (resp.status === 200) {
+    //             // 업데이트가 성공하면 포인트 목록 다시 불러오기
+    //             loadData();
+    //         }
+    //     } catch (error) {
+    //         console.error("Error updating point state:", error);
+    //     }
+    // };
+
+
+    // 필터링된 데이터를 상태에 따라 내림차순으로 정렬합니다.
+    const sortedPoints = points
+        .filter(point => point.pointState === pointState) // 선택한 상태에 따라 필터링
+        .sort((a, b) => {
+            // 승인 또는 반려 상태인 경우 내림차순으로 정렬
+            if (pointState === '승인' || pointState === '반려') {
+                return new Date(b.pointTime) - new Date(a.pointTime);
             }
-        } catch (error) {
-            console.error("Error updating point state:", error);
-        }
-    };
+            // 다른 상태인 경우는 정렬하지 않음
+            return 0;
+        });
 
     // 메뉴를 클릭하여 선택된 메뉴 변경
     const handleStateClick = (pointState) => {
         setPointState(pointState);
+        setCurrentPage(1); //상태메뉴 바꿀 때마다 페이징 1로 초기화
     };
+
+    //상태에 따른 목록 필터링
+    const filteredData = sortedPoints.filter(point => point.pointState === pointState); 
+    // 현재 페이지에 해당하는 데이터의 시작 인덱스 계산
+    const startIndex = (currentPage - 1) * postsPerPages;
+    // 현재 페이지에 해당하는 데이터의 끝 인덱스 계산
+    const endIndex = startIndex + postsPerPages;
+    // 현재 페이지에 해당하는 데이터만 반환
+    const currentPost = filteredData.slice(startIndex, endIndex);
 
 
     return (
@@ -139,7 +172,7 @@ const PointList = () => {
                             </tr>
                         </thead>
                         <tbody className="text-center">
-                            {points.filter(point => point.pointState === pointState).map(point => (
+                            {currentPost.filter(point => point.pointState === pointState).map(point => (
                                 <tr key={point.pointNo}>
                                     <td>{point.pointNo}</td>
                                     <td>{point.pointTime}</td>
@@ -147,7 +180,7 @@ const PointList = () => {
                                     <td>{formatCurrency(point.pointAmount)} Point</td>
                                     <td style={{
                                         color: point.pointState === "승인" ? "green" :
-                                                point.pointState === "반려" ? "red" :
+                                            point.pointState === "반려" ? "red" :
                                                 point.pointState === "결제대기" ? "orange" : "black"
                                     }}>
                                         {point.pointState}
@@ -165,7 +198,7 @@ const PointList = () => {
                                         </>
                                     )}
                                     {/* 여기서부터는 백엔드 구현 안되면 지워도 될듯 */}
-                                    {point.pointState === '승인' && (
+                                    {/* {point.pointState === '승인' && (
                                         <>
                                             <td>
                                                 <RiArrowGoBackFill
@@ -182,7 +215,7 @@ const PointList = () => {
                                                     title="되돌리기" style={{ cursor: 'pointer' }} />
                                             </td>
                                         </>
-                                    )}
+                                    )} */}
                                     {/* 여기까지 */}
                                 </tr>
                             ))}
@@ -190,6 +223,14 @@ const PointList = () => {
                     </table>
                 </div>
             </div>
+
+            {/* Pagination */}
+            <Pagination
+                postsPerPage={postsPerPages}
+                totalPages={Math.ceil(filteredData.length / postsPerPages)}
+                paginate={setCurrentPage}
+                currentPage={currentPage}
+            />
         </>
     );
 };
