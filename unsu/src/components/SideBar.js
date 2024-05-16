@@ -123,30 +123,28 @@ const SideBar = () => {
             <Menu menuItemStyles={subItemStyles}>
               <MenuItem component={<Link to="/" />}> 자주하는 질문  </MenuItem>
               <MenuItem component={<Link to="/" />}> 유실물센터 안내</MenuItem>
-              {/* <MenuItem component={<Link to="/" />}> <button onClick={openChatbotModal}>챗봇</button>  </MenuItem>
-              <MenuItem component={<Link to="/" />}> <button onClick={openMemberChatModal}>문의채팅</button></MenuItem> */}
               <MenuItem component={<Link to="/" />} onClick={openChatbotModal}> 챗봇 </MenuItem>
               <MenuItem component={<Link to="/" />} onClick={openMemberChatModal}> 문의채팅 </MenuItem>
             </Menu>
           </SubMenu>
         </Menu>
         <Modal show={isChatbotModalOpen} onHide={closeChatbotModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>운수좋은날 챗봇</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Chatbot />
-        </Modal.Body>
-      </Modal>
+          <Modal.Header closeButton>
+            <Modal.Title>운수좋은날 챗봇</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Chatbot />
+          </Modal.Body>
+        </Modal>
 
-      <Modal show={isMemberChatModalOpen} onHide={closeMemberChatModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>운수좋은날 문의</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <MemberChat />
-        </Modal.Body>
-      </Modal>
+        <Modal show={isMemberChatModalOpen} onHide={closeMemberChatModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>운수좋은날 문의</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <MemberChat />
+          </Modal.Body>
+        </Modal>
         <div className="logo-outline" />
         <div className="logo-outline" />
       </Sidebar >
