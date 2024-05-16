@@ -184,21 +184,21 @@ const Driver = () => {
 
     return (
         <>
-            <Jumbotron title="기사 관리" />
+            <Jumbotron title="기사님 관리" />
 
             <div className="row mt-4">
                 <div className="col text-end">
-                    <button className="btn btn-info" onClick={e => openModalCreate()}>
+                    <button className="btn btn-outline-secondary" onClick={e => openModalCreate()}>
                         <FaClipboardUser /> &nbsp;
-                        신규 등록
+                        기사님 등록
                     </button>
                 </div>
             </div>
 
             <div className="row mt-4">
                 <div className="col">
-                    <table className="table table-bordered table-hover">
-                        <thead className="text-center">
+                    <table className="table table-hover">
+                        <thead className="text-center table-primary">
                             <tr>
                                 <th className="w-10">번호</th>
                                 <th>이름</th>
@@ -218,7 +218,7 @@ const Driver = () => {
                                         <TiUserDelete className="text-danger"
                                             style={{ cursor: 'pointer' }}
                                             onClick={e => deleteDriver(driver)}
-                                            title="삭제" />
+                                            title="해고" />
                                     </td>
                                 </tr>
                             ))}
@@ -321,11 +321,11 @@ const Driver = () => {
 
 
                         <div className="modal-footer">
-                            <button className="btn btn-success me-2"
+                            <button className="btn btn-outline-success me-2"
                                 onClick={e => saveInput()}>
                                 등록
                             </button>
-                            <button className="btn btn-danger"
+                            <button className="btn btn-outline-danger"
                                 onClick={e => cancelInput()}>
                                 취소
                             </button>
@@ -399,11 +399,11 @@ const Driver = () => {
 
                                     <div className="row mt-4">
                                         <div className="col text-end">
-                                            <button className="btn btn-success me-3"
+                                            <button className="btn btn-outline-success me-2"
                                                 onClick={e => saveEditDriver(selectedDriver)}>
                                                 저장
                                             </button>
-                                            <button className="btn btn-warning"
+                                            <button className="btn btn-outline-danger"
                                                 onClick={e => cancelEditDriver(selectedDriver)}>
                                                 취소
                                             </button>
@@ -449,11 +449,11 @@ const Driver = () => {
                                     <hr />
                                     <div className="row mt-3">
                                         <div className="col text-end">
-                                            <button className="btn btn-primary me-3"
+                                            <button className="btn btn-outline-primary me-2"
                                                 onClick={e => editDriver(selectedDriver)}>
                                                 수정
                                             </button>
-                                            <button className="btn btn-warning"
+                                            <button className="btn btn-outline-secondary"
                                                 onClick={e => closeModalInfo()}>
                                                 닫기
                                             </button>

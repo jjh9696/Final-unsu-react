@@ -152,16 +152,16 @@ const PointList = () => {
 
             <div className="row mt-4">
                 <div className="col text-end">
-                    <button className="btn btn-warning me-1" onClick={() => handleStateClick('결제대기')}>결제대기</button>
-                    <button className="btn btn-success me-1" onClick={() => handleStateClick('승인')}>승인</button>
-                    <button className="btn btn-danger" onClick={() => handleStateClick('반려')}>반려</button>
+                    <button className="btn btn-outline-secondary me-1" onClick={() => handleStateClick('결제대기')}>결제대기</button>
+                    <button className="btn btn-outline-success me-1" onClick={() => handleStateClick('승인')}>승인</button>
+                    <button className="btn btn-outline-danger" onClick={() => handleStateClick('반려')}>반려</button>
                 </div>
             </div>
 
             <div className="row mt-4">
                 <div className="col">
-                    <table className="text-center table">
-                        <thead>
+                    <table className="text-center table table-hover">
+                        <thead className="table-primary">
                             <tr>
                                 <th style={{ width: '12%' }}>번호</th>
                                 <th>충전 일시</th>

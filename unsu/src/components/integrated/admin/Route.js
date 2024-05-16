@@ -329,7 +329,7 @@ const Route = () => {
             {/* 신규 생성 버튼 */}
             <div className="row mt-4">
                 <div className="col text-end">
-                    <button className="btn btn-secondary"
+                    <button className="btn btn-outline-secondary"
                         onClick={e => openModalCreate()}>
                         <FaRoad /> &nbsp;
                         노선 등록
@@ -340,8 +340,8 @@ const Route = () => {
             {/* 목록 */}
             <div className="row mt-4">
                 <div className="col">
-                    <table className="table table-bordered">
-                        <thead className="table-warning">
+                    <table className="table table-hover text-center">
+                        <thead className="table-primary">
                             <tr>
                                 <th>출발지</th>
                                 <th>도착지</th>
@@ -507,11 +507,11 @@ const Route = () => {
 
 
                         <div className="modal-footer">
-                            <button className="btn btn-success me-2"
+                            <button className="btn btn-outline-success me-2"
                                 onClick={e => saveInput()}>
                                 등록
                             </button>
-                            <button className="btn btn-danger"
+                            <button className="btn btn-outline-danger"
                                 onClick={e => cancelInput()}>
                                 취소
                             </button>
@@ -635,11 +635,11 @@ const Route = () => {
 
                                     <div className="row mt-4">
                                         <div className="col text-end">
-                                            <button className="btn btn-success me-3"
+                                            <button className="btn btn-outline-success me-2"
                                                 onClick={e => saveEditRoute(selectRoute)}>
                                                 저장
                                             </button>
-                                            <button className="btn btn-warning"
+                                            <button className="btn btn-outline-danger"
                                                 onClick={e => cancelEditRoute(selectRoute)}>
                                                 취소
                                             </button>
@@ -718,17 +718,17 @@ const Route = () => {
                                     <hr />
                                     <div className="row mt-3">
                                         <div className="col">
-                                            <button className="btn btn-danger"
+                                            <button className="btn btn-outline-danger"
                                                 onClick={e => deleteRoute(selectRoute)}>
                                                 삭제
                                             </button>
                                         </div>
                                         <div className="col text-end">
-                                            <button className="btn btn-primary me-3"
+                                            <button className="btn btn-outline-primary me-2"
                                                 onClick={e => editRoute(selectRoute)}>
                                                 수정
                                             </button>
-                                            <button className="btn btn-light"
+                                            <button className="btn btn-outline-secondary"
                                                 onClick={e => closeModalInfo()}>
                                                 닫기
                                             </button>
