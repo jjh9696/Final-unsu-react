@@ -104,7 +104,7 @@ const Reservation = () => {
             setFare(fareData);
 
             // 요금 정보를 '/member/memberPoint'로 전송
-            await sendMemberPoint(value, reservationData.routeNo);
+            // await sendMemberPoint(value, reservationData.routeNo);
         } catch (error) {
             console.error('Error fetching fare data:', error);
         }
@@ -187,7 +187,7 @@ const Reservation = () => {
     const handleCombinedClick = async (bus) => {
         // 데이터를 불러온 후에 모달을 열도록 선택
         await loadSeatData(bus.routeNo);
-
+    
         // reservationData 업데이트 후 로그 찍기
         const updatedReservationData = {
             ...reservationData,
@@ -197,12 +197,13 @@ const Reservation = () => {
         };
         setReservationData(updatedReservationData);
         console.log("Updated reservationData:", updatedReservationData);  // 변경된 상태 로깅
-
+    
         handleSelectBus();
         setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
         }, 500);
     };
+    
 
      // 좌석 정보를 가져오는 함수
      const loadSeatData = async (routeNo) => {
@@ -522,18 +523,22 @@ const Reservation = () => {
                 ...reservationData,
                 seatNo: checkedSeats.map(checkedSeat => checkedSeat.seatNo).join(','), // 여러 좌석을 선택할 경우를 고려하여 좌석 번호들을 쉼표로 구분하여 문자열로 결합
             };
+            // 요금 정보를 '/member/memberPoint'로 전송
+            await sendMemberPoint(reservationData.reservationType, reservationData.routeNo);
             // 업데이트된 예약 데이터를 서버로 전송
             const resp = await axios.post("/reservation/save", updatedData, {
                 headers: {
                     Authorization: axios.defaults.headers.common['Authorization']
                 }
             });
-            alert('예약이 완료되었습니다');
+            // alert('예약이 완료되었습니다');
+            navigate('/orderEnd')
         } catch (error) {
             console.error('Error creating reservation:', error);
             alert(`좌석을 선택해주세요`);
         }
-    }, [checkedSeats, reservationData, fare]);
+    }, [checkedSeats, reservationData]);
+    
 
     /////////////////////////////////////////////////////////////////////////////////////////////
 
