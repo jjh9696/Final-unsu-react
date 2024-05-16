@@ -53,24 +53,62 @@ const Reservation = () => {
                 }
             });
             if (response.status === 200) {
-                setFare(response.data); // 결제 금액 상태 업데이트
-                console.log('요금 정보:', response.data);
+                return response.data; // 결제 금액 반환
             } else {
                 throw new Error('Failed to fetch fare');
             }
         } catch (error) {
             console.error('Error fetching fare data:', error);
+            throw error;
         }
     };
+
+
+    // 요금 정보를 '/member/memberPoint'로 전송하는 함수
+    const sendMemberPoint = async (chargeType, routeNo) => {
+        const url = '/member/memberPoint';
+        const payload = {
+            chargeType: chargeType,
+            routeNo: routeNo,
+            count: 1 // 여기에 고정된 값을 사용하거나 필요에 따라 동적으로 설정할 수 있습니다.
+        };
+        try {
+            const response = await axios.post(url, payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.status === 200) {
+                return response.data; // 결제 금액 반환
+            } else {
+                throw new Error('Failed to fetch fare');
+            }
+        } catch (error) {
+            console.error('Error fetching fare data:', error);
+            throw error;
+        }
+    };
+
     // 승객 타입 변경 핸들러
-    const handleReservationTypeChange = (e) => {
+    const handleReservationTypeChange = async (e) => {
         const value = e.target.value;
         setReservationData(prevData => ({
             ...prevData,
             reservationType: value
         }));
-        calculateFare(value, reservationData.routeNo); // 승객 타입이 변경될 때 요금 계산
+
+        try {
+            // 요금 계산
+            const fareData = await calculateFare(value, reservationData.routeNo);
+            console.log('요금 정보:', fareData);
+
+            // 요금을 상태로 설정
+            setFare(fareData);
+        } catch (error) {
+            console.error('Error fetching fare data:', error);
+        }
     };
+
     /////////////////////////////////////////////////////////////////////////////////
     // 지역은 미리 지정해둠 아래에 regions에 셀렉트로 보이게 설정해둠
     const regions = [
@@ -221,6 +259,8 @@ const Reservation = () => {
     // useEffect(() => {
     //     loadReservedDate();
     // }, []);
+
+
 
 
 
@@ -471,7 +511,7 @@ const Reservation = () => {
 
 
 
-    // 예약을 서버로 전송
+    // 예약 저장 함수
     const saveInput = useCallback(async () => {
         try {
             // 버스 예약 데이터에 선택된 좌석 정보를 추가하여 업데이트
@@ -479,7 +519,8 @@ const Reservation = () => {
                 ...reservationData,
                 seatNo: checkedSeats.map(checkedSeat => checkedSeat.seatNo).join(','), // 여러 좌석을 선택할 경우를 고려하여 좌석 번호들을 쉼표로 구분하여 문자열로 결합
             };
-
+            // 요금 정보를 '/member/memberPoint'로 전송
+            await sendMemberPoint(fare);
             // 업데이트된 예약 데이터를 서버로 전송
             const resp = await axios.post("/reservation/save", updatedData, {
                 headers: {
@@ -491,7 +532,7 @@ const Reservation = () => {
             console.error('Error creating reservation:', error);
             alert(`좌석을 선택해주세요`);
         }
-    }, [checkedSeats, reservationData]);
+    }, [checkedSeats, reservationData, fare]);
 
     /////////////////////////////////////////////////////////////////////////////////////////////
 

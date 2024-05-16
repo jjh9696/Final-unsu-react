@@ -160,7 +160,7 @@ const Charge = () => {
 
             <div className="row mt-4">
                 <div className="col text-end">
-                    <button className="btn btn-light" onClick={e => openModalCreate()}>
+                    <button className="btn btn-outline-secondary" onClick={e => openModalCreate()}>
                         <FcMoneyTransfer /> &nbsp;
                         요금 등록
                     </button>
@@ -169,8 +169,8 @@ const Charge = () => {
 
             <div className="row mt-4">
                 <div className="col">
-                    <table className="table table-striped table-hover">
-                        <thead className="text-center">
+                    <table className="table table-hover">
+                        <thead className="text-center table-primary">
                             <tr>
                                 <th style={{ width: '12%' }}>번호</th>
                                 <th>승객</th>

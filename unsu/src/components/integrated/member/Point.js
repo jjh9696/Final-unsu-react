@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import axios from "../../utils/CustomAxios";
 import React, { useCallback, useState } from 'react';
+import Jumbotron from "../../../Jumbotron";
 
 
 const Point = ()=>{
@@ -40,7 +41,7 @@ const Point = ()=>{
 
     return (
         <>
-            <h1>포인트 충전</h1>
+            <Jumbotron title="포인트 충전" />
             
             <div className='row mt-4'>
                 <div className='col'>

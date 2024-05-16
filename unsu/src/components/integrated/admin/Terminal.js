@@ -161,7 +161,7 @@ const Terminal = () => {
             {/*  신규 생성 버튼 */}
             <div className="row mt-4">
                 <div className="col text-end">
-                    <button className="btn btn-secondary"
+                    <button className="btn btn-outline-secondary"
                         onClick={e => openModalCreate()}>
                         <FaWarehouse /> &nbsp;
                         터미널 추가
@@ -173,10 +173,10 @@ const Terminal = () => {
             {/* 목록 */}
             <div className="row mt-4">
                 <div className="col text-center">
-                    <table className="table">
-                        <thead>
+                    <table className="table table-hover">
+                        <thead className="table-primary">
                             <tr>
-                                <th style={{ width: '12%' }}>터미널ID</th>
+                                <th>터미널ID</th>
                                 <th>터미널명</th>
                                 <th>지역</th>
                                 <th style={{ width: '25%' }}>관리</th>
@@ -308,11 +308,11 @@ const Terminal = () => {
 
 
                             <div className="mt-4 text-end">
-                                <button className="btn btn-success me-2"
+                                <button className="btn btn-outline-success me-2"
                                     onClick={e => saveInput()}>
                                     등록
                                 </button>
-                                <button className="btn btn-danger"
+                                <button className="btn btn-outline-danger"
                                     onClick={e => cancelInput()}>
                                     취소
                                 </button>

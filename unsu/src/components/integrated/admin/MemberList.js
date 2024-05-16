@@ -73,8 +73,8 @@ const MemberList = () => {
 
             <div className="row mt-4">
                 <div className="col">
-                    <table className="table text-center">
-                        <thead>
+                    <table className="table table-hover text-center">
+                        <thead className="table-primary">
                             <tr>
                                 <th>아이디</th>
                                 <th>이름</th>

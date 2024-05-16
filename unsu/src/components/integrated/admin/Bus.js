@@ -192,7 +192,7 @@ const Bus = () => {
             {/* 신규 생성 버튼 */}
             <div className="row mt-4">
                 <div className="col text-end">
-                    <button className="btn btn-warning"
+                    <button className="btn btn-outline-secondary"
                         onClick={e => openModalCreate()}>
                         <FaBus /> &nbsp;
                         차량 등록
@@ -202,7 +202,7 @@ const Bus = () => {
 
             <div className="row mt-4">
                 <div className="col">
-                    <table className="table table-striped">
+                    <table className="table table-hover">
                         <thead className="text-center">
                             <tr className="table-primary">
                                 <th style={{ width: '10%' }}>번호</th>
@@ -272,7 +272,7 @@ const Bus = () => {
                                                     onClick={e => editBus(bus)}
                                                     style={{ cursor: 'pointer' }}
                                                     title="수정" />
-                                                &nbsp; &nbsp; &nbsp;
+                                                &nbsp; &nbsp;
                                                 <TbHttpDelete className="text-danger"
                                                     onClick={e => deleteBus(bus)}
                                                     style={{ cursor: 'pointer' }}
@@ -406,11 +406,11 @@ const Bus = () => {
 
 
                         <div className="modal-footer">
-                            <button className="btn btn-success me-2"
+                            <button className="btn btn-outline-success me-2"
                                 onClick={e => saveInput()}>
                                 등록
                             </button>
-                            <button className="btn btn-danger"
+                            <button className="btn btn-outline-danger"
                                 onClick={e => cancelInput()}>
                                 취소
                             </button>
