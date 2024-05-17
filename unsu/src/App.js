@@ -89,14 +89,14 @@
         <div className='container-fluid d-flex'>
           <div className='sidebar'>
             {isAdmin ? (
-              <>
+              <> 
               <AdminSideBar/>
               </>
             ):(
               <>
               <SideBar/>
               </>
-            )} 
+            )}
           </div>
           <div className='container'>
             <div className='row mt-4'>
