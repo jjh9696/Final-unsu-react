@@ -15,6 +15,7 @@
 
 
 
+
   // 컴포넌트 배치
 
   const AdminHome = lazy(()=>import("./components/integrated/admin/AdminHome"));
@@ -44,7 +45,7 @@
   const PointList= lazy(()=>import("./components/integrated/admin/PointList"));
   const Point = lazy(()=> import("./components/integrated/member/Point"));
   const OrderEnd = lazy(()=> import("./components/integrated/member/OrderEnd"));
-
+  const Home =lazy(()=>import("./Home"));
 
   const App = () => {
 
@@ -128,6 +129,7 @@
                   <Route path="/pointList" element={<PointList/>} />
                   <Route path="/point" element={<Point/>} />
                   <Route path="/orderEnd" element={<OrderEnd/>} />
+                  <Route path="/home" element={<Home/>} />
                 </Routes>
               </Suspense>
               </div>
