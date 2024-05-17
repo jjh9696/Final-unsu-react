@@ -115,9 +115,9 @@ import {
                       </SubMenu>
                   </Menu>
                   <Menu>
-                      <SubMenu label="매출 관리" defaultClose>
+                      <SubMenu label="통계" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
-                              <MenuItem component={<Link to="/" />}> 회원 조회 </MenuItem>
+                              <MenuItem component={<Link to="/reservationList" />}> 통계 목록 </MenuItem>
                           </Menu>
                       </SubMenu>
                   </Menu>
