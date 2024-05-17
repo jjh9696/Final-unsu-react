@@ -45,8 +45,8 @@
   const PointList= lazy(()=>import("./components/integrated/admin/PointList"));
   const Point = lazy(()=> import("./components/integrated/member/Point"));
   const OrderEnd = lazy(()=> import("./components/integrated/member/OrderEnd"));
-
   const OrderList = lazy(()=> import("./components/integrated/member/OrderList"));
+  const Home = lazy(()=> import("./components/Home"));
 
 
   const App = () => {
@@ -132,7 +132,6 @@
                   <Route path="/point" element={<Point/>} />
                   <Route path="/orderEnd" element={<OrderEnd/>} />
                   <Route path="/home" element={<Home/>} />
-
                   <Route path="/orderList" element={<OrderList/>} />
 
                 </Routes>
