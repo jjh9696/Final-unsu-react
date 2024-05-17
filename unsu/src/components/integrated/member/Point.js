@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router";
 import axios from "../../utils/CustomAxios";
 import React, { useCallback, useState } from 'react';
-import Jumbotron from "../../../Jumbotron";
 import { FaMoneyBillWave } from "react-icons/fa"
 import { SiKakao } from "react-icons/si";
 

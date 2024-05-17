@@ -156,7 +156,7 @@ const Charge = () => {
 
     return (
         <>
-            <Jumbotron title="요금 관리" />
+            <Jumbotron title="요금 관리" content="절대 건들지 마세요." />
 
             <div className="row mt-4">
                 <div className="col text-end">
