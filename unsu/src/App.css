@@ -95,7 +95,7 @@
 }
 
 .live-chat-wrapper:hover {
-  width: 150px;
+  width: 155px;
   transition: width 0.25s;
 }
 @media screen and (min-width: 960px) {

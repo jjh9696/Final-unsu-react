@@ -44,7 +44,7 @@ const Point = lazy(() => import("./components/integrated/member/Point"));
 const OrderEnd = lazy(() => import("./components/integrated/member/OrderEnd"));
 const OrderList = lazy(() => import("./components/integrated/member/OrderList"));
 const Home = lazy(() => import("./components/Home"));
-const ReservationList = lazy(() => import("./components/integrated/admin/ReservationList"));
+const ReservationStats = lazy(() => import("./components/integrated/admin/ReservationStats"));
 
 const App = () => {
   // recoil state
@@ -154,7 +154,7 @@ const App = () => {
                   <Route path="/orderEnd" element={<OrderEnd />} />
                   <Route path="/" element={<Home />} />
                   <Route path="/orderList" element={<OrderList />} />
-                  <Route path="/reservationList" element={<ReservationList />} />
+                  <Route path="/reservationStats" element={<ReservationStats />} />
                 </Routes>
               </Suspense>
             </div>
@@ -187,13 +187,14 @@ const App = () => {
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      marginLeft: '-4px'
+                      marginLeft: '-4px',
+                      marginRight: '10px'
                     }}>
                       {/* 아이콘 이미지나 폰트 아이콘을 여기에 추가할 수 있습니다 */}
                       <span role="img" aria-label="chat">💬</span>
                     </div>
                   </span>
-                  <span className="live-chat-wrapper-label" style={{ fontSize: '16px', marginRight: '5px' }} > &nbsp; 상담사 연결 </span>
+                  <span className="live-chat-wrapper-label" style={{ fontSize: '16px'}} > 상담사 연결 </span>
                 </div>
               </div>
               <Modal show={isMemberChatModalOpen} onHide={closeMemberChatModal}>
@@ -233,7 +234,8 @@ const App = () => {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  marginLeft: '-4px'
+                  marginLeft: '-4px',
+                  marginRight: '5px'
                 }}>
                   {/* 아이콘 이미지나 폰트 아이콘을 여기에 추가할 수 있습니다 */}
                   <span role="img" aria-label="chat">🚍</span>
