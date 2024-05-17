@@ -75,7 +75,7 @@ const Mypage = () => {
                     <li className="list-group-item">Vestibulum at eros</li>
                 </ul> */}
                 <div className="card-body">
-                    <Link to="#" className="card-link">예매확인</Link>
+                    <Link to="/orderList" className="card-link">예매확인</Link>
                     <Link to="#" className="card-link">탑승내역</Link>
                 </div>
             </div>

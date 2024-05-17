@@ -14,7 +14,7 @@ const Notice = () => {
     const [notices, setNotices] = useState([]);
     //목록 페이징
     const [page, setPage] = useState(1);//현재 페이지 번호
-    const [size, setSize] = useState(5);//목록 개수
+    const [size, setSize] = useState(10);//목록 개수
     const [count, setCount] = useState(0);    
     // 검색 기준과 검색어를 저장할 state
     const [defaultColumn, setDefaultColumn] = useState("notice_title");//기본값
@@ -29,7 +29,8 @@ const Notice = () => {
     
     //effect
     useEffect(() => {
-        console.log("searced: " + searched);
+        console.log("searchStatus : "+searchStatus);
+        console.log("page : "+page)
         if (searchStatus === 1) {
             loadData(); // 최신순 조회
         } else if (searchStatus === 2) {
@@ -79,25 +80,29 @@ const Notice = () => {
     };
 
     const pageChange = (pageNumber) => {
+        console.log("pageNo : "+pageNumber);
         setPage(pageNumber); // 페이지 번호를 직접 선택하여 이동하는 함수
     };
 
     //키워드 검색
     const handleSearch = useCallback(async () => {
-        setPage(1);
+        
 
         console.log("searched2 : " + searched)
-        // console.log("search : " + handleSearch)
-        // console.log("column : " + defaultColumn);
-        // console.log("keyword : " + keyword);
+         //console.log("search : " + handleSearch)
+         console.log("column : " + defaultColumn);
+         console.log("keyword : " + keyword);
+         console.log("page1111 : "+page)
         const resp = await axios.get(`/notice/search/column/${defaultColumn}/keyword/${keyword}`,{
              params: { page: page, size: size }
         });
+        console.log(resp)
         setNotices(resp.data.list);
         setCount(resp.data.pageVO.totalPage); // 페이지 숫자 업데이트
         setSearched(true);
+        setSearchStatus(3);
 
-    }, [keyword, defaultColumn, size]);
+    }, [keyword, defaultColumn, size,page]);
     
     const keywordChange = (e) => {
         setKeyword(e.target.value);
@@ -165,7 +170,7 @@ const Notice = () => {
                     <table className="table table-hover">
                         <thead className="text-center">
                             <tr>
-                                <th style={{ width: '1%' }}>No</th>
+                                {/* <th style={{ width: '1%' }}>No</th> */}
                                 <th style={{ width: '15%' }}>번호</th>
                                 <th style={{ width: '45%' }}>제목</th>
                                 <th style={{ width: '25%' }}>등록일</th>
@@ -174,9 +179,10 @@ const Notice = () => {
                         </thead>
                         <tbody className="text-center">
                             {/* index 임시 구현 삭제必 */}
-                            {notices.map((notice, index) => (
+                            {/* {notices.map((notice, index) => ( */}
+                                {notices.map((notice) => (
                                 <tr key={notice.noticeNo} onClick={e => redirectDetail(notice.noticeNo)}>
-                                    <td>{index + 1}</td>
+                                    {/* <td>{index + 1}</td> */}
                                     <td>{notice.noticeNo}</td>
                                     <td className="text-start" style={{ maxWidth: '100px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{notice.noticeTitle}</td>
                                     <td>{moment(notice.noticeWdate).format("YYYY-MM-DD HH:mm")}</td>

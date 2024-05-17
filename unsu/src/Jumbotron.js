@@ -5,8 +5,9 @@ function Jumbotron(props) {//props는 상위 컴포넌트에서 전달되는 값
         <>
             <div className="row">
                 <div className="col">
-                    <div className="p-4 bg-dark text-light rounded">
+                    <div className="p-4 text-dark">
                         <h1>{props.title}</h1>
+                        <hr/>
                         <p>{props.content}</p>
                     </div>
                 </div>

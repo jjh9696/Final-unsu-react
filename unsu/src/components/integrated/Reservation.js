@@ -2,9 +2,15 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import axios from '../utils/CustomAxios';
 import { useNavigate } from "react-router";
 import { SeatGroup } from "hacademy-cinema-seat";
+
 import { FaBus } from "react-icons/fa";
 
-
+import Seat1 from "../../images/seat1.png";
+import Seat2 from "../../images/seat2.png";
+import Seat3 from "../../images/seat3.png";
+import Seat4 from "../../images/seat4.png";
+import bus from "../../images/bus.png";
+  
 
 const Reservation = () => {
     const [startRegion, setStartRegion] = useState('');
@@ -27,7 +33,9 @@ const Reservation = () => {
         gradeType: '',
         routeNo: '',
         busNo: '',
-        seatNo: ''
+        seatNo: '',
+        reservationCount: '1',
+        reservationType: ''
     });
 
 
@@ -35,97 +43,17 @@ const Reservation = () => {
     // const [adultCount, setAdultCount] = useState(0);  // 초기값을 0으로 설정
     // const [teenCount, setTeenCount] = useState(0);  // 초기값을 0으로 설정
     // const [kidCount, setKidCount] = useState(0);  // 초기값을 0으로 설정
-    const [count, setCount] = useState({
-        adult: 0,
-        teen: 0,
-        kid: 0
-    });
-    const [pay, setPay] = useState({
-        adult: '',
-        teen: '',
-        kid: ''
-    });
-    useEffect(() => {
-        // pay 상태가 변경될 때마다 실행되는 로직
-        console.log('pay 상태가 변경되었습니다:', pay);
-    }, [pay]);
-    // 성인 수를 증가시키는 함수
-    const incrementAdultCount = (routeNo) => {
-        setCount(prevCount => {
-            const newCount = prevCount.adult >= 4 ? 4 : prevCount.adult + 1;
-            if (newCount > prevCount.adult) {  // 변경 사항이 있을 때만 요금 계산 요청
-                calculateFare('성인', newCount, 16);
-            }
-            return {
-                ...prevCount,
-                adult: newCount
-            };
-        });
-    };
-    // 성인 수를 감소시키는 함수
-    const decrementAdultCount = () => {
-        setCount(prevCount => ({
-            ...prevCount,
-            adult: Math.max(0, prevCount.adult - 1)
-        }));
-    };
 
-    // 청소년 수를 증가시키는 함수
+    // 결제 금액을 관리할 상태 추가
+    const [fare, setFare] = useState(null);
 
-    const incrementTeenCount = (routeNo) => {
-        setCount(prevCount => {
-            const newCount = prevCount.teen >= 4 ? 4 : prevCount.teen + 1;
-            if (newCount > prevCount.teen) {
-                calculateFare('청소년', newCount, 16);
-            }
-            return {
-                ...prevCount,
-                teen: newCount
-            };
-        });
-    };
-
-    // 청소년 수를 감소시키는 함수
-    const decrementTeenCount = () => {
-        setCount(prevCount => ({
-            ...prevCount,
-            teen: Math.max(0, prevCount.teen - 1)
-        }));
-    };
-
-    // 어린이 수를 증가시키는 함수
-    const incrementKidCount = (routeNo) => {
-        setCount(prevCount => {
-            const newCount = prevCount.kid >= 4 ? 4 : prevCount.kid + 1;
-            if (newCount > prevCount.kid) {
-                calculateFare('어린이', newCount, routeNo);
-            }
-            return {
-                ...prevCount,
-                kid: newCount
-            };
-        });
-    };
-    // 어린이 수를 감소시키는 함수
-    const decrementKidCount = () => {
-        setCount(prevCount => ({
-            ...prevCount,
-            kid: Math.max(0, prevCount.kid - 1)
-        }));
-    };
     // 요금 계산을 위해 백엔드로 데이터를 전송하는 함수
-    const chargeTypeMapping = {
-        '성인': 'adult',
-        '청소년': 'teen',
-        '어린이': 'kid'
-    };
-
-    const calculateFare = async (chargeType, count, routeNo) => {
+    const calculateFare = async (chargeType, routeNo) => {
         const url = '/charge/calculateFare';
         const payload = {
             chargeType: chargeType,
             routeNo: routeNo,
-            count: count
+            count: 1 // 여기에 고정된 값을 사용하거나 필요에 따라 동적으로 설정할 수 있습니다.
         };
         try {
             const response = await axios.post(url, payload, {
@@ -134,16 +62,58 @@ const Reservation = () => {
                 }
             });
             if (response.status === 200) {
-                // 동적으로 키 업데이트를 영문으로 매핑
-                const mappedKey = chargeTypeMapping[chargeType];
-                setPay(prev => ({
-                    ...prev,
-                    [mappedKey]: response.data
-                }));
-                console.log('Updated pay state for', chargeType, ':', response.data);
+                return response.data; // 결제 금액 반환
             } else {
                 throw new Error('Failed to fetch fare');
             }
+        } catch (error) {
+            console.error('Error fetching fare data:', error);
+            throw error;
+        }
+    };
+
+
+    // 요금 정보를 '/member/memberPoint'로 전송하는 함수
+    const sendMemberPoint = async (chargeType, routeNo) => {
+        const url = '/member/memberPoint';
+        const payload = {
+            chargeType: chargeType,
+            routeNo: routeNo,
+            count: 1 // 여기에 고정된 값을 사용하거나 필요에 따라 동적으로 설정할 수 있습니다.
+        };
+        try {
+            const response = await axios.post(url, payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.status === 200) {
+                console.log('Member point updated:', response.data);
+            } else {
+                throw new Error('Failed to update member point');
+            }
+        } catch (error) {
+            console.error('Error updating member point:', error);
+        }
+    };
+    // 승객 타입 변경 핸들러
+    const handleReservationTypeChange = async (e) => {
+        const value = e.target.value;
+        setReservationData(prevData => ({
+            ...prevData,
+            reservationType: value
+        }));
+
+        try {
+            // 요금 계산
+            const fareData = await calculateFare(value, reservationData.routeNo);
+            console.log('요금 정보:', fareData);
+
+            // 요금을 상태로 설정
+            setFare(fareData);
+
+            // 요금 정보를 '/member/memberPoint'로 전송
+            // await sendMemberPoint(value, reservationData.routeNo);
         } catch (error) {
             console.error('Error fetching fare data:', error);
         }
@@ -222,29 +192,30 @@ const Reservation = () => {
     //     console.log(bus.busNo);
     //     setSeatBusNo(bus.busNo);
     // };
+    // 버스 클릭 이벤트 핸들러
     const handleCombinedClick = async (bus) => {
         // 데이터를 불러온 후에 모달을 열도록 선택
         await loadSeatData(bus.routeNo);
-
+    
         // reservationData 업데이트 후 로그 찍기
-        setReservationData(prevData => {
-            const newData = {
-                ...prevData,
-                routeNo: bus.routeNo,
-                busNo: bus.busNo,
-                gradeType: bus.gradeType
-            };
-            console.log("Updated reservationData:", newData);  // 변경된 상태 로깅
-            return newData;
-        });
-
+        const updatedReservationData = {
+            ...reservationData,
+            routeNo: bus.routeNo,
+            busNo: bus.busNo,
+            gradeType: bus.gradeType
+        };
+        setReservationData(updatedReservationData);
+        console.log("Updated reservationData:", updatedReservationData);  // 변경된 상태 로깅
+    
         handleSelectBus();
         setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
         }, 500);
     };
-    // 좌석 정보를 가져오는 함수
-    const loadSeatData = async (routeNo) => {
+    
+
+     // 좌석 정보를 가져오는 함수
+     const loadSeatData = async (routeNo) => {
         try {
             //const resp = await axios.get(`/seat/${routeNo}/seat`);
             const resp = await axios.get(`/seat/reservation/${routeNo}`);
@@ -264,6 +235,7 @@ const Reservation = () => {
             console.error("Error fetching seats:", error);
         }
     };
+
 
     // 좌석 클릭 이벤트 핸들러
     // const handleSeatClick = (seatNumber) => {
@@ -300,6 +272,8 @@ const Reservation = () => {
     // useEffect(() => {
     //     loadReservedDate();
     // }, []);
+
+
 
 
 
@@ -381,6 +355,7 @@ const Reservation = () => {
             setFares({ standard: '에러', business: '에러', premium: '에러' });
         }
     };
+
 
 
     ////////////////////////요금관련 끝//////////////////////////////////////
@@ -513,16 +488,7 @@ const Reservation = () => {
     // '이전' 버튼 클릭 핸들러
     const handleGoBack = () => {
         setShowDetails(false); // 초기 화면으로 돌아가기
-        setCount({
-            adult: 0,
-            teen: 0,
-            kid: 0
-        });// 선택한 좌석 초기화
-        setPay({
-            adult: 0,
-            teen: 0,
-            kid: 0
-        }); // 요금을 초기화합니다.
+        setFare('');
     };
     const [input, setInput] = useState({
         // 버스 예약 인서트 할것 넣기
@@ -558,27 +524,30 @@ const Reservation = () => {
 
 
 
+    // 예약 저장 함수
     const saveInput = useCallback(async () => {
         try {
             // 버스 예약 데이터에 선택된 좌석 정보를 추가하여 업데이트
             const updatedData = {
                 ...reservationData,
-                seatNo: checkedSeats.map(checkedSeat => checkedSeat.seatNo).join(',') // 여러 좌석을 선택할 경우를 고려하여 좌석 번호들을 쉼표로 구분하여 문자열로 결합
+                seatNo: checkedSeats.map(checkedSeat => checkedSeat.seatNo).join(','), // 여러 좌석을 선택할 경우를 고려하여 좌석 번호들을 쉼표로 구분하여 문자열로 결합
             };
-
+            // 요금 정보를 '/member/memberPoint'로 전송
+            await sendMemberPoint(reservationData.reservationType, reservationData.routeNo);
             // 업데이트된 예약 데이터를 서버로 전송
             const resp = await axios.post("/reservation/save", updatedData, {
                 headers: {
                     Authorization: axios.defaults.headers.common['Authorization']
                 }
             });
-            alert('예약이 완료되었습니다');
+            // alert('예약이 완료되었습니다');
+            navigate('/orderEnd')
         } catch (error) {
-            console.log('저기요');
             console.error('Error creating reservation:', error);
             alert(`좌석을 선택해주세요`);
         }
     }, [checkedSeats, reservationData]);
+    
 
     /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -758,6 +727,15 @@ const Reservation = () => {
                                         <div className="row mt-4"  >
                                             <div className="col " >
                                                 {/* {seats.map((seat) => (
+
+                        <div className="row mt-2 w-100 text-center">
+                            <div className="col">
+                                <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
+                                <hr />
+                                <div className="row mt-4"  >
+                                    <div className="col " style={{ backgroundImage: `url(${bus})`, backgroundSize: 'cover' }}>
+                                        {/* {seats.map((seat) => (
+
                                                             <button
                                                                 key={seat.seatNo}
                                                                 (seat.seatNo)}
@@ -775,6 +753,7 @@ const Reservation = () => {
                                                                 <p>버스번호:{seat.busNo}</p>
                                                             </button>
                                                         ))} */}
+
 
                                                 {/* 좌석 라이브러리 */}
                                                 <SeatGroup map={seats} setMap={setSeats}
@@ -801,14 +780,88 @@ const Reservation = () => {
                                                 <button className='btn btn-primary' onClick={handleGoBack}>이전화면</button>&nbsp;&nbsp;&nbsp;
                                             </div>
                                         </div>
+
+                                        {/* 좌석 라이브러리 */}
+                                        <SeatGroup map={seats} setMap={setSeats}
+                                            fields={{
+                                                no: 'seatNo',
+                                                row: 'seatColumn',
+                                                col: 'seatRow',
+                                                reserved: 'reservationSeatNo',
+                                                disabled: 'seatDisabled',
+                                                checked: 'seatChecked',
+                                            }}
+                                            rows={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                                            cols={[1, 2, '통로', 3, 4]}
+                                            showNames
+                                            onSeatClick={handleSeatClicks}
+                                            images={{
+                                                defaultState : Seat3,
+                                                checkedState : Seat2,
+                                                reservedState : Seat4,
+                                                disabledState : Seat1
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="row mt-4">
+                                    <div className="bus-details">
+                                        <button className='btn btn-primary' onClick={handleGoBack}>이전화면</button>&nbsp;&nbsp;&nbsp;
+
+                                    </div>
+                                </div>
+                                <div className='row mt-5 mb-5'>
+                                    <h3>예약하기</h3>
+                                    <div className='col'>
+                                        <select id="reservationCount" className="form-select w-50"  >
+                                            <option value="">예약인원</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                    <div className='col text-center'>
+                                        <select id="reservationType" className="form-select w-50" onChange={handleReservationTypeChange}>
+                                            <option value="">승객타입</option>
+                                            <option value="성인">성인</option>
+                                            <option value="청소년">청소년</option>
+                                            <option value="어린이">어린이</option>
+                                        </select>
+                                    </div>
+                                    <div className='row mt-4'>
+                                        <div className='col'>
+                                            <button className='btn'>결제하러가기</button>
+                                        </div>
+                                    </div>
+                                    <div className='row mt-4 mb-5'>
+                                        <div className='col'>
+                                            {checkedSeats.map(checkedSeat => (<td>선택한좌석 : {checkedSeat.seatNo} 번 좌석</td>))}
+                                        </div>
+                                        <div className='col text-center'>
+                                            <label>결제금액 : {fare !== null ? `${fare}원` : '선택된 승객 타입이 없습니다'}</label>
+                                        </div>
+                                    </div>
+                                    <div className='row mt-4 mb-5'>
+                                        <div className='col'>
+                                        </div>
+                                    </div>
+                                    <div className='row mt-4 mb-5'>
+                                        <div className='col'>
+                                            <button className='btn btn-primary w-25' onClick={saveInput} >예약</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
                             <>
                                 <h1>여기에 예약관련 만들거임</h1>
                                 <button className='btn btn-primary' onClick={saveInput} >예약</button>
                             </>
                         </>
+
+                        </div>
+                    </div>
+                </>
+
             )}
                     </>
                     );

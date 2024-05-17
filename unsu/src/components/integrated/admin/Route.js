@@ -4,6 +4,7 @@ import Jumbotron from "../../../Jumbotron";
 import { Modal } from "bootstrap";
 import { FaRoad } from "react-icons/fa";
 import { FaRightLong } from "react-icons/fa6";
+import Pagination from "../../utils/Pagination";
 
 
 const Route = () => {
@@ -38,6 +39,11 @@ const Route = () => {
         routeWay: "",
         edit: false
     });
+    //출발,도착 터미널 같을 때 담기
+    const [filteredRoutes, setFilteredRoutes] = useState([]);
+    //페이징
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage, setPostsPerPage] = useState(10);
 
 
     //effect
@@ -46,6 +52,9 @@ const Route = () => {
         loadTerminalData();
         loadBusData();
     }, []);
+    useEffect(() => {
+        filterRoutes();
+    }, [routes]);
     //노선 목록
     const loadData = useCallback(async () => {
         const resp = await axios.get("/route/");
@@ -115,7 +124,15 @@ const Route = () => {
     }, [input]);
 
 
-
+    //출발,도착 터미널명이 같을 경우 목록에 한 번씩 출력해주는 코드
+    const filterRoutes = () => {
+        const filtered = routes.filter((route, index) => {
+            return index === 0 || 
+                (routes[index - 1].startTerminal !== route.startTerminal || 
+                 routes[index - 1].endTerminal !== route.endTerminal);
+        });
+        setFilteredRoutes(filtered);
+    };
 
     //상세-선택창 값이 유지되고 출력가능하게 하기
     const handleChange = (e) => {
@@ -300,6 +317,11 @@ const Route = () => {
         modal.hide();
     }, [bsModal2]);
 
+    //페이징계산
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = filteredRoutes.slice(indexOfFirstPost, indexOfLastPost);
+
     return (
         <>
             <Jumbotron title="노선 관리" />
@@ -307,7 +329,7 @@ const Route = () => {
             {/* 신규 생성 버튼 */}
             <div className="row mt-4">
                 <div className="col text-end">
-                    <button className="btn btn-secondary"
+                    <button className="btn btn-outline-secondary"
                         onClick={e => openModalCreate()}>
                         <FaRoad /> &nbsp;
                         노선 등록
@@ -318,8 +340,8 @@ const Route = () => {
             {/* 목록 */}
             <div className="row mt-4">
                 <div className="col">
-                    <table className="table table-bordered">
-                        <thead className="table-warning">
+                    <table className="table table-hover text-center">
+                        <thead className="table-primary">
                             <tr>
                                 <th>출발지</th>
                                 <th>도착지</th>
@@ -329,8 +351,8 @@ const Route = () => {
                         </thead>
                         <tbody>
                             {/* 출발지,도착지 같으면 한 번만 출력되게 */}
-                            {routes.map((route, index) => (
-                                (index === 0 || routes[index - 1].startTerminal !== route.startTerminal || routes[index - 1].endTerminal !== route.endTerminal) && (
+                            {currentPosts.map((route, index) => (
+                                // (index === 0 || routes[index - 1].startTerminal !== route.startTerminal || routes[index - 1].endTerminal !== route.endTerminal) && (
                                     <tr key={route.routeNo}>
                                         <td onClick={e => openModalInfo(route)}
                                             style={{ cursor: 'pointer' }}>
@@ -350,11 +372,21 @@ const Route = () => {
                                         </td>
                                     </tr>
                                 )
-                            ))}
+                            // )
+                        )}
                         </tbody>
                     </table>
                 </div>
             </div>
+
+
+            {/* Pagination */}
+            <Pagination
+                postsPerPage={postsPerPage}
+                totalPages={Math.ceil(filteredRoutes.length / postsPerPage)}
+                paginate={setCurrentPage}
+                currentPage={currentPage}
+            />
 
 
 
@@ -475,11 +507,11 @@ const Route = () => {
 
 
                         <div className="modal-footer">
-                            <button className="btn btn-success me-2"
+                            <button className="btn btn-outline-success me-2"
                                 onClick={e => saveInput()}>
                                 등록
                             </button>
-                            <button className="btn btn-danger"
+                            <button className="btn btn-outline-danger"
                                 onClick={e => cancelInput()}>
                                 취소
                             </button>
@@ -603,11 +635,11 @@ const Route = () => {
 
                                     <div className="row mt-4">
                                         <div className="col text-end">
-                                            <button className="btn btn-success me-3"
+                                            <button className="btn btn-outline-success me-2"
                                                 onClick={e => saveEditRoute(selectRoute)}>
                                                 저장
                                             </button>
-                                            <button className="btn btn-warning"
+                                            <button className="btn btn-outline-danger"
                                                 onClick={e => cancelEditRoute(selectRoute)}>
                                                 취소
                                             </button>
@@ -686,17 +718,17 @@ const Route = () => {
                                     <hr />
                                     <div className="row mt-3">
                                         <div className="col">
-                                            <button className="btn btn-danger"
+                                            <button className="btn btn-outline-danger"
                                                 onClick={e => deleteRoute(selectRoute)}>
                                                 삭제
                                             </button>
                                         </div>
                                         <div className="col text-end">
-                                            <button className="btn btn-primary me-3"
+                                            <button className="btn btn-outline-primary me-2"
                                                 onClick={e => editRoute(selectRoute)}>
                                                 수정
                                             </button>
-                                            <button className="btn btn-light"
+                                            <button className="btn btn-outline-secondary"
                                                 onClick={e => closeModalInfo()}>
                                                 닫기
                                             </button>

@@ -1,5 +1,7 @@
+import { useNavigate } from "react-router";
 import axios from "../../utils/CustomAxios";
 import React, { useCallback, useState } from 'react';
+import Jumbotron from "../../../Jumbotron";
 
 
 const Point = ()=>{
@@ -27,15 +29,19 @@ const Point = ()=>{
             });
             console.log('오예:', response.data);
             alert('등록되었습니다. 관리자 승인 후 포인트 충전이 완료됩니다.');
+            
         } catch (error) {
             console.error('ㅡㅡ:', error);
             alert('오류가 발생하였습니다. 다시 시도해주십시오.');
         }
+        navigator("/mypage");
     }, [pointTest]); // 의존성 배열에 추가
+
+    const navigator = useNavigate();
 
     return (
         <>
-            <h1>포인트 충전</h1>
+            <Jumbotron title="포인트 충전" />
             
             <div className='row mt-4'>
                 <div className='col'>

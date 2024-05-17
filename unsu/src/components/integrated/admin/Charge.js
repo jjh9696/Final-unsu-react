@@ -19,11 +19,18 @@ const Charge = () => {
         chargePrice: ""
     });
     const [backup, setBackup] = useState(null); //백업
+    //state
+    const [currentPages, setCurrentPages] = useState(1);
+    const [postPerPages, setPostPerPages] = useState(5);
 
     //불러와
     useEffect(() => {
         loadData();
     }, []);
+    //유즈이펙트
+    useEffect(() => {
+        setPostPerPages(5);
+    }, [charges]);
     //콜백해
     const loadData = useCallback(async () => {
         const resp = await axios.get("/charge/");
@@ -126,7 +133,7 @@ const Charge = () => {
     //원화로 포맷하기
     const formatCurrency = (value) => {
         return value.toLocaleString('ko-KR', { currency: 'KRW' });
-      };
+    };
 
 
     //모달
@@ -142,13 +149,18 @@ const Charge = () => {
         modal.hide();
     }, [bsModal]);
 
+    //페이징 계산
+    const indexOfLastPost = currentPages * postPerPages;
+    const indexOfFirstPost = indexOfLastPost - postPerPages;
+    const currentPost = charges.slice(indexOfFirstPost, indexOfLastPost);
+
     return (
         <>
             <Jumbotron title="요금 관리" />
 
             <div className="row mt-4">
                 <div className="col text-end">
-                    <button className="btn btn-light" onClick={e => openModalCreate()}>
+                    <button className="btn btn-outline-secondary" onClick={e => openModalCreate()}>
                         <FcMoneyTransfer /> &nbsp;
                         요금 등록
                     </button>
@@ -157,8 +169,8 @@ const Charge = () => {
 
             <div className="row mt-4">
                 <div className="col">
-                    <table className="table table-striped table-hover">
-                        <thead className="text-center">
+                    <table className="table table-hover">
+                        <thead className="text-center table-primary">
                             <tr>
                                 <th style={{ width: '12%' }}>번호</th>
                                 <th>승객</th>
@@ -168,7 +180,7 @@ const Charge = () => {
                             </tr>
                         </thead>
                         <tbody className="text-center">
-                            {charges.map(charge => (
+                            {currentPost.map(charge => (
                                 <tr key={charge.chargeNo}>
                                     {charge.edit === true ? (
                                         <>
@@ -177,7 +189,7 @@ const Charge = () => {
                                                 <input type="text" name="chargeType"
                                                     className="form-control"
                                                     value={charge.chargeType}
-                                                    onChange={e =>changeCharge(e,charge)} />
+                                                    onChange={e => changeCharge(e, charge)} />
                                             </td>
                                             <td>
                                                 <select type="text" name="gradeType"
@@ -194,7 +206,7 @@ const Charge = () => {
                                                 <input type="text" name="chargePrice"
                                                     className="form-control"
                                                     value={charge.chargePrice}
-                                                    onChange={e =>changeCharge(e,charge)} />
+                                                    onChange={e => changeCharge(e, charge)} />
                                             </td>
                                             <td>
                                                 <FaCoins className="text-warning"
@@ -215,13 +227,13 @@ const Charge = () => {
                                             <td>
                                                 <MdEdit className="text-primary"
                                                     style={{ cursor: 'pointer' }}
-                                                    onClick={e=>editCharge(charge)}
+                                                    onClick={e => editCharge(charge)}
                                                     title="수정" />
                                                 &nbsp;&nbsp;&nbsp;
                                                 <MdOutlineCreditCardOff className="text-danger"
                                                     onClick={e => deleteCharge(charge)}
-                                                    style={{ cursor: 'pointer' }} 
-                                                    title="삭제"/>
+                                                    style={{ cursor: 'pointer' }}
+                                                    title="삭제" />
                                             </td>
                                         </>
                                     )}
@@ -229,6 +241,34 @@ const Charge = () => {
                             ))}
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+
+            {/* 페이지네이션 */}
+            <div className="pagination-container">
+                <div className="pagination d-flex justify-content-center">
+                    <nav aria-label="Page navigation">
+                        <ul className="pagination">
+                            <li className={`page-item ${currentPages === 1 ? 'disabled' : ''}`}>
+                                <button className="page-link" onClick={() => setCurrentPages(prev => Math.max(prev - 1, 1))}>
+                                    이전
+                                </button>
+                            </li>
+                            {Array.from({ length: Math.ceil(charges.length / postPerPages) }, (_, index) => (
+                                <li key={index} className={`page-item ${currentPages === index + 1 ? 'active' : ''}`}>
+                                    <button className="page-link" onClick={() => setCurrentPages(index + 1)}>
+                                        {index + 1}
+                                    </button>
+                                </li>
+                            ))}
+                            <li className={`page-item ${currentPages === Math.ceil(charges.length / postPerPages) ? 'disabled' : ''}`}>
+                                <button className="page-link" onClick={() => setCurrentPages(prev => Math.min(prev + 1, Math.ceil(charges.length / postPerPages)))}>
+                                    다음
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
 
