@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import SockJS from 'sockjs-client';
 import moment from 'moment';
 import axios from "../../utils/CustomAxios";
-import { loginIdState } from '../../utils/RecoilData';
-import { loginLevelState } from '../../utils/RecoilData';
+import { loginIdState, loginLevelState, isLoginState } from '../../utils/RecoilData';
 import './MemberChat.css'; // CSS 파일 임포트
 
 const MemberChat = () => {
+  const isLogin = useRecoilValue(isLoginState);
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [socket, setSocket] = useState(null);
