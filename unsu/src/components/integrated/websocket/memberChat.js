@@ -134,7 +134,7 @@ const MemberChat = () => {
           onChange={handleInputChange}
           onKeyDown={handleKeyDown} // 엔터 키 이벤트 핸들러
         />
-        <div className="btn-send" onClick={handleSendMessage}>전송</div> {/* 클릭 이벤트 핸들러 */}
+        <div className="btn-send btn btn-success" onClick={handleSendMessage}>전송</div> {/* 클릭 이벤트 핸들러 */}
       </div>
       <hr />
       <div className="chat-wrapper">

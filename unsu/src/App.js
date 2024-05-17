@@ -5,12 +5,13 @@ import SideBar from './components/SideBar';
 import AdminSideBar from './components/integrated/admin/AdminSideBar';
 import { Route, Routes } from 'react-router';
 import { useRecoilState, useRecoilValue } from "recoil";
-import { Suspense, lazy, useCallback, useEffect } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useState , startTransition } from 'react';
 import { loginIdState, loginLevelState, isLoginState, isAdminState } from './components/utils/RecoilData';
 import LoadingScreen from './components/LoadingScreen';
 import axios from './components/utils/CustomAxios';
 import RoundTrip from "./components/RoundTrip";
 import { Link } from "react-router-dom";
+import { Modal } from 'react-bootstrap';
 
 // 컴포넌트 배치
 
@@ -52,6 +53,34 @@ const App = () => {
   // recoil value
   const isLogin = useRecoilValue(isLoginState);
   const isAdmin = useRecoilValue(isAdminState);
+
+  //websocket
+  const [isChatbotModalOpen, setIsChatbotModalOpen] = useState(false);
+  const [isMemberChatModalOpen, setIsMemberChatModalOpen] = useState(false);
+
+  const openChatbotModal = () => {
+    startTransition(() => {
+      setIsChatbotModalOpen(true);
+    });
+  };
+
+  const closeChatbotModal = () => {
+    startTransition(() => {
+      setIsChatbotModalOpen(false);
+    });
+  };
+
+  const openMemberChatModal = () => {
+    startTransition(() => {
+      setIsMemberChatModalOpen(true);
+    });
+  };
+
+  const closeMemberChatModal = () => {
+    startTransition(() => {
+      setIsMemberChatModalOpen(false);
+    });
+  };
 
   // effect
   useEffect(() => {
@@ -131,8 +160,8 @@ const App = () => {
             className="live-chat-wrapper"
             aria-label="Live Chat"
             role="button"
-            title="Live Chat"
             tabIndex="0"
+            onClick={openMemberChatModal}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -158,7 +187,7 @@ const App = () => {
                   <span role="img" aria-label="chat">💬</span>
                 </div>
               </span>
-              <span className="live-chat-wrapper-label" style={{ fontSize: '16px' }}> 상담사 연결 </span>
+              <span className="live-chat-wrapper-label" style={{ fontSize: '16px' }} > 상담사 연결 </span>
             </div>
             <div id="divBadge" className="live-chat-badge" style={{
               width: '10px',
@@ -172,8 +201,8 @@ const App = () => {
             className="live-chat-wrapper"
             aria-label="Live Chat"
             role="button"
-            title="Live Chat"
             tabIndex="0"
+            onClick={openChatbotModal}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -197,10 +226,10 @@ const App = () => {
                   alignItems: 'center'
                 }}>
                   {/* 아이콘 이미지나 폰트 아이콘을 여기에 추가할 수 있습니다 */}
-                  <span role="img" aria-label="chat">💬</span>
+                  <span role="img" aria-label="chat">🚍</span>
                 </div>
               </span>
-              <span className="live-chat-wrapper-label" style={{ fontSize: '16px' }}> 챗봇 연결 </span>
+              <span className="live-chat-wrapper-label" style={{ fontSize: '16px' }} > 챗봇 연결 </span>
             </div>
             <div id="divBadge" className="live-chat-badge" style={{
               width: '10px',
@@ -210,7 +239,24 @@ const App = () => {
               marginLeft: '10px'
             }}></div>
           </div>
-          
+            <Modal show={isChatbotModalOpen} onHide={closeChatbotModal}>
+              <Modal.Header closeButton>
+                <Modal.Title>운수좋은날 챗봇</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Chatbot />
+              </Modal.Body>
+            </Modal>
+
+            <Modal show={isMemberChatModalOpen} onHide={closeMemberChatModal}>
+              <Modal.Header closeButton>
+                <Modal.Title>운수좋은날 문의</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <MemberChat />
+              </Modal.Body>
+            </Modal>
+
 
         </div>
       </div>

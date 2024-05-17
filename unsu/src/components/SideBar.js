@@ -36,6 +36,7 @@ const basicTheme = {
 
 const SideBar = () => {
 
+  //websocket
   const [isChatbotModalOpen, setIsChatbotModalOpen] = useState(false);
   const [isMemberChatModalOpen, setIsMemberChatModalOpen] = useState(false);
 
