@@ -102,7 +102,7 @@ import {
                       <SubMenu label="게시판관리" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
                               <MenuItem component={<Link to="/notice" />}> 공지사항 </MenuItem>
-                              <MenuItem component={<Link to="/notice" />}> 유실물 관리 </MenuItem>
+                              <MenuItem component={<Link to="/reviewList" />}> 이용후기 </MenuItem>
                           </Menu>
                       </SubMenu>
                   </Menu>
