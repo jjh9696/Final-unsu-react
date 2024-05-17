@@ -37,8 +37,8 @@ const Home = () => {
             <div className="col-lg-5">
               <h1 className="font-weight-light">운수좋은날</h1>
               <div className="neon-sign-container">
-      <p className="neon-sign-text"> 글씨야 움직여라
-
+      <p className="neon-sign-text"> 
+          
       </p>
     </div>
               <Button variant="info" as={NavLink} to="/reservation">고속버스예매</Button>

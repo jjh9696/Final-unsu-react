@@ -15,6 +15,7 @@ const Home = () => {
   const [isChatbotModalOpen, setIsChatbotModalOpen] = useState(false);
   const [isMemberChatModalOpen, setIsMemberChatModalOpen] = useState(false);
 
+
   const openChatbotModal = () => {
     setIsChatbotModalOpen(true);
   };
@@ -34,6 +35,7 @@ const Home = () => {
   return (
     <>
       {/* <Navbar bg="dark" variant="dark">
+
           <Container>
             <Navbar.Brand href="#home">Start Bootstrap</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
