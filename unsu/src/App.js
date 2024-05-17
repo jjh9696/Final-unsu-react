@@ -131,7 +131,7 @@
                   <Route path="/pointList" element={<PointList/>} />
                   <Route path="/point" element={<Point/>} />
                   <Route path="/orderEnd" element={<OrderEnd/>} />
-                  <Route path="/home" element={<Home/>} />
+                  <Route path="/" element={<Home/>} />
                   <Route path="/orderList" element={<OrderList/>} />
 
                 </Routes>
