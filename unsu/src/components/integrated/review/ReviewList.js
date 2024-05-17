@@ -23,6 +23,7 @@ const ReviewList = () => {
         reviewTitle: "", reviewContent: "", reviewStar: 0
     });
     const [firstLoad, setFirstLoad] = useState(true);
+    const [reviewCount, setReviewCount] = useState();
 
     //recoil state
     const [loginId, setLoginId] = useRecoilState(loginIdState);
@@ -35,6 +36,7 @@ const ReviewList = () => {
     //callback
     const loadData = useCallback(async () => {
         const resp = await axios.get(`/review/page/${page}/size/${size}`);
+        console.log("API 응답:", resp.data); //응답 데이터 확인
         setReviews(resp.data.list);
         setCount(resp.data.count);
         setLast(resp.data.last);
@@ -51,11 +53,27 @@ const ReviewList = () => {
     const loadMoreReviews = async () => {
         const nextPage = page + 1;
         const resp = await axios.get(`/review/page/${nextPage}/size/${size}`);
+        console.log("API 응답2:", resp.data); //응답 데이터 확인
         setReviews(prevReviews => [...prevReviews, ...resp.data.list]);
         setCount(resp.data.count);
         setLast(resp.data.last);
         setPage(nextPage);
     };
+
+    // 후기 총 개수를 가져오는 함수
+    const fetchReviewCount = async () => {
+        try {
+            const response = await axios.get('/review/count');
+            setReviewCount(response.data); // 서버에서 받은 후기 총 개수로 상태 업데이트
+        } catch (error) {
+            console.error('Error fetching review count:', error);
+        }
+    };
+
+    // 컴포넌트가 마운트될 때 후기 총 개수를 가져오도록 설정
+    useEffect(() => {
+        fetchReviewCount();
+    }, []);
 
     // useEffect(() => {
     //     if (loading.current === true) {
@@ -173,7 +191,7 @@ const ReviewList = () => {
     }, [loginId, loadData]);
     //console.log("loginId = " + loginId);
 
-    const inputFunc = (rating) =>{
+    const inputFunc = (rating) => {
         setInput({ ...input, reviewStar: rating });
     }
 
@@ -183,6 +201,7 @@ const ReviewList = () => {
             <div className="row mt-5 sticky-top">
                 <div className="col">
                     <h2>이용후기</h2>
+                    <p>총 후기 개수: {reviewCount}개</p>
                 </div>
 
                 {/* 추가 버튼 */}
@@ -242,7 +261,7 @@ const ReviewList = () => {
                                         onChange={e => changeInput(e)}
                                         className="form-control"
                                         style={{ height: "210px" }}
-                                        />
+                                    />
                                 </div>
                             </div>
 
@@ -267,6 +286,7 @@ const ReviewList = () => {
                                 <h2 className="accordion-header" id={`heading${review.reviewNo}`}>
                                     <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#collapse${review.reviewNo}`} aria-expanded="true" aria-controls={`collapse${review.reviewNo}`}>
                                         <div className="col">
+                                            {review.reviewNo}
                                             <p>
                                                 {review.reviewWriter.replace(review.reviewWriter.substring(1, review.reviewWriter.length - 1), '***')}
                                                 님의 후기
@@ -288,6 +308,11 @@ const ReviewList = () => {
                                 <div id={`collapse${review.reviewNo}`} className="accordion-collapse collapse" aria-labelledby={`heading${review.reviewNo}`} data-bs-parent="#reviewAccordion">
                                     <div className="accordion-body">
                                         <p>{review.reviewContent}</p>
+                                        <div>
+                                            좋아요 상태: {review.likeVO ? (review.likeVO.state ? '좋아요' : '좋아요 취소') : '정보 없음'}
+                                            <br />
+                                            좋아요 개수: {review.likeVO ? review.likeVO.count : '0'}
+                                        </div>
                                         {loginLevel === '관리자' && (//조건으로 버튼 보여주기
                                             <span className="text-danger text-end" style={{ cursor: 'pointer' }} onClick={e => deleteReview(review)}>삭제</span>
                                         )}
