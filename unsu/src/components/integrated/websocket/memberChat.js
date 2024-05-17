@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import SockJS from 'sockjs-client';
 import moment from 'moment';
 import axios from "../../utils/CustomAxios";
-import { loginIdState } from '../../utils/RecoilData';
-import { loginLevelState } from '../../utils/RecoilData';
+import { loginIdState, loginLevelState, isLoginState } from '../../utils/RecoilData';
 import './MemberChat.css'; // CSS 파일 임포트
 
 const MemberChat = () => {
+  const isLogin = useRecoilValue(isLoginState);
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [socket, setSocket] = useState(null);
@@ -134,7 +134,7 @@ const MemberChat = () => {
           onChange={handleInputChange}
           onKeyDown={handleKeyDown} // 엔터 키 이벤트 핸들러
         />
-        <div className="btn-send" onClick={handleSendMessage}>전송</div> {/* 클릭 이벤트 핸들러 */}
+        <div className="btn-send btn btn-success" onClick={handleSendMessage}>전송</div> {/* 클릭 이벤트 핸들러 */}
       </div>
       <hr />
       <div className="chat-wrapper">

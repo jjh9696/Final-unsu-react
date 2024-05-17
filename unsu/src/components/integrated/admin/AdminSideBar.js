@@ -102,7 +102,7 @@ import {
                       <SubMenu label="게시판관리" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
                               <MenuItem component={<Link to="/notice" />}> 공지사항 </MenuItem>
-                              <MenuItem component={<Link to="/notice" />}> 유실물 관리 </MenuItem>
+                              <MenuItem component={<Link to="/reviewList" />}> 이용후기 </MenuItem>
                           </Menu>
                       </SubMenu>
                   </Menu>
@@ -115,9 +115,9 @@ import {
                       </SubMenu>
                   </Menu>
                   <Menu>
-                      <SubMenu label="매출 관리" defaultClose>
+                      <SubMenu label="통계" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
-                              <MenuItem component={<Link to="/" />}> 회원 조회 </MenuItem>
+                              <MenuItem component={<Link to="/reservationStats" />}> 통계 목록 </MenuItem>
                           </Menu>
                       </SubMenu>
                   </Menu>

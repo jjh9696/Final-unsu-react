@@ -5,12 +5,13 @@ import SideBar from './components/SideBar';
 import AdminSideBar from './components/integrated/admin/AdminSideBar';
 import { Route, Routes } from 'react-router';
 import { useRecoilState, useRecoilValue } from "recoil";
-import { Suspense, lazy, useCallback, useEffect } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useState, startTransition } from 'react';
 import { loginIdState, loginLevelState, isLoginState, isAdminState } from './components/utils/RecoilData';
 import LoadingScreen from './components/LoadingScreen';
 import axios from './components/utils/CustomAxios';
 import RoundTrip from "./components/RoundTrip";
 import { Link } from "react-router-dom";
+import { Modal } from 'react-bootstrap';
 
 // 컴포넌트 배치
 
@@ -43,6 +44,7 @@ const Point = lazy(() => import("./components/integrated/member/Point"));
 const OrderEnd = lazy(() => import("./components/integrated/member/OrderEnd"));
 const OrderList = lazy(() => import("./components/integrated/member/OrderList"));
 const Home = lazy(() => import("./components/Home"));
+const ReservationStats = lazy(() => import("./components/integrated/admin/ReservationStats"));
 
 const App = () => {
   // recoil state
@@ -52,6 +54,34 @@ const App = () => {
   // recoil value
   const isLogin = useRecoilValue(isLoginState);
   const isAdmin = useRecoilValue(isAdminState);
+
+  //websocket
+  const [isChatbotModalOpen, setIsChatbotModalOpen] = useState(false);
+  const [isMemberChatModalOpen, setIsMemberChatModalOpen] = useState(false);
+
+  const openChatbotModal = () => {
+    startTransition(() => {
+      setIsChatbotModalOpen(true);
+    });
+  };
+
+  const closeChatbotModal = () => {
+    startTransition(() => {
+      setIsChatbotModalOpen(false);
+    });
+  };
+
+  const openMemberChatModal = () => {
+    startTransition(() => {
+      setIsMemberChatModalOpen(true);
+    });
+  };
+
+  const closeMemberChatModal = () => {
+    startTransition(() => {
+      setIsMemberChatModalOpen(false);
+    });
+  };
 
   // effect
   useEffect(() => {
@@ -88,6 +118,7 @@ const App = () => {
             <SideBar />
           )}
         </div>
+
         <div className='container'>
           <div className='row mt-4'>
             <div className='col-10 offset-sm-1'>
@@ -123,57 +154,65 @@ const App = () => {
                   <Route path="/orderEnd" element={<OrderEnd />} />
                   <Route path="/" element={<Home />} />
                   <Route path="/orderList" element={<OrderList />} />
+                  <Route path="/reservationStats" element={<ReservationStats />} />
                 </Routes>
               </Suspense>
             </div>
           </div>
-          <div
-            className="live-chat-wrapper"
-            aria-label="Live Chat"
-            role="button"
-            title="Live Chat"
-            tabIndex="0"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              backgroundColor: '#fff',
-              padding: '10px',
-              borderRadius: '5px',
-              boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)'
-            }}
-          >
-            <div className="live-chat-wrapper-content" style={{ display: 'flex', alignItems: 'center' }}>
-              <span className="live-chat-wrapper-iconwrapper" style={{ marginRight: '10px' }}>
-                <div className="live-chat-wrapper-icon" style={{
-                  width: '34px',
-                  height: '34px',
-                  backgroundColor: '#ccc',
-                  borderRadius: '50%',
+          {isLogin && (
+            <>
+              <div
+                className="live-chat-wrapper"
+                aria-label="Live Chat"
+                role="button"
+                tabIndex="0"
+                onClick={openMemberChatModal}
+                style={{
                   display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}>
-                  {/* 아이콘 이미지나 폰트 아이콘을 여기에 추가할 수 있습니다 */}
-                  <span role="img" aria-label="chat">💬</span>
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  backgroundColor: '#fff',
+                  padding: '10px',
+                  borderRadius: '5px',
+                  boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)'
+                }}
+              >
+                <div className="live-chat-wrapper-content" style={{ display: 'flex', alignItems: 'center' }}>
+                  <span className="live-chat-wrapper-iconwrapper">
+                    <div className="live-chat-wrapper-icon" style={{
+                      width: '34px',
+                      height: '34px',
+                      backgroundColor: '#ccc',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginLeft: '-4px',
+                      marginRight: '10px'
+                    }}>
+                      {/* 아이콘 이미지나 폰트 아이콘을 여기에 추가할 수 있습니다 */}
+                      <span role="img" aria-label="chat">💬</span>
+                    </div>
+                  </span>
+                  <span className="live-chat-wrapper-label" style={{ fontSize: '16px'}} > 상담사 연결 </span>
                 </div>
-              </span>
-              <span className="live-chat-wrapper-label" style={{ fontSize: '16px' }}> 상담사 연결 </span>
-            </div>
-            <div id="divBadge" className="live-chat-badge" style={{
-              width: '10px',
-              height: '10px',
-              backgroundColor: 'red',
-              borderRadius: '50%',
-              marginLeft: '10px'
-            }}></div>
-          </div>
+              </div>
+              <Modal show={isMemberChatModalOpen} onHide={closeMemberChatModal}>
+                <Modal.Header closeButton>
+                  <Modal.Title>운수좋은날 문의</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <MemberChat />
+                </Modal.Body>
+              </Modal>
+            </>
+          )}
           <div
             className="live-chat-wrapper"
             aria-label="Live Chat"
             role="button"
-            title="Live Chat"
             tabIndex="0"
+            onClick={openChatbotModal}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -194,23 +233,28 @@ const App = () => {
                   borderRadius: '50%',
                   display: 'flex',
                   justifyContent: 'center',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  marginLeft: '-4px',
+                  marginRight: '5px'
                 }}>
                   {/* 아이콘 이미지나 폰트 아이콘을 여기에 추가할 수 있습니다 */}
-                  <span role="img" aria-label="chat">💬</span>
+                  <span role="img" aria-label="chat">🚍</span>
                 </div>
               </span>
-              <span className="live-chat-wrapper-label" style={{ fontSize: '16px' }}> 챗봇 연결 </span>
+              <span className="live-chat-wrapper-label" style={{ fontSize: '16px' }} > 챗봇 연결 </span>
             </div>
-            <div id="divBadge" className="live-chat-badge" style={{
-              width: '10px',
-              height: '10px',
-              backgroundColor: 'red',
-              borderRadius: '50%',
-              marginLeft: '10px'
-            }}></div>
           </div>
-          
+          <Modal show={isChatbotModalOpen} onHide={closeChatbotModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>운수좋은날 챗봇</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Chatbot />
+            </Modal.Body>
+          </Modal>
+
+
+
 
         </div>
       </div>

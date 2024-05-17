@@ -95,7 +95,7 @@
 }
 
 .live-chat-wrapper:hover {
-  width: 150px;
+  width: 155px;
   transition: width 0.25s;
 }
 @media screen and (min-width: 960px) {
@@ -10979,6 +10979,13 @@ textarea.form-control-lg {
   .d-print-none {
     display: none !important;
   }
+  .fixed-size {
+    width: 400px; /* 원하는 고정 너비 */
+    height: 300px; /* 원하는 고정 높이 */
+    object-fit: cover; /* 이미지가 고정된 크기에 맞추어 잘리도록 합니다 */
+}
+
+
 
 
 

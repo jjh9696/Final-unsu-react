@@ -7,6 +7,7 @@ import { Rating } from "react-simple-star-rating";
 import { Modal } from "bootstrap";
 import { IoMdAdd } from "react-icons/io";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
 import { MdOutlineExpandMore } from "react-icons/md";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { isLoginState, loginIdState, loginLevelState } from "../../utils/RecoilData";
@@ -23,11 +24,11 @@ const ReviewList = () => {
         reviewTitle: "", reviewContent: "", reviewStar: 0
     });
     const [firstLoad, setFirstLoad] = useState(true);
+    const [reviewCount, setReviewCount] = useState();
 
     //recoil state
     const [loginId, setLoginId] = useRecoilState(loginIdState);
     const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
-
 
     //ref 변형 사용
     const loading = useRef(false);
@@ -35,6 +36,15 @@ const ReviewList = () => {
     //callback
     const loadData = useCallback(async () => {
         const resp = await axios.get(`/review/page/${page}/size/${size}`);
+        setReviews(resp.data.list);
+        setCount(resp.data.count);
+        setLast(resp.data.last);
+        setFirstLoad(false);
+    }, [page, size]);
+
+    //별점많은 순서 목록 불러오기
+    const mostStar = useCallback(async () => {
+        const resp = await axios.get(`/review/starPage/${page}/starSize/${size}`);
         setReviews(resp.data.list);
         setCount(resp.data.count);
         setLast(resp.data.last);
@@ -56,6 +66,21 @@ const ReviewList = () => {
         setLast(resp.data.last);
         setPage(nextPage);
     };
+
+    // 후기 총 개수를 가져오는 함수
+    const fetchReviewCount = async () => {
+        try {
+            const response = await axios.get('/review/count');
+            setReviewCount(response.data); // 서버에서 받은 후기 총 개수로 상태 업데이트
+        } catch (error) {
+            console.error('Error fetching review count:', error);
+        }
+    };
+
+    // 컴포넌트가 마운트될 때 후기 총 개수를 가져오도록 설정
+    useEffect(() => {
+        fetchReviewCount();
+    }, []);
 
     // useEffect(() => {
     //     if (loading.current === true) {
@@ -173,16 +198,37 @@ const ReviewList = () => {
     }, [loginId, loadData]);
     //console.log("loginId = " + loginId);
 
-    const inputFunc = (rating) =>{
+    const inputFunc = (rating) => {
         setInput({ ...input, reviewStar: rating });
     }
 
-    //화면
+    // 좋아요 토글
+    const toggleLike = useCallback(async (reviewNo) => {
+        try {
+            const resp = await axios.post(`/ReviewLike/like/${reviewNo}`, {}, {
+                headers: {
+                    Authorization: axios.defaults.headers.common['Authorization']
+                }
+            });
+
+            // 좋아요 상태와 개수를 업데이트
+            setReviews(prevReviews => prevReviews.map(review =>
+                review.reviewNo === reviewNo ? { ...review, likeVO: resp.data } : review
+            ));
+        } catch (error) {
+            console.error('Error toggling like:', error);
+            alert('로그인이 필요합니다.');
+        }
+    }, []);
+
+    //화면  
     return (
         <>
+
             <div className="row mt-5 sticky-top">
                 <div className="col">
                     <h2>이용후기</h2>
+                    <p>총 후기 개수: {reviewCount}개</p>
                 </div>
 
                 {/* 추가 버튼 */}
@@ -192,6 +238,18 @@ const ReviewList = () => {
                         <IoMdAdd />
                         후기 작성
                     </button>
+                </div>
+                <hr />
+            </div>
+
+            <div className="row">
+                <div className="col text-end">
+                    <span className="btn btn-sm" onClick={e => mostStar()}>
+                        별점 높은 순서
+                    </span>
+                    <span className="btn btn-sm" onClick={e => loadData()}>
+                        최신 순서
+                    </span>
                 </div>
                 <hr />
             </div>
@@ -242,7 +300,7 @@ const ReviewList = () => {
                                         onChange={e => changeInput(e)}
                                         className="form-control"
                                         style={{ height: "210px" }}
-                                        />
+                                    />
                                 </div>
                             </div>
 
@@ -270,6 +328,15 @@ const ReviewList = () => {
                                             <p>
                                                 {review.reviewWriter.replace(review.reviewWriter.substring(1, review.reviewWriter.length - 1), '***')}
                                                 님의 후기
+                                                &nbsp;
+                                                <span className="like-icon"
+                                                    onClick={() => toggleLike(review.reviewNo)}>
+                                                    {review.likeVO && review.likeVO.state
+                                                        ? <FaThumbsUp style={{ color: 'red' }} />
+                                                        : <FaRegThumbsUp />}
+                                                    &nbsp;
+                                                    {review.likeVO ? review.likeVO.count : 0}
+                                                </span>
                                             </p>
                                             <Rating
                                                 initialValue={review.reviewStar} // 리뷰의 별점을 표시
@@ -277,8 +344,6 @@ const ReviewList = () => {
                                                 transition //애니메이션 효과(선택가능)
                                                 readonly
                                             />
-                                            &nbsp;
-                                            <strong>{review.reviewStar}</strong>
                                         </div>
 
                                         <div className="col text-start" style={{ maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}><br /><br />{review.reviewTitle}</div>
@@ -288,6 +353,9 @@ const ReviewList = () => {
                                 <div id={`collapse${review.reviewNo}`} className="accordion-collapse collapse" aria-labelledby={`heading${review.reviewNo}`} data-bs-parent="#reviewAccordion">
                                     <div className="accordion-body">
                                         <p>{review.reviewContent}</p>
+                                        <div className="text-end">
+
+                                        </div>
                                         {loginLevel === '관리자' && (//조건으로 버튼 보여주기
                                             <span className="text-danger text-end" style={{ cursor: 'pointer' }} onClick={e => deleteReview(review)}>삭제</span>
                                         )}

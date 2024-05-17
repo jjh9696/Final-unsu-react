@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom';
 import "./SideBar";
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
+import { isLoginState } from './utils/RecoilData';
+import { useRecoilValue } from "recoil";
 import Chatbot from './integrated/websocket/chatbot';
 import MemberChat from './integrated/websocket/memberChat';
 
@@ -36,6 +38,7 @@ const basicTheme = {
 
 const SideBar = () => {
 
+  //websocket
   const [isChatbotModalOpen, setIsChatbotModalOpen] = useState(false);
   const [isMemberChatModalOpen, setIsMemberChatModalOpen] = useState(false);
 
@@ -54,6 +57,8 @@ const SideBar = () => {
   const closeMemberChatModal = () => {
     setIsMemberChatModalOpen(false);
   };
+
+  const isLogin = useRecoilValue(isLoginState);
 
   const sidebarStyles = {
     height: '1000px',
@@ -124,7 +129,11 @@ const SideBar = () => {
               <MenuItem component={<Link to="/" />}> 자주하는 질문  </MenuItem>
               <MenuItem component={<Link to="/" />}> 유실물센터 안내</MenuItem>
               <MenuItem component={<Link to="/" />} onClick={openChatbotModal}> 챗봇 </MenuItem>
-              <MenuItem component={<Link to="/" />} onClick={openMemberChatModal}> 문의채팅 </MenuItem>
+              {isLogin && (
+                <>
+                  <MenuItem component={<Link to="/" />} onClick={openMemberChatModal}> 문의채팅 </MenuItem>
+                </>
+              )}
             </Menu>
           </SubMenu>
         </Menu>
