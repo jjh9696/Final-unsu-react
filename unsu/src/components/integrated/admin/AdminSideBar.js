@@ -117,7 +117,7 @@ import {
                   <Menu>
                       <SubMenu label="통계" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
-                              <MenuItem component={<Link to="/reservationList" />}> 통계 목록 </MenuItem>
+                              <MenuItem component={<Link to="/reservationStats" />}> 통계 목록 </MenuItem>
                           </Menu>
                       </SubMenu>
                   </Menu>
