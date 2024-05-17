@@ -81,7 +81,7 @@ const Home = () => {
                 <Card.Body>
                   <Card.Title>문의</Card.Title>
                   <Card.Text>
-                    
+                     
                   </Card.Text>
                   <Button variant="success" as={NavLink} to="/chatbot">챗봇</Button>
                   &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
