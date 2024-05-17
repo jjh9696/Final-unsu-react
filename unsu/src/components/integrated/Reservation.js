@@ -2,6 +2,11 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import axios from '../utils/CustomAxios';
 import { useNavigate } from "react-router";
 import { SeatGroup } from "hacademy-cinema-seat";
+import Seat1 from "../../images/seat1.png";
+import Seat2 from "../../images/seat2.png";
+import Seat3 from "../../images/seat3.png";
+import Seat4 from "../../images/seat4.png";
+import bus from "../../images/bus.png";
 
 const Reservation = () => {
     const [startRegion, setStartRegion] = useState('');
@@ -707,7 +712,7 @@ const Reservation = () => {
                                 <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
                                 <hr />
                                 <div className="row mt-4"  >
-                                    <div className="col " >
+                                    <div className="col " style={{ backgroundImage: `url(${bus})`, backgroundSize: 'cover' }}>
                                         {/* {seats.map((seat) => (
                                                             <button
                                                                 key={seat.seatNo}
@@ -741,6 +746,12 @@ const Reservation = () => {
                                             cols={[1, 2, '통로', 3, 4]}
                                             showNames
                                             onSeatClick={handleSeatClicks}
+                                            images={{
+                                                defaultState : Seat3,
+                                                checkedState : Seat2,
+                                                reservedState : Seat4,
+                                                disabledState : Seat1
+                                            }}
                                         />
                                     </div>
                                 </div>
