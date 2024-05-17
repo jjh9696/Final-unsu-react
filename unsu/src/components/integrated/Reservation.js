@@ -756,6 +756,7 @@ const Reservation = () => {
                                     </div>
                                 </div>
 
+
                                 <div className="row mt-4">
                                     <div className="bus-details">
                                         <button className='btn btn-primary' onClick={handleGoBack}>이전화면</button>&nbsp;&nbsp;&nbsp;
