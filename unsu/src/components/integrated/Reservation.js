@@ -192,7 +192,7 @@ const Reservation = () => {
     const handleCombinedClick = async (bus) => {
         // 데이터를 불러온 후에 모달을 열도록 선택
         await loadSeatData(bus.routeNo);
-    
+
         // reservationData 업데이트 후 로그 찍기
         const updatedReservationData = {
             ...reservationData,
@@ -202,16 +202,16 @@ const Reservation = () => {
         };
         setReservationData(updatedReservationData);
         console.log("Updated reservationData:", updatedReservationData);  // 변경된 상태 로깅
-    
+
         handleSelectBus();
         setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
         }, 500);
     };
-    
 
-     // 좌석 정보를 가져오는 함수
-     const loadSeatData = async (routeNo) => {
+
+    // 좌석 정보를 가져오는 함수
+    const loadSeatData = async (routeNo) => {
         try {
             //const resp = await axios.get(`/seat/${routeNo}/seat`);
             const resp = await axios.get(`/seat/reservation/${routeNo}`);
@@ -543,7 +543,7 @@ const Reservation = () => {
             alert(`좌석을 선택해주세요`);
         }
     }, [checkedSeats, reservationData]);
-    
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -687,52 +687,43 @@ const Reservation = () => {
                 </>
             ) : (
                 <>
-                    <div className="container d-flex justify-content-end">
-                        <div className="row mt-5 w-25 text-center me-5">
-                            <div className="col">
-                                <label>출발터미널</label><div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
-                                <label>도착터미널</label><div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
-                                <div className="col mt-4">
-                                    요금
-                                </div>
-                                <div className="row" >
-                                    <div className="col w-50 text-center mb-4">
-                                        <div className="col mt-2">
-                                            <p>프리미엄: {fares.premium}원</p>
-                                            <p>우등: {fares.business}원</p>
-                                            <p>일반: {fares.standard}원</p>
+                    <div className='container mt-5'>
+                        <div className='row'>
+                            {/* 출발/도착 터미널 및 요금 정보 */}
+                            <div className="col-md-4 text-center">
+                                <div className="row mt-5 w-100">
+                                    <div className="col">
+                                        <label>출발터미널</label>
+                                        <div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
+                                        <label>도착터미널</label>
+                                        <div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
+                                        <div className="col mt-4">
+                                            요금
+                                        </div>
+                                        <div className="row">
+                                            <div className="col text-center mb-4">
+                                                <div className="col mt-2">
+                                                    <p>프리미엄: {fares.premium}원</p>
+                                                    <p>우등: {fares.business}원</p>
+                                                    <p>일반: {fares.standard}원</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="row mt-2 w-100 text-center">
-                            <div className="col">
+                            {/* 버스 좌석 */}
+                            <div className="col-md-4 text-center">
                                 <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
                                 <hr />
-                                <div className="row mt-4"  >
-                                    <div className="col " style={{ backgroundImage: `url(${bus})`, backgroundSize: 'cover' }}>
-                                        {/* {seats.map((seat) => (
-                                                            <button
-                                                                key={seat.seatNo}
-                                                                (seat.seatNo)}
-                                                                style={{
-                                                                    backgroundColor:
-                                                                        selectedSeat === seat.seatNo ? "green" : "lightgray",
-                                                                    margin: "5px",
-                                                                    padding: "10px",
-                                                                    border: "1px solid black",
-                                                                    cursor: "pointer",
-                                                                }}
-                                                            >
-                                                                <p>{seat.seatRow}행</p>
-                                                                <p>{seat.seatColumn}열</p>
-                                                                <p>버스번호:{seat.busNo}</p>
-                                                            </button>
-                                                        ))} */}
-
-                                        {/* 좌석 라이브러리 */}
+                                <div className="row mt-4" style={{
+                                    backgroundImage: `url(${bus})`,
+                                    backgroundSize: 'contain',
+                                    backgroundRepeat: 'no-repeat',
+                                    paddingTop: '140px'
+                                }}>
+                                    <div className="col">
                                         <SeatGroup map={seats} setMap={setSeats}
                                             fields={{
                                                 no: 'seatNo',
@@ -744,43 +735,39 @@ const Reservation = () => {
                                             }}
                                             rows={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                                             cols={[1, 2, '통로', 3, 4]}
-                                            showNames
                                             onSeatClick={handleSeatClicks}
                                             images={{
-                                                defaultState : Seat3,
-                                                checkedState : Seat2,
-                                                reservedState : Seat4,
-                                                disabledState : Seat1
+                                                defaultState: Seat3,
+                                                checkedState: Seat2,
+                                                reservedState: Seat4,
+                                                disabledState: Seat1
                                             }}
                                         />
                                     </div>
                                 </div>
-
                                 <div className="row mt-4">
                                     <div className="bus-details">
                                         <button className='btn btn-primary' onClick={handleGoBack}>이전화면</button>&nbsp;&nbsp;&nbsp;
                                     </div>
                                 </div>
-                                <div className='row mt-5 mb-5'>
-                                    <h3>예약하기</h3>
+                            </div>
+
+                            {/* 예약 정보 */}
+                            <div className="col-md-4 text-center">
+                                <div className='row mt-5 mb-5 ms-5'>
                                     <div className='col'>
-                                        <select id="reservationCount" className="form-select w-50"  >
+                                        <select id="reservationCount" className="form-select w-100">
                                             <option value="">예약인원</option>
                                             <option value="1">1</option>
                                         </select>
                                     </div>
                                     <div className='col text-center'>
-                                        <select id="reservationType" className="form-select w-50" onChange={handleReservationTypeChange}>
+                                        <select id="reservationType" className="form-select w-100" onChange={handleReservationTypeChange}>
                                             <option value="">승객타입</option>
                                             <option value="성인">성인</option>
                                             <option value="청소년">청소년</option>
                                             <option value="어린이">어린이</option>
                                         </select>
-                                    </div>
-                                    <div className='row mt-4'>
-                                        <div className='col'>
-                                            <button className='btn'>결제하러가기</button>
-                                        </div>
                                     </div>
                                     <div className='row mt-4 mb-5'>
                                         <div className='col'>
@@ -790,19 +777,16 @@ const Reservation = () => {
                                             <label>결제금액 : {fare !== null ? `${fare}원` : '선택된 승객 타입이 없습니다'}</label>
                                         </div>
                                     </div>
-                                    <div className='row mt-4 mb-5'>
+                                    <div className='row mb-5'>
                                         <div className='col'>
-                                        </div>
-                                    </div>
-                                    <div className='row mt-4 mb-5'>
-                                        <div className='col'>
-                                            <button className='btn btn-primary w-25' onClick={saveInput} >예약</button>
+                                            <button className='btn btn-primary w-25' onClick={saveInput}>예약</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </>
             )}
         </>
