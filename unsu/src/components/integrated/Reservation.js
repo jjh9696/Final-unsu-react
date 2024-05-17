@@ -2,11 +2,15 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import axios from '../utils/CustomAxios';
 import { useNavigate } from "react-router";
 import { SeatGroup } from "hacademy-cinema-seat";
+
+import { FaBus } from "react-icons/fa";
+
 import Seat1 from "../../images/seat1.png";
 import Seat2 from "../../images/seat2.png";
 import Seat3 from "../../images/seat3.png";
 import Seat4 from "../../images/seat4.png";
 import bus from "../../images/bus.png";
+  
 
 const Reservation = () => {
     const [startRegion, setStartRegion] = useState('');
@@ -555,8 +559,12 @@ const Reservation = () => {
             {!showDetails ? (
                 <>
                     <>
-                        <div className="container mt-5">
-                            <h1 className="text-center">버스 조회</h1>
+                    <div className="container mt-5">
+                            <div className="row border-bottom border-3 border-dark pb-5">   
+                            <h1 className="text-center">
+                            <FaBus />
+                               <br></br> 버스 조회
+                                </h1>
                             <hr />
                             <div className="row">
                                 <div className="col-md-3">
@@ -596,7 +604,7 @@ const Reservation = () => {
                                     </select>
                                 </div>
                             </div>
-                            <div className="row mt-3">
+                            <div className="row mt-5 justify-content-center"> {/* 중앙 정렬 */}
                                 <div className="col-md-3">
                                     <label htmlFor="gradeType" className="form-label">등급</label>
                                     <select id="gradeType" className="form-select" onChange={handleGradeTypeChange}>
@@ -610,62 +618,67 @@ const Reservation = () => {
                                     <label htmlFor="startDate" className="form-label">출발 날짜</label>
                                     <input type="date" id="startDate" className="form-control" onChange={handleStartDateChange} />
                                 </div>
-                                <div className="col-md-3 d-flex align-items-end">
-                                    <button className="btn btn-danger" onClick={handleSubmit}>조회</button>
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                    {submissionSuccess && (
-                        <>
-                            <div className="container d-flex justify-content-end">
-                                <div className="row mt-5 w-25 text-center me-5">
-                                    <div className="col">
-                                        <label>출발터미널</label><div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
-                                        <label>도착터미널</label><div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
-                                        {busResults.length > 0 && (
-                                            <div key={busResults[0].routeNo} className='mt-3'>
-                                                <div><label>소요시간</label>{busResults[0].routeTime}</div>
-                                                <div>{busResults[0].routeKm}<label>Km</label></div>
-                                                <div className="col mt-4">
-                                                    <hr />
-                                                    요금
-                                                </div>
-                                                <div className="col mt-2">
-                                                    <p>프리미엄: {fares.premium}원</p>
-                                                    <p>우등: {fares.business}원</p>
-                                                    <p>일반: {fares.standard}원</p>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="row mt-2 w-75 text-center">
-                                    <div className="col">
-                                        <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
-                                        <hr />
-                                        <div className="row mt-4">
-                                            <div className="col col-3">출발시각</div>
-                                            <div className="col col-3">등급</div>
-                                            <div className="col col-3">잔여석</div>
-                                            <div className="col col-3">선택</div>
-                                        </div>
-                                        {busResults.map((bus, index) => (
-                                            <div key={index} className="row mt-4">
-                                                <div className="col col-3">{new Date(bus.routeStartTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                                                {/* YYYY-MM-DD HH24:MI 형식에서 시간만 출력하게 설정함 */}
-                                                <div className="col col-3">{bus.gradeType}</div>
-                                                <div className="col col-3">{bus.busSeat}석</div>
-                                                <div className="col col-3"><button className="btn btn-primary" onClick={e => handleCombinedClick(bus)}>선택{bus.busNo}</button></div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </>
 
-                    )}
-                    {/* <div className='row mt-5'>
+                                <div className="row justify-content-center mt-3"> {/* 조회 버튼 */}
+                                    <div className="col-md-6 text-center"> {/* 버튼을 중앙 정렬 */}
+                                    <br></br><br></br><br></br><br></br>
+                                        <button className="btn btn-info btn-lg " onClick={handleSubmit}>조회</button>
+                                    </div>
+                                </div>
+                                        </div>
+                                        </div>
+                                        </div>
+                            </>
+                            {submissionSuccess && (
+                                <>
+                                    <div className="container d-flex justify-content-end">
+                                        <div className="row mt-5 w-25 text-center me-5">
+                                            <div className="col">
+                                                <label>출발터미널</label><div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
+                                                <label>도착터미널</label><div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
+                                                {busResults.length > 0 && (
+                                                    <div key={busResults[0].routeNo} className='mt-3'>
+                                                        <div><label>소요시간</label>{busResults[0].routeTime}</div>
+                                                        <div>{busResults[0].routeKm}<label>Km</label></div>
+                                                        <div className="col mt-4">
+                                                            <hr />
+                                                            요금
+                                                        </div>
+                                                        <div className="col mt-2">
+                                                            <p>프리미엄: {fares.premium}원</p>
+                                                            <p>우등: {fares.business}원</p>
+                                                            <p>일반: {fares.standard}원</p>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="row mt-2 w-75 text-center">
+                                            <div className="col">
+                                                <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
+                                                <hr />
+                                                <div className="row mt-4">
+                                                    <div className="col col-3">출발시각</div>
+                                                    <div className="col col-3">등급</div>
+                                                    <div className="col col-3">잔여석</div>
+                                                    <div className="col col-3">선택</div>
+                                                </div>
+                                                {busResults.map((bus, index) => (
+                                                    <div key={index} className="row mt-4">
+                                                        <div className="col col-3">{new Date(bus.routeStartTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                                        {/* YYYY-MM-DD HH24:MI 형식에서 시간만 출력하게 설정함 */}
+                                                        <div className="col col-3">{bus.gradeType}</div>
+                                                        <div className="col col-3">{bus.busSeat}석</div>
+                                                        <div className="col col-3"><button className="btn btn-primary" onClick={e => handleCombinedClick(bus)}>선택{bus.busNo}</button></div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+
+                            )}
+                            {/* <div className='row mt-5'>
                         <div className='col'>
                             <SeatGroup map={seats} setMap={setSeats}
                                                             fields={{
@@ -684,28 +697,36 @@ const Reservation = () => {
                                                         />
                         </div>
                     </div> */}
-                </>
-            ) : (
-                <>
-                    <div className="container d-flex justify-content-end">
-                        <div className="row mt-5 w-25 text-center me-5">
-                            <div className="col">
-                                <label>출발터미널</label><div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
-                                <label>도착터미널</label><div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
-                                <div className="col mt-4">
-                                    요금
-                                </div>
-                                <div className="row" >
-                                    <div className="col w-50 text-center mb-4">
-                                        <div className="col mt-2">
-                                            <p>프리미엄: {fares.premium}원</p>
-                                            <p>우등: {fares.business}원</p>
-                                            <p>일반: {fares.standard}원</p>
+                        </>
+                        ) : (
+                        <>
+                            <div className="container d-flex justify-content-end">
+                                <div className="row mt-5 w-25 text-center me-5">
+                                    <div className="col">
+                                        <label>출발터미널</label><div><strong>{selectedStartTerminalName || '선택되지 않음'}</strong></div><br /><br />
+                                        <label>도착터미널</label><div><strong>{selectedEndTerminalName || '선택되지 않음'}</strong></div>
+                                        <div className="col mt-4">
+                                            요금
+                                        </div>
+                                        <div className="row" >
+                                            <div className="col w-50 text-center mb-4">
+                                                <div className="col mt-2">
+                                                    <p>프리미엄: {fares.premium}원</p>
+                                                    <p>우등: {fares.business}원</p>
+                                                    <p>일반: {fares.standard}원</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+
+                                <div className="row mt-2 w-100 text-center">
+                                    <div className="col">
+                                        <h3>{formData.routeStartTime || "날짜를 선택하세요"}</h3>
+                                        <hr />
+                                        <div className="row mt-4"  >
+                                            <div className="col " >
+                                                {/* {seats.map((seat) => (
 
                         <div className="row mt-2 w-100 text-center">
                             <div className="col">
@@ -714,6 +735,7 @@ const Reservation = () => {
                                 <div className="row mt-4"  >
                                     <div className="col " style={{ backgroundImage: `url(${bus})`, backgroundSize: 'cover' }}>
                                         {/* {seats.map((seat) => (
+
                                                             <button
                                                                 key={seat.seatNo}
                                                                 (seat.seatNo)}
@@ -731,6 +753,33 @@ const Reservation = () => {
                                                                 <p>버스번호:{seat.busNo}</p>
                                                             </button>
                                                         ))} */}
+
+
+                                                {/* 좌석 라이브러리 */}
+                                                <SeatGroup map={seats} setMap={setSeats}
+                                                    fields={{
+                                                        no: 'seatNo',
+                                                        row: 'seatColumn',
+                                                        col: 'seatRow',
+                                                        reserved: 'reservationSeatNo',
+                                                        disabled: 'seatDisabled',
+                                                        checked: 'seatChecked',
+                                                    }}
+                                                    rows={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                                                    cols={[1, 2, '통로', 3, 4]}
+                                                    showNames
+                                                    onSeatClick={handleSeatClicks}
+                                                />
+                                            </div>
+                                        </div>
+                                        {checkedSeats.map(checkedSeat => (
+                                            <td>{checkedSeat.seatNo}</td>
+                                        ))}
+                                        <div className="row mt-4">
+                                            <div className="bus-details">
+                                                <button className='btn btn-primary' onClick={handleGoBack}>이전화면</button>&nbsp;&nbsp;&nbsp;
+                                            </div>
+                                        </div>
 
                                         {/* 좌석 라이브러리 */}
                                         <SeatGroup map={seats} setMap={setSeats}
@@ -760,6 +809,7 @@ const Reservation = () => {
                                 <div className="row mt-4">
                                     <div className="bus-details">
                                         <button className='btn btn-primary' onClick={handleGoBack}>이전화면</button>&nbsp;&nbsp;&nbsp;
+
                                     </div>
                                 </div>
                                 <div className='row mt-5 mb-5'>
@@ -802,12 +852,20 @@ const Reservation = () => {
                                     </div>
                                 </div>
                             </div>
+
+                            <>
+                                <h1>여기에 예약관련 만들거임</h1>
+                                <button className='btn btn-primary' onClick={saveInput} >예약</button>
+                            </>
+                        </>
+
                         </div>
                     </div>
                 </>
+
             )}
-        </>
-    );
+                    </>
+                    );
 };
 
-export default Reservation;
+                    export default Reservation;

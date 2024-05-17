@@ -15,6 +15,7 @@
 
 
 
+
   // 컴포넌트 배치
 
   const AdminHome = lazy(()=>import("./components/integrated/admin/AdminHome"));
@@ -130,8 +131,9 @@
                   <Route path="/pointList" element={<PointList/>} />
                   <Route path="/point" element={<Point/>} />
                   <Route path="/orderEnd" element={<OrderEnd/>} />
-                  <Route path="/orderList" element={<OrderList/>} />
                   <Route path="/home" element={<Home/>} />
+                  <Route path="/orderList" element={<OrderList/>} />
+
                 </Routes>
               </Suspense>
               </div>
