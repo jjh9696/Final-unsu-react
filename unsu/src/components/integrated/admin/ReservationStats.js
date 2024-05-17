@@ -11,7 +11,7 @@ import {
     Legend,
 } from "recharts";
 
-const ReservationtList = () => {
+const ReservationtStats = () => {
     const [reservationTime, setReservationTime] = useState([]);
     
 
@@ -68,4 +68,4 @@ const ReservationtList = () => {
     );
 };
 
-export default ReservationtList;
+export default ReservationtStats;
