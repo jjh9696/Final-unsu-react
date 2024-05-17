@@ -752,7 +752,7 @@ const Reservation = () => {
                                                 reservedState : Seat4,
                                                 disabledState : Seat1
                                             }}
-                                        /> 
+                                        />  
                                     </div>
                                 </div>
 

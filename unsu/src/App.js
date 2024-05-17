@@ -93,7 +93,7 @@
             ):(
               <>
               <SideBar/>
-              </>
+              </> 
             )}
           </div>
           <div className='container'>
