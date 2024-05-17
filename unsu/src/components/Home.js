@@ -5,6 +5,8 @@ import { NavLink } from "react-router-dom";
 import unsuMain from '../images/page/unsugoodlook.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal } from 'react-bootstrap';
+import { isLoginState } from './utils/RecoilData';
+import { useRecoilValue } from "recoil";
 import Chatbot from './integrated/websocket/chatbot';
 import MemberChat from './integrated/websocket/memberChat';
 
@@ -31,6 +33,8 @@ const Home = () => {
   const closeMemberChatModal = () => {
     setIsMemberChatModalOpen(false);
   };
+
+  const isLogin = useRecoilValue(isLoginState);
 
   return (
     <>
@@ -106,15 +110,17 @@ const Home = () => {
                 <Card.Text>
 
                 </Card.Text>
-                {/* <Button variant="success" as={NavLink} to="/chatbot">챗봇</Button> */}
                 <Button variant="success" onClick={openChatbotModal}>챗봇</Button>
-                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                {isLogin && (
+                  <>
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                {/* <Button variant="success" as={NavLink} to="/memberChat">문의채팅</Button> */}
-                <Button variant="success" onClick={openMemberChatModal}>문의채팅</Button>
+                    <Button variant="success" onClick={openMemberChatModal}>문의채팅</Button>
+                  </>
+                )}
               </Card.Body>
             </Card>
             <Modal show={isChatbotModalOpen} onHide={closeChatbotModal}>
