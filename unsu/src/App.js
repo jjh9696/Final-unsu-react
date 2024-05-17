@@ -87,7 +87,7 @@
         <div className='container-fluid d-flex'>
           <div className='sidebar'>
             {isAdmin ? (
-              <>
+              <> 
               <AdminSideBar/>
               </>
             ):(

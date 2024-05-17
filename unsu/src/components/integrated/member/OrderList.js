@@ -14,7 +14,7 @@ const OrderList = () => {
             });
             setOrders(resp.data); // 가져온 데이터로 orders 상태 업데이트
         } catch (error) {
-            console.error("데이터읽기실패:", error);
+            console.error("데이터읽기실패:", error); 
             setError(error.response ? error.response.data : "서버 오류");
         }
     }, []);
