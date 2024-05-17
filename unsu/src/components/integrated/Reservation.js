@@ -7,6 +7,23 @@ import Seat2 from "../../images/seat2.png";
 import Seat3 from "../../images/seat3.png";
 import Seat4 from "../../images/seat4.png";
 import bus from "../../images/bus.png";
+import { Button, Carousel } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import infobus from "../../images/businfo.png";
+import info from "../../images/info.png";
+import ticket from "../../images/ticket.png";
+import { RiCalendarScheduleFill } from "react-icons/ri";
+import { FaPlaneArrival } from "react-icons/fa";
+import { FaPlaneDeparture } from "react-icons/fa6";
+import { MdEventSeat } from "react-icons/md";
+
+
+
+
+
+
+
+
 
 const Reservation = () => {
     const [startRegion, setStartRegion] = useState('');
@@ -192,7 +209,7 @@ const Reservation = () => {
     const handleCombinedClick = async (bus) => {
         // 데이터를 불러온 후에 모달을 열도록 선택
         await loadSeatData(bus.routeNo);
-    
+
         // reservationData 업데이트 후 로그 찍기
         const updatedReservationData = {
             ...reservationData,
@@ -202,16 +219,16 @@ const Reservation = () => {
         };
         setReservationData(updatedReservationData);
         console.log("Updated reservationData:", updatedReservationData);  // 변경된 상태 로깅
-    
+
         handleSelectBus();
         setTimeout(() => {
             window.dispatchEvent(new Event('resize'));
         }, 500);
     };
-    
 
-     // 좌석 정보를 가져오는 함수
-     const loadSeatData = async (routeNo) => {
+
+    // 좌석 정보를 가져오는 함수
+    const loadSeatData = async (routeNo) => {
         try {
             //const resp = await axios.get(`/seat/${routeNo}/seat`);
             const resp = await axios.get(`/seat/reservation/${routeNo}`);
@@ -543,7 +560,7 @@ const Reservation = () => {
             alert(`좌석을 선택해주세요`);
         }
     }, [checkedSeats, reservationData]);
-    
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -552,69 +569,160 @@ const Reservation = () => {
     ///////////////////////////////////////////////// 아래부터 리턴 화면 /////////////////////////////////////////////////////
     return (
         <>
+            <style type="text/css">
+                {`
+    .btn-flat {
+      background-color: green;
+      color: white;
+    }
+
+    .btn-xxl {
+      padding: 1rem 5.0rem;
+      font-size: 1.5rem;
+    }
+
+    
+
+
+
+    `}
+            </style>
+
+
             {!showDetails ? (
                 <>
                     <>
-                        <div className="container mt-5">
-                            <h1 className="text-center">버스 조회</h1>
-                            <hr />
-                            <div className="row">
-                                <div className="col-md-3">
-                                    <label htmlFor="startRegion" className="form-label">출발 지역</label>
-                                    <select id="startRegion" className="form-select" onChange={handleStartRegionChange} value={startRegion}>
-                                        <option value="">지역을 선택하세요</option>
-                                        {regions.map(region => (
-                                            <option key={region.key} value={region.value}>{region.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="col-md-3">
-                                    <label htmlFor="startTerminal" className="form-label">출발 터미널</label>
-                                    <select id="startTerminal" className="form-select" onChange={handleStartTerminalChange} value={selectedStartTerminal}>
-                                        <option value="">터미널 선택</option>
-                                        {startTerminals.map(terminal => (
-                                            <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="col-md-3">
-                                    <label htmlFor="endRegion" className="form-label">도착 지역</label>
-                                    <select id="endRegion" className="form-select" onChange={handleEndRegionChange} value={endRegion}>
-                                        <option value="">지역을 선택하세요</option>
-                                        {regions.map(region => (
-                                            <option key={region.key} value={region.value}>{region.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="col-md-3">
-                                    <label htmlFor="endTerminal" className="form-label">도착 터미널</label>
-                                    <select id="endTerminal" className="form-select" onChange={handleEndTerminalChange} value={selectedEndTerminal}>
-                                        <option value="">터미널 선택</option>
-                                        {endTerminals.map(terminal => (
-                                            <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="row mt-3">
-                                <div className="col-md-3">
-                                    <label htmlFor="gradeType" className="form-label">등급</label>
-                                    <select id="gradeType" className="form-select" onChange={handleGradeTypeChange}>
-                                        <option value="">전체</option>
-                                        <option value="일반">일반</option>
-                                        <option value="우등">우등</option>
-                                        <option value="프리미엄">프리미엄</option>
-                                    </select>
-                                </div>
-                                <div className="col-md-3">
-                                    <label htmlFor="startDate" className="form-label">출발 날짜</label>
-                                    <input type="date" id="startDate" className="form-control" onChange={handleStartDateChange} />
-                                </div>
-                                <div className="col-md-3 d-flex align-items-end">
-                                    <button className="btn btn-danger" onClick={handleSubmit}>조회</button>
-                                </div>
-                            </div>
+                    <div className="container mt-5">
+            <h1 className="text-center">
+            <RiCalendarScheduleFill />
+                &nbsp;
+                버스 조회</h1>
+            <hr />
+            <div className="row">
+                <div className="col-md-6">
+                    <div className="row">
+                    <FaPlaneDeparture />
+                        <div className="col-md-6">
+                          
+
+                            <label htmlFor="startRegion" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
+                                출발 지역
+                            </label>
+                            <select id="startRegion" className="form-select form-select-lg mb-3" onChange={handleStartRegionChange} value={startRegion}>
+                                <option value="">지역을 선택하세요</option>
+                                {regions.map(region => (
+                                    <option key={region.key} value={region.value}>{region.name}</option>
+                                ))}
+                            </select>
                         </div>
+                        <div className="col-md-6">
+                            <label htmlFor="startTerminal" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
+                                출발 터미널
+                            </label>
+                            <select id="startTerminal" className="form-select form-select-lg mb-3" onChange={handleStartTerminalChange} value={selectedStartTerminal}>
+                                <option value="">터미널 선택</option>
+                                {startTerminals.map(terminal => (
+                                    <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-md-6">
+                    <div className="row">
+                    <FaPlaneArrival />
+
+                        <div className="col-md-6">
+                            <label htmlFor="endRegion" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
+                                도착 지역
+                            </label>
+                            <select id="endRegion" className="form-select form-select-lg mb-3" onChange={handleEndRegionChange} value={endRegion}>
+                                <option value="">지역을 선택하세요</option>
+                                {regions.map(region => (
+                                    <option key={region.key} value={region.value}>{region.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="endTerminal" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
+                                도착 터미널
+                            </label>
+                            <select id="endTerminal" className="form-select form-select-lg mb-3" onChange={handleEndTerminalChange} value={selectedEndTerminal}>
+                                <option value="">터미널 선택</option>
+                                {endTerminals.map(terminal => (
+                                    <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row mt-3 justify-content-center">
+                <div className="col-md-3">
+                    <label htmlFor="gradeType" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
+                    <MdEventSeat />
+                        등급
+                    </label>
+                    <select id="gradeType" className="form-select form-select-lg mb-3" onChange={handleGradeTypeChange}>
+                        <option value="">전체</option>
+                        <option value="일반">일반</option>
+                        <option value="우등">우등</option>
+                        <option value="프리미엄">프리미엄</option>
+                    </select>
+                </div>
+                <div className="col-md-3">
+                    <label htmlFor="startDate" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
+                        출발 날짜
+                    </label>
+                    <input type="date" id="startDate" className="form-select form-select-lg mb-3" onChange={handleStartDateChange} />
+                </div>
+            </div>
+            
+            <div className="row mt-3">
+                <div className="col-12">
+                    <Carousel>
+                        <Carousel.Item interval={2000}>
+                            <img
+                                className="d-block w-100 fixed-size"
+                                src={infobus}
+                                alt="First slide"
+                            />
+                            <Carousel.Caption>
+                                
+                            </Carousel.Caption>
+                        </Carousel.Item>
+                        <Carousel.Item interval={2000}>
+                            <img
+                                className="d-block w-100"
+                                src={info}
+                                alt="Second slide"
+                            />
+                            <Carousel.Caption>
+                               
+                            </Carousel.Caption>
+                        </Carousel.Item>
+                        <Carousel.Item interval={2000}>
+                            <img
+                                className="d-block w-100"
+                                src={ticket}
+                                alt="Third slide"
+                            />
+                            <Carousel.Caption>
+                               
+                            </Carousel.Caption>
+                        </Carousel.Item>
+                    </Carousel>
+                </div>
+            </div>
+            <div className="row mt-3">
+                <div className="col-12 d-flex justify-content-center">
+                    <Button variant="flat" size="xxl" onClick={handleSubmit}>
+                        조회
+                    </Button>
+                </div>
+            </div>
+        </div>
+
                     </>
                     {submissionSuccess && (
                         <>
@@ -747,10 +855,10 @@ const Reservation = () => {
                                             showNames
                                             onSeatClick={handleSeatClicks}
                                             images={{
-                                                defaultState : Seat3,
-                                                checkedState : Seat2,
-                                                reservedState : Seat4,
-                                                disabledState : Seat1
+                                                defaultState: Seat3,
+                                                checkedState: Seat2,
+                                                reservedState: Seat4,
+                                                disabledState: Seat1
                                             }}
                                         />
                                     </div>
