@@ -8,6 +8,10 @@ import {
   } from "react-pro-sidebar";
   import { Link } from 'react-router-dom';
   import "./AdminSideBar";
+  import React, { useState } from 'react';
+  import { Modal } from 'react-bootstrap';
+  import Chatbot from '../../integrated/websocket/chatbot';
+  import MemberChat from '../../integrated/websocket/memberChat';
   import busLogo from "../../../images/busLogo.png";
   import busLogo2 from "../../../images/busLogo2.png";
   import busLogo3 from "../../../images/busLogo3.png";
@@ -35,6 +39,26 @@ import {
   
   const AdminSideBar = () => {
   
+    //websocket
+    const [isChatbotModalOpen, setIsChatbotModalOpen] = useState(false);
+    const [isMemberChatModalOpen, setIsMemberChatModalOpen] = useState(false);
+
+    const openChatbotModal = () => {
+      setIsChatbotModalOpen(true);
+    };
+
+    const closeChatbotModal = () => {
+      setIsChatbotModalOpen(false);
+    };
+
+    const openMemberChatModal = () => {
+      setIsMemberChatModalOpen(true);
+    };
+
+    const closeMemberChatModal = () => {
+      setIsMemberChatModalOpen(false);
+    };
+
     const sidebarStyles = {
       height: '1000px',
     }
@@ -123,7 +147,7 @@ import {
                   <Menu>
                       <SubMenu label="챗봇 관리" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
-                              <MenuItem component={<Link to="/chatbot" />}> 챗봇 확인 </MenuItem>
+                              <MenuItem onClick={openChatbotModal}> 챗봇 </MenuItem>
                               <MenuItem component={<Link to="/chatbotEdit" />}> 챗봇 수정 </MenuItem>
                           </Menu>
                       </SubMenu>
@@ -131,10 +155,27 @@ import {
                   <Menu>
                       <SubMenu label="문의 채팅" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
-                              <MenuItem component={<Link to="/memberChat" />}> 문의 채팅 </MenuItem>
+                              <MenuItem onClick={openMemberChatModal}> 문의채팅 </MenuItem>
                           </Menu>
                       </SubMenu>
                   </Menu>
+                  <Modal show={isChatbotModalOpen} onHide={closeChatbotModal}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>운수좋은날 챗봇</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Chatbot />
+                  </Modal.Body>
+                  </Modal>
+
+                  <Modal show={isMemberChatModalOpen} onHide={closeMemberChatModal}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>운수좋은날 문의</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <MemberChat />
+                    </Modal.Body>
+                  </Modal>
                   <Menu>
                       <SubMenu label="통계" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
