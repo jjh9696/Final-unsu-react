@@ -8,6 +8,9 @@ import {
   } from "react-pro-sidebar";
   import { Link } from 'react-router-dom';
   import "./AdminSideBar";
+  import busLogo from "../../../images/busLogo.png";
+  import busLogo2 from "../../../images/busLogo2.png";
+  import busLogo3 from "../../../images/busLogo3.png";
   
   const basicTheme = {
     sidebar: {
@@ -64,7 +67,10 @@ import {
       <>
           <Sidebar rootStyles={sidebarStyles}>
                   <div className="text-center py-4">
-                      <Link to="/"><img src="https://picsum.photos/100/100" /></Link>
+                      {/* <Link to="/"><img src="https://picsum.photos/100/100" /></Link> */}
+                      {/* <Link to="/"><img src={busLogo}/></Link> */}
+                      {/* <Link to="/"><img src={busLogo2}/></Link> */}
+                      <Link to="/"><img src={busLogo3}/></Link>
                   </div>
                   <div className="logo-outline" />
                   <Menu>
