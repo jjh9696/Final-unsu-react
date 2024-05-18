@@ -59,9 +59,9 @@ const MemberList = () => {
     useEffect(() => {
         setPostsPerPage(10);
     }, [members]);
-    useEffect(()=>{
+    useEffect(() => {
         handleSearch();
-    },[searched])
+    }, [searched])
 
     //검색핸들
     const handleSearch = (async () => {
@@ -83,6 +83,20 @@ const MemberList = () => {
             setMembers([]);
         }
     });
+
+    //엔터 키를 눌렀을 때 검색 실행
+    useEffect(() => {
+        const handleKeyPress = (e) => {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyPress);
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [handleSearch]);
 
 
     //키워드바꾸기
@@ -143,7 +157,7 @@ const MemberList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                        {currentPost.length > 0 ? (
+                            {currentPost.length > 0 ? (
                                 currentPost.map((member, index) => (
                                     <tr key={index}>
                                         <td>{member.memberId}</td>
@@ -184,96 +198,72 @@ const MemberList = () => {
                             <button type="button" className="btn-close" aria-label="Close" onClick={e => closeModalInfo()}></button>
                         </div>
                         <div className="modal-body">
-                            <div className="row mt-4">
-                                <div className="col">
+                            <div className="col p-2 d-flex justify-content-evenly">
+                                <div className="d-flex flex-column align-items-center">
                                     <label>ID</label>
                                     <h3>{selectMember.memberId}</h3>
                                 </div>
-                            </div>
-
-                            <div className="row mt-4">
-                                <div className="col">
+                                <div className="d-flex flex-column align-items-center">
                                     <label>이름</label>
                                     <h3>{selectMember.memberName}</h3>
                                 </div>
-                                <div className="col">
-                                    <label>등급</label>
-                                    <h3>{selectMember.memberLevel}</h3>
-                                </div>
                             </div>
 
-                            <div className="row mt-4">
-                                <div className="col">
-                                    <label>생년월일</label>
-                                    <h3>{selectMember.memberBirth}</h3>
-                                </div>
-                            </div>
+                            <ul className="list-group list-group-flush mt-2">
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <label className="mr-2 mb-0">등급</label>
+                                    <h5 className="mb-0 ms-4">{selectMember.memberLevel}</h5>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <label className="mr-2 mb-0">생년월일</label>
+                                    <h5 className="mb-0 ms-4">{selectMember.memberBirth}</h5>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <label className="mr-2 mb-0">이메일</label>
+                                    <h5 className="mb-0 ms-4">{selectMember.memberEmail}</h5>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <label className="mr-2 mb-0">연락처</label>
+                                    <h5 className="mb-0 ms-4">{selectMember.memberPhone}</h5>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <label className="mr-2 mb-0">포인트</label>
+                                    <h5 className="mb-0 ms-4">{selectMember.memberPoint} Point</h5>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <label className="mr-2 mb-0">우편번호</label>
+                                    <h5 className="mb-0 ms-4">[{selectMember.memberZip}]</h5>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <label className="mr-2 mb-0">주소</label>
+                                    <h5 className="mb-0 ms-4">{selectMember.memberAddr1}&nbsp;{selectMember.memberAddr2}</h5>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <label className="mr-2 mb-0">개인정보 수집 동의</label>
+                                    <h5 className="mb-0 ms-4">{selectMember.memberPrivacyAgree}</h5>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <label className="mr-2 mb-0">개인정보 수집 동의일시</label>
+                                    <h5 className="mb-0 ms-4">{selectMember.memberPrivacyDate}</h5>
+                                </li>
 
-                            <div className="row mt-4">
-                                <div className="col">
-                                    <label>이메일</label>
-                                    <h3>{selectMember.memberEmail}</h3>
-                                </div>
-                            </div>
-
-                            <div className="row mt-4">
-                                <div className="col">
-                                    <label>연락처</label>
-                                    <h3>{selectMember.memberPhone}</h3>
-                                </div>
-                            </div>
-
-                            <div className="row mt-4">
-                                <div className="col">
-                                    <label>포인트</label>
-                                    <h3>{selectMember.memberPoint} Point</h3>
-                                </div>
-                            </div>
-
-                            <div className="row mt-4">
-                                <div className="col">
-                                    <label>주소</label>
-                                    <h3>[{selectMember.memberZip}] &nbsp;
-                                        {selectMember.memberAddr1} &nbsp;
-                                        {selectMember.memberAddr2}</h3>
-                                </div>
-                            </div>
-
-                            <div className="row mt-4">
-                                <div className="col">
-                                    <label>개인정보 수집 동의</label>
-                                    <h3>{selectMember.memberPrivacyAgree}</h3>
-                                </div>
-                                <div className="col">
-                                    <label>동의일자</label>
-                                    <h3>{selectMember.memberPrivacyDate}</h3>
-                                </div>
-                            </div>
-
-                            <div className="row mt-4">
-                                <div className="col">
-                                    <label>메일 수신 동의</label>
-                                    <h3>{selectMember.memberServiceAgree}</h3>
-                                </div>
-                                <div className="col">
-                                    <label>버스 탑승 동의</label>
-                                    <h3>{selectMember.memberBusAgree}</h3>
-                                </div>
-                            </div>
-
-                            <div className="row mt-4">
-                                <div className="col">
-                                    <label>가입 일시</label>
-                                    <h3>{selectMember.memberJoinDate}</h3>
-                                </div>
-                            </div>
-
-                            <div className="row mt-4">
-                                <div className="col">
-                                    <label>최근 로그인</label>
-                                    <h3>{selectMember.memberLoginDate}</h3>
-                                </div>
-                            </div>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <label className="mr-2 mb-0">메일 수신 동의</label>
+                                    <h5 className="mb-0 ms-4">{selectMember.memberServiceAgree}</h5>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <label className="mr-2 mb-0">버스 탑승 동의</label>
+                                    <h5 className="mb-0 ms-4">{selectMember.memberBusAgree}</h5>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <label className="mr-2 mb-0">가입일</label>
+                                    <h5 className="mb-0 ms-4">{selectMember.memberJoinDate}</h5>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <label className="mr-2 mb-0">최근 로그인</label>
+                                    <h5 className="mb-0 ms-4">{selectMember.memberLoginDate}</h5>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
