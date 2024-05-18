@@ -96,7 +96,7 @@ const Point = () => {
                     <div className="col text-end">
                         <button className="btn btn-primary"
                                 onClick={saveInput}
-                                disabled={!buttonSelected}>포인트 충전</button>
+                                disabled={!buttonSelected || pointTest.pointAmount <= 0}>포인트 충전</button>
                     </div>
                 </div>
             </div>

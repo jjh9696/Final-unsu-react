@@ -55,7 +55,7 @@ const Driver = () => {
     //삭제하기
     const deleteDriver = useCallback(async (target) => {
         //확인창
-        const choice = window.confirm("해당 기사님의 정보를 삭제하시겠습니까?");
+        const choice = window.confirm("해당 기사님을 해고하시겠습니까?");
         if (choice === false) return;
 
         const resp = await axios.delete("/driver/" + target.driverNo);
