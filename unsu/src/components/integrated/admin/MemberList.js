@@ -4,6 +4,7 @@ import axios from "../../utils/CustomAxios";
 import { FaUserShield } from "react-icons/fa";
 import { Modal } from "bootstrap";
 import Pagination from '../../utils/Pagination';
+import { RiUserSearchFill } from "react-icons/ri";
 
 
 
@@ -31,7 +32,8 @@ const MemberList = () => {
     //페이징
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage, setPostsPerPage] = useState(10);
-    
+    //검색
+    const [keyword, setKeyword] = useState(""); // 검색어는 빈 문자열로 초기화
 
 
     //불러와
@@ -70,6 +72,18 @@ const MemberList = () => {
     return (
         <>
             <Jumbotron title="회원 목록" />
+
+            <div className="row mt-4">
+                <div className="col d-flex justify-content-between">
+                    <select className="form-select rounded" style={{width:'15%'}}>
+
+                    </select>
+                    <input className="form-control rounded text-end" style={{width:'30%'}}/>
+                    <button className="btn btn-outline">
+                        <RiUserSearchFill/>
+                    </button>
+                </div>
+            </div>
 
             <div className="row mt-4">
                 <div className="col">

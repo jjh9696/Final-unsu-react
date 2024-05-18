@@ -72,8 +72,8 @@ import {
                           <Menu menuItemStyles={subItemStyles}>
                               <MenuItem component={<Link to="/memberList" />}> 회원 조회 </MenuItem>
                               <MenuItem component={<Link to="/pointList" />}> 포인트 관리 </MenuItem>
-                              <MenuItem component={<Link to="/" />}> 메세지 보내기 </MenuItem>
-                              <MenuItem component={<Link to="/" />}> 고객 예약 관리 </MenuItem>
+                              {/* <MenuItem component={<Link to="/" />}> 메세지 보내기 </MenuItem>
+                              <MenuItem component={<Link to="/" />}> 고객 예약 관리 </MenuItem> */}
                           </Menu>
                       </SubMenu>
                   </Menu>
@@ -88,7 +88,7 @@ import {
                           </Menu>
                       </SubMenu>
                   </Menu>
-                  <Menu>
+                  {/* <Menu>
                       <SubMenu label="이용안내" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
                               <MenuItem component={<Link to="/" />}> 예매안내  </MenuItem>
@@ -97,7 +97,7 @@ import {
                               <MenuItem component={<Link to="/" />}> 고속버스터미널 안내</MenuItem>
                           </Menu>
                       </SubMenu>
-                  </Menu>
+                  </Menu> */}
                   <Menu>
                       <SubMenu label="게시판관리" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
@@ -106,21 +106,14 @@ import {
                           </Menu>
                       </SubMenu>
                   </Menu>
-                  <Menu>
+                  {/* <Menu>
                       <SubMenu label="고객센터" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
                               <MenuItem component={<Link to="/" />}> 자주하는 질문  </MenuItem>
                               <MenuItem component={<Link to="/" />}> 유실물센터 안내</MenuItem>
                           </Menu>
                       </SubMenu>
-                  </Menu>
-                  <Menu>
-                      <SubMenu label="통계" defaultClose>
-                          <Menu menuItemStyles={subItemStyles}>
-                              <MenuItem component={<Link to="/reservationStats" />}> 통계 목록 </MenuItem>
-                          </Menu>
-                      </SubMenu>
-                  </Menu>
+                  </Menu> */}
                   <Menu>
                       <SubMenu label="챗봇 관리" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
@@ -133,6 +126,13 @@ import {
                       <SubMenu label="문의 채팅" defaultClose>
                           <Menu menuItemStyles={subItemStyles}>
                               <MenuItem component={<Link to="/memberChat" />}> 문의 채팅 </MenuItem>
+                          </Menu>
+                      </SubMenu>
+                  </Menu>
+                  <Menu>
+                      <SubMenu label="통계" defaultClose>
+                          <Menu menuItemStyles={subItemStyles}>
+                              <MenuItem component={<Link to="/reservationStats" />}> 예약 통계 </MenuItem>
                           </Menu>
                       </SubMenu>
                   </Menu>
