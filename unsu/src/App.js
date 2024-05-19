@@ -45,6 +45,7 @@ const OrderEnd = lazy(() => import("./components/integrated/member/OrderEnd"));
 const OrderList = lazy(() => import("./components/integrated/member/OrderList"));
 const Home = lazy(() => import("./components/Home"));
 const ReservationStats = lazy(() => import("./components/integrated/admin/ReservationStats"));
+const DeleteMember = lazy(() => import("./components/integrated/member/DeleteMember"));
 
 const App = () => {
   // recoil state
@@ -155,6 +156,7 @@ const App = () => {
                   <Route path="/" element={<Home />} />
                   <Route path="/orderList" element={<OrderList />} />
                   <Route path="/reservationStats" element={<ReservationStats />} />
+                  <Route path="/deleteMember" element={<DeleteMember />} />
                 </Routes>
               </Suspense>
             </div>

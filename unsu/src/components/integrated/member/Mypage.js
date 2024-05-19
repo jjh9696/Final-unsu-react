@@ -76,7 +76,7 @@ const Mypage = () => {
                 </ul> */}
                 <div className="card-body">
                     <Link to="/orderList" className="card-link">예매확인</Link>
-                    <Link to="#" className="card-link">탑승내역</Link>
+                    <Link to="/deleteMember" className="card-link">탈퇴</Link>
                 </div>
             </div>
         </div>
