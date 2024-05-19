@@ -565,6 +565,14 @@ const Reservation = () => {
     /////////////////////////////////////////////////////////////////////////////////////////////
 
 
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
 
     ///////////////////////////////////////////////// 아래부터 리턴 화면 /////////////////////////////////////////////////////
     return (
@@ -592,136 +600,142 @@ const Reservation = () => {
             {!showDetails ? (
                 <>
                     <>
-                    <div className="container mt-5">
-            <h1 className="text-center">
-            <RiCalendarScheduleFill />
-                &nbsp;
-                버스 조회</h1>
-            <hr />
-            <div className="row">
-                <div className="col-md-6">
-                    <div className="row">
-                    <FaPlaneDeparture />
-                        <div className="col-md-6">
-                          
+                        <div className="container mt-5">
+                            <h1 className="text-center">
+                                <RiCalendarScheduleFill />
+                                &nbsp;
+                                버스 조회</h1>
+                            <hr />
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <div className="row">
+                                        <FaPlaneDeparture />
+                                        <div className="col-md-6">
 
-                            <label htmlFor="startRegion" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
-                                출발 지역
-                            </label>
-                            <select id="startRegion" className="form-select form-select-lg mb-3" onChange={handleStartRegionChange} value={startRegion}>
-                                <option value="">지역을 선택하세요</option>
-                                {regions.map(region => (
-                                    <option key={region.key} value={region.value}>{region.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="col-md-6">
-                            <label htmlFor="startTerminal" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
-                                출발 터미널
-                            </label>
-                            <select id="startTerminal" className="form-select form-select-lg mb-3" onChange={handleStartTerminalChange} value={selectedStartTerminal}>
-                                <option value="">터미널 선택</option>
-                                {startTerminals.map(terminal => (
-                                    <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-6">
-                    <div className="row">
-                    <FaPlaneArrival />
 
-                        <div className="col-md-6">
-                            <label htmlFor="endRegion" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
-                                도착 지역
-                            </label>
-                            <select id="endRegion" className="form-select form-select-lg mb-3" onChange={handleEndRegionChange} value={endRegion}>
-                                <option value="">지역을 선택하세요</option>
-                                {regions.map(region => (
-                                    <option key={region.key} value={region.value}>{region.name}</option>
-                                ))}
-                            </select>
+                                            <label htmlFor="startRegion" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
+                                                출발 지역
+                                            </label>
+                                            <select id="startRegion" className="form-select form-select-lg mb-3" onChange={handleStartRegionChange} value={startRegion}>
+                                                <option value="">지역을 선택하세요</option>
+                                                {regions.map(region => (
+                                                    <option key={region.key} value={region.value}>{region.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label htmlFor="startTerminal" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
+                                                출발 터미널
+                                            </label>
+                                            <select id="startTerminal" className="form-select form-select-lg mb-3" onChange={handleStartTerminalChange} value={selectedStartTerminal}>
+                                                <option value="">터미널 선택</option>
+                                                {startTerminals.map(terminal => (
+                                                    <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-md-6">
+                                    <div className="row">
+                                        <FaPlaneArrival />
+
+                                        <div className="col-md-6">
+                                            <label htmlFor="endRegion" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
+                                                도착 지역
+                                            </label>
+                                            <select id="endRegion" className="form-select form-select-lg mb-3" onChange={handleEndRegionChange} value={endRegion}>
+                                                <option value="">지역을 선택하세요</option>
+                                                {regions.map(region => (
+                                                    <option key={region.key} value={region.value}>{region.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label htmlFor="endTerminal" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
+                                                도착 터미널
+                                            </label>
+                                            <select id="endTerminal" className="form-select form-select-lg mb-3" onChange={handleEndTerminalChange} value={selectedEndTerminal}>
+                                                <option value="">터미널 선택</option>
+                                                {endTerminals.map(terminal => (
+                                                    <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row mt-3 justify-content-center">
+                                <div className="col-md-3">
+                                    <label htmlFor="gradeType" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
+                                        <MdEventSeat />
+                                        등급
+                                    </label>
+                                    <select id="gradeType" className="form-select form-select-lg mb-3" onChange={handleGradeTypeChange}>
+                                        <option value="">전체</option>
+                                        <option value="일반">일반</option>
+                                        <option value="우등">우등</option>
+                                        <option value="프리미엄">프리미엄</option>
+                                    </select>
+                                </div>
+                                <div className="col-md-3">
+                                    <label htmlFor="startDate" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
+                                        출발 날짜
+                                    </label>
+                                    <input
+                                        type="date"
+                                        id="startDate"
+                                        className="form-select form-select-lg mb-3"
+                                        onChange={handleStartDateChange}
+                                        min={getTodayDate()} // 최소 날짜를 오늘 날짜로 설정
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="row mt-3">
+                                <div className="col-12">
+                                    <Carousel>
+                                        <Carousel.Item interval={2000}>
+                                            <img
+                                                className="d-block w-100 fixed-size"
+                                                src={infobus}
+                                                alt="First slide"
+                                            />
+                                            <Carousel.Caption>
+
+                                            </Carousel.Caption>
+                                        </Carousel.Item>
+                                        <Carousel.Item interval={2000}>
+                                            <img
+                                                className="d-block w-100"
+                                                src={info}
+                                                alt="Second slide"
+                                            />
+                                            <Carousel.Caption>
+
+                                            </Carousel.Caption>
+                                        </Carousel.Item>
+                                        <Carousel.Item interval={2000}>
+                                            <img
+                                                className="d-block w-100"
+                                                src={ticket}
+                                                alt="Third slide"
+                                            />
+                                            <Carousel.Caption>
+
+                                            </Carousel.Caption>
+                                        </Carousel.Item>
+                                    </Carousel>
+                                </div>
+                            </div>
+                            <div className="row mt-3">
+                                <div className="col-12 d-flex justify-content-center">
+                                    <Button variant="flat" size="xxl" onClick={handleSubmit}>
+                                        조회
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-md-6">
-                            <label htmlFor="endTerminal" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
-                                도착 터미널
-                            </label>
-                            <select id="endTerminal" className="form-select form-select-lg mb-3" onChange={handleEndTerminalChange} value={selectedEndTerminal}>
-                                <option value="">터미널 선택</option>
-                                {endTerminals.map(terminal => (
-                                    <option key={terminal.terminalId} value={terminal.terminalId}>{terminal.terminalName}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="row mt-3 justify-content-center">
-                <div className="col-md-3">
-                    <label htmlFor="gradeType" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
-                    <MdEventSeat />
-                        등급
-                    </label>
-                    <select id="gradeType" className="form-select form-select-lg mb-3" onChange={handleGradeTypeChange}>
-                        <option value="">전체</option>
-                        <option value="일반">일반</option>
-                        <option value="우등">우등</option>
-                        <option value="프리미엄">프리미엄</option>
-                    </select>
-                </div>
-                <div className="col-md-3">
-                    <label htmlFor="startDate" className="form-label" style={{ color: 'black', fontWeight: 'bold', fontSize: '24px' }}>
-                        출발 날짜
-                    </label>
-                    <input type="date" id="startDate" className="form-select form-select-lg mb-3" onChange={handleStartDateChange} />
-                </div>
-            </div>
-            
-            <div className="row mt-3">
-                <div className="col-12">
-                    <Carousel>
-                        <Carousel.Item interval={2000}>
-                            <img
-                                className="d-block w-100 fixed-size"
-                                src={infobus}
-                                alt="First slide"
-                            />
-                            <Carousel.Caption>
-                                
-                            </Carousel.Caption>
-                        </Carousel.Item>
-                        <Carousel.Item interval={2000}>
-                            <img
-                                className="d-block w-100"
-                                src={info}
-                                alt="Second slide"
-                            />
-                            <Carousel.Caption>
-                               
-                            </Carousel.Caption>
-                        </Carousel.Item>
-                        <Carousel.Item interval={2000}>
-                            <img
-                                className="d-block w-100"
-                                src={ticket}
-                                alt="Third slide"
-                            />
-                            <Carousel.Caption>
-                               
-                            </Carousel.Caption>
-                        </Carousel.Item>
-                    </Carousel>
-                </div>
-            </div>
-            <div className="row mt-3">
-                <div className="col-12 d-flex justify-content-center">
-                    <Button variant="flat" size="xxl" onClick={handleSubmit}>
-                        조회
-                    </Button>
-                </div>
-            </div>
-        </div>
 
                     </>
                     {submissionSuccess && (
