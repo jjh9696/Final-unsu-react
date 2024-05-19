@@ -14,7 +14,7 @@ const OrderList = () => {
             });
             setOrders(resp.data); // 가져온 데이터로 orders 상태 업데이트
         } catch (error) {
-            console.error("데이터읽기실패:", error); 
+            console.error("데이터 읽기 실패:", error); 
             setError(error.response ? error.response.data : "서버 오류");
         }
     }, []);
@@ -25,23 +25,33 @@ const OrderList = () => {
 
     return (
         <>
-            <h1>예매내역</h1>
+            <h1>예매 내역</h1>
             <hr />
             {error ? (
                 <p>{error}</p>
             ) : orders.length > 0 ? (
-                <ul>
-                    {orders.map((order) => (
-                        <li key={order.paymentNo}>
-                            <p><strong>결제 번호:</strong> {order.paymentNo}</p>
-                            <p><strong>결제 금액:</strong> {order.paymentFare}원</p>
-                            <p><strong>결제 날짜:</strong> {order.paymentDate}</p>
-                            <p><strong>결제 상태:</strong> {order.paymentState}</p>
-                            <p><strong>회원 ID:</strong> {order.memberId}</p>
-                            <hr />
-                        </li>
-                    ))}
-                </ul>
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>결제 번호</th>
+                            <th>결제 금액</th>
+                            <th>결제 날짜</th>
+                            <th>결제 상태</th>
+                            <th>회원 ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orders.map((order) => (
+                            <tr key={order.paymentNo}>
+                                <td>{order.paymentNo}</td>
+                                <td>{order.paymentFare}원</td>
+                                <td>{order.paymentDate}</td>
+                                <td>{order.paymentState}</td>
+                                <td>{order.memberId}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             ) : (
                 <p>예매 내역이 없습니다.</p>
             )}
