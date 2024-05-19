@@ -30,7 +30,7 @@ const Bus = () => {
     const [backup, setBackup] = useState(null);
     //state
     const [currentPages, setCurrentPages] = useState(1);
-    const [postPerPages, setPostPerPages] = useState(5);
+    const [postPerPages, setPostPerPages] = useState(10);
 
 
     //버스목록 + 기사목록
@@ -41,7 +41,7 @@ const Bus = () => {
 
     //유즈이펙트
     useEffect(() => {
-        setPostPerPages(15);
+        setPostPerPages(10);
     }, [buses]);
     //버스목록
     const loadData = useCallback(async () => {
