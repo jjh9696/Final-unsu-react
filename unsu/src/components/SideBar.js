@@ -14,6 +14,9 @@ import { isLoginState } from './utils/RecoilData';
 import { useRecoilValue } from "recoil";
 import Chatbot from './integrated/websocket/chatbot';
 import MemberChat from './integrated/websocket/memberChat';
+import busLogo from "../images/busLogo.png";
+import busLogo2 from "../images/busLogo2.png";
+import busLogo3 from "../images/busLogo3.png";
 
 const basicTheme = {
   sidebar: {
@@ -93,7 +96,10 @@ const SideBar = () => {
     <>
       <Sidebar rootStyles={sidebarStyles}>
         <div className="text-center py-4">
-          <Link to="/"><img src="https://picsum.photos/100/100" /></Link>
+          {/* <Link to="/"><img src="https://picsum.photos/100/100" /></Link> */}
+          {/* <Link to="/"><img src={busLogo}/></Link> */}
+          {/* <Link to="/"><img src={busLogo2}/></Link> */}
+          <Link to="/"><img src={busLogo3}/></Link>
         </div>
         <div className="logo-outline" />
         <Menu>

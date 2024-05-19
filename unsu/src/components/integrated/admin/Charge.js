@@ -5,8 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { FcMoneyTransfer } from "react-icons/fc";
 import { MdEdit } from "react-icons/md";
 import { MdOutlineCreditCardOff } from "react-icons/md";
-import { FaCoins } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
+import { FaRegCheckCircle } from "react-icons/fa";
 
 
 const Charge = () => {
@@ -187,7 +187,7 @@ const Charge = () => {
                                             <td>{charge.chargeNo}</td>
                                             <td>
                                                 <input type="text" name="chargeType"
-                                                    className="form-control"
+                                                    className="form-control rounded"
                                                     value={charge.chargeType}
                                                     onChange={e => changeCharge(e, charge)} />
                                             </td>
@@ -204,18 +204,20 @@ const Charge = () => {
                                             </td>
                                             <td>
                                                 <input type="text" name="chargePrice"
-                                                    className="form-control"
+                                                    className="form-control rounded"
                                                     value={charge.chargePrice}
                                                     onChange={e => changeCharge(e, charge)} />
                                             </td>
                                             <td>
-                                                <FaCoins className="text-warning"
+                                                <FaRegCheckCircle className="text-success"
                                                     onClick={e => saveEditCharge(charge)}
-                                                    style={{ cursor: 'pointer' }} />
+                                                    style={{ cursor: 'pointer' }}
+                                                    title="저장" />
                                                 &nbsp; &nbsp; &nbsp;
                                                 <MdOutlineCancel className="text-danger"
                                                     onClick={e => cancelEditCharge(charge)}
-                                                    style={{ cursor: 'pointer' }} />
+                                                    style={{ cursor: 'pointer' }}
+                                                    title="취소" />
                                             </td>
                                         </>
                                     ) : (

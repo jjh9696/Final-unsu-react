@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SockJS from 'sockjs-client';
 import './chatbot.css'; // 스타일 파일 import
 
@@ -6,6 +6,7 @@ function Chatbot() {
   const [socket, setSocket] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [answer, setAnswer] = useState('');
+  const answerRef = useRef(null);
 
   useEffect(() => {
     const newSocket = new SockJS(`${process.env.REACT_APP_BASE_URL}/ws/chatbot`);
@@ -34,6 +35,12 @@ function Chatbot() {
     }
   };
 
+  useEffect(() => {
+    if (answerRef.current) {
+      answerRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [answer]);
+
   return (
     <div className='row mt-4'>
       <div className="col">
@@ -50,7 +57,7 @@ function Chatbot() {
             ))}
           </div>
           <div className="answer-wrapper">
-            {answer && <div className="chatbot-answer">{answer}</div>}
+            {answer && <div className="chatbot-answer" ref={answerRef}>{answer}</div>}
           </div>
         </div>
       </div>

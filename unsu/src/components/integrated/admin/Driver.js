@@ -6,6 +6,7 @@ import { Modal } from 'bootstrap';
 import { TiUserDelete } from "react-icons/ti";
 import { FaUserEdit } from "react-icons/fa";
 import { selector } from 'recoil';
+import driver from '../../../images/driver.png';
 
 
 const Driver = () => {
@@ -412,40 +413,33 @@ const Driver = () => {
                                 </>
                             ) : (
                                 <>
-                                    <div className="row mt-4">
-                                        <div className="col">
-                                            <label>기사이름</label>
-                                            <h3>{selectedDriver.driverName}</h3>
+                                    <div className="row mt-2">
+                                        <div className="col p-2 d-flex justify-content-center">
+                                            <img src={driver} className="card-img-top" alt="..." style={{ width: '30%' }} />
+                                        </div>
+                                        <div className="col p-2 d-flex flex-column justify-content-center">
+                                            <label>성명</label>
+                                            <h4 className="card-title">{selectedDriver.driverName}</h4>
                                         </div>
                                     </div>
-
-                                    <div className="row mt-4">
-                                        <div className="col">
-                                            <label>연락처</label>
-                                            <h3>{selectedDriver.driverContact}</h3>
-                                        </div>
-                                    </div>
-
-                                    <div className="row mt-4">
-                                        <div className="col">
-                                            <label>생년월일</label>
-                                            <h3>{selectedDriver.driverAge}</h3>
-                                        </div>
-                                    </div>
-
-                                    <div className="row mt-4">
-                                        <div className="col">
-                                            <label>면허증번호</label>
-                                            <h3>{selectedDriver.driverLicense}</h3>
-                                        </div>
-                                    </div>
-
-                                    <div className="row mt-4">
-                                        <div className="col">
-                                            <label>면허증 취득일</label>
-                                            <h3>{selectedDriver.driverDate}</h3>
-                                        </div>
-                                    </div>
+                                    <ul className="list-group list-group-flush mt-2">
+                                        <li className="list-group-item d-flex justify-content-between">
+                                            <label className="mr-2 mb-0">생년월일</label>
+                                            <h4 className="mb-0 ms-4">{selectedDriver.driverAge}</h4>
+                                        </li>
+                                        <li className="list-group-item d-flex justify-content-between">
+                                            <label className="mr-2 mb-0">연락처</label>
+                                            <h4 className="mb-0 ms-4">{selectedDriver.driverContact}</h4>
+                                        </li>
+                                        <li className="list-group-item d-flex justify-content-between">
+                                            <label className="mr-2 mb-0">면허증번호</label>
+                                            <h4 className="mb-0 ms-4">{selectedDriver.driverLicense}</h4>
+                                        </li>
+                                        <li className="list-group-item d-flex justify-content-between">
+                                            <label className="mr-2 mb-0">면허증 취득일</label>
+                                            <h4 className="mb-0 ms-4">{selectedDriver.driverDate}</h4>
+                                        </li>
+                                    </ul>
                                     <hr />
                                     <div className="row mt-3">
                                         <div className="col text-end">

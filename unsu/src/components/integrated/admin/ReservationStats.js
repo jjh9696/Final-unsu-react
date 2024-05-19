@@ -67,10 +67,10 @@ const ReservationtStats = () => {
 
     return (
         <>
-            <Jumbotron title="통계" />
+            <Jumbotron title="통계" content="연도별 예약 현황" />
 
             <div className="row mt-4">
-                <div className="col ms-5">
+                <div className="col ms-4">
                     <select 
                         className="form-select rounded" 
                         style={{ width: '30%' }}
@@ -85,7 +85,7 @@ const ReservationtStats = () => {
                     </select>
                 </div>
             </div>
-            <div className="row mt-4">
+            <div className="row mt-5">
                 <div className="col">
                     <BarChart width={730} height={250} data={data}>
                         <CartesianGrid strokeDasharray="3 3" />
