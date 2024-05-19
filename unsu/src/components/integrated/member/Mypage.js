@@ -66,6 +66,7 @@ const Mypage = () => {
                 }
             });
             loadData();  // 데이터 다시 로드
+            alert("변경에 성공하였습니다");
             setEditMode(false);
         } catch (error) {
             console.error("데이터 저장 실패:", error);
@@ -184,6 +185,7 @@ const Mypage = () => {
                 <div className="card-body">
                     <Link to="/orderList" className="card-link">예매확인</Link>
                     <Link to="/deleteMember" className="card-link">탈퇴</Link>
+                    <Link to="/pw" className="card-link">비밀번호 변경</Link>
                 </div>
             </div>
         </div>

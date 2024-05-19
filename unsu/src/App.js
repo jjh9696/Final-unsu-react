@@ -19,6 +19,7 @@ const AdminHome = lazy(() => import("./components/integrated/admin/AdminHome"));
 const Join = lazy(() => import("./components/integrated/member/Join"));
 const Login = lazy(() => import("./components/integrated/member/Login"));
 const Mypage = lazy(() => import("./components/integrated/member/Mypage"));
+const Pw = lazy(() => import("./components/integrated/member/Pw"));
 const TestJoin = lazy(() => import("./components/integrated/member/TestJoin"));
 const OneWay = lazy(() => import("./components/OneWay"));
 const Notice = lazy(() => import("./components/integrated/notice/Notice"));
@@ -157,6 +158,7 @@ const App = () => {
                   <Route path="/orderList" element={<OrderList />} />
                   <Route path="/reservationStats" element={<ReservationStats />} />
                   <Route path="/deleteMember" element={<DeleteMember />} />
+                  <Route path="/pw" element={<Pw />} />
                 </Routes>
               </Suspense>
             </div>
