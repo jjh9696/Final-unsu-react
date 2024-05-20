@@ -857,6 +857,7 @@ const Reservation = () => {
                                             }}
                                             rows={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                                             cols={[1, 2, '통로', 3, 4]}
+                                            showNames={false}
                                             onSeatClick={handleSeatClicks}
                                             images={{
                                                 defaultState: Seat3,

@@ -1,10 +1,18 @@
 import { useCallback, useState, useEffect } from "react";
 import axios from "../../utils/CustomAxios";
+import  Pagination  from "../../utils/Pagination";
 
 const OrderList = () => {
     const [orders, setOrders] = useState([]);
     const [error, setError] = useState(null);
+    //페이징
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage, setPostsPerPage] = useState(10);
 
+    //페이징계산
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = orders.slice(indexOfFirstPost, indexOfLastPost);
     const loadData = useCallback(async () => {
         try {
             const resp = await axios.get(`/payment/list`, {
@@ -14,7 +22,7 @@ const OrderList = () => {
             });
             setOrders(resp.data); // 가져온 데이터로 orders 상태 업데이트
         } catch (error) {
-            console.error("데이터 읽기 실패:", error); 
+            console.error("데이터 읽기 실패:", error);
             setError(error.response ? error.response.data : "서버 오류");
         }
     }, []);
@@ -41,7 +49,7 @@ const OrderList = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {orders.map((order) => (
+                        {currentPosts.map((order) => (
                             <tr key={order.paymentNo}>
                                 <td>{order.paymentNo}</td>
                                 <td>{order.paymentFare}원</td>
@@ -52,9 +60,17 @@ const OrderList = () => {
                         ))}
                     </tbody>
                 </table>
+                
             ) : (
                 <p>예매 내역이 없습니다.</p>
             )}
+            {/* Pagination */}
+            <Pagination
+                postsPerPage={postsPerPage}
+                totalPages={Math.ceil(orders.length / postsPerPage)}
+                paginate={setCurrentPage}
+                currentPage={currentPage}
+            />
         </>
     );
 };
