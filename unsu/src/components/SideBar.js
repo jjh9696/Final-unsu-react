@@ -103,18 +103,9 @@ const SideBar = () => {
         </div>
         <div className="logo-outline" />
         <Menu>
-          <SubMenu label="운행정보" >
-            <Menu menuItemStyles={subItemStyles}>
-              <MenuItem component={<Link to="/" />}> 시간표 조회 </MenuItem>
-              <MenuItem component={<Link to="/" />}> 도착시간 안내</MenuItem>
-            </Menu>
-          </SubMenu>
-        </Menu>
-        <Menu>
           <SubMenu label="이용안내" >
             <Menu menuItemStyles={subItemStyles}>
               <MenuItem component={<Link to="/reservation" />}> 예매  </MenuItem>
-              <MenuItem component={<Link to="/testPrice" />}> 테스트페이지</MenuItem>
               <MenuItem component={<Link to="/payInfo" />}> 결제수단 안내</MenuItem>
               <MenuItem component={<Link to="/refundInfo" />}> 승차권 환불 안내</MenuItem>
               <MenuItem component={<Link to="/terminalInfo" />}> 고속버스터미널 안내</MenuItem>
@@ -132,9 +123,7 @@ const SideBar = () => {
         <Menu>
           <SubMenu label="고객센터" >
             <Menu menuItemStyles={subItemStyles}>
-              <MenuItem component={<Link to="/" />}> 자주하는 질문  </MenuItem>
-              <MenuItem component={<Link to="/" />}> 유실물센터 안내</MenuItem>
-              <MenuItem component={<Link to="/" />} onClick={openChatbotModal}> 챗봇 </MenuItem>
+               <MenuItem component={<Link to="/" />} onClick={openChatbotModal}> 챗봇 </MenuItem>
               {isLogin && (
                 <>
                   <MenuItem component={<Link to="/" />} onClick={openMemberChatModal}> 문의채팅 </MenuItem>
