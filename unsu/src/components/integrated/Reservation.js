@@ -778,7 +778,7 @@ const Reservation = () => {
                                                 {/* YYYY-MM-DD HH24:MI 형식에서 시간만 출력하게 설정함 */}
                                                 <div className="col col-3">{bus.gradeType}</div>
                                                 <div className="col col-3">{bus.busSeat}석</div>
-                                                <div className="col col-3"><button className="btn btn-primary" onClick={e => handleCombinedClick(bus)}>선택{bus.busNo}</button></div>
+                                                <div className="col col-3"><button className="btn btn-primary" onClick={e => handleCombinedClick(bus)}>선택</button></div>
                                             </div>
                                         ))}
                                     </div>
