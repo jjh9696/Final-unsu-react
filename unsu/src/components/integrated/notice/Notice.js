@@ -5,6 +5,7 @@ import moment from "moment";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { GrFormPrevious } from "react-icons/gr";
 import { GrFormNext } from "react-icons/gr";
+import { FcAdvertising } from "react-icons/fc";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { isLoginState, loginIdState, loginLevelState } from "../../utils/RecoilData";
 
@@ -122,8 +123,8 @@ const Notice = () => {
                 <div className="col">
                     <div className="text-end">
                         {loginLevel === '관리자' && (
-                            <button className="btn btn-primary" onClick={e => redirectAdd()}>
-                                새 공지사항
+                            <button className="btn btn-outline-secondary" onClick={e => redirectAdd()}>
+                                <FcAdvertising /> 공지사항
                             </button>
                         )}
                     </div>

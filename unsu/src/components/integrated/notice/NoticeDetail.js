@@ -4,6 +4,8 @@ import Jumbotron from "../../../Jumbotron";
 import axios from "../../utils/CustomAxios";
 import moment from "moment";
 import { FaEye } from "react-icons/fa";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { isLoginState, loginIdState, loginLevelState } from "../../utils/RecoilData";
 
 const NoticeDetail = (props) => {
 
@@ -27,6 +29,9 @@ const NoticeDetail = (props) => {
     });
     //수정시 복원을 위한 백업
     const [backup, setBackup] = useState(null);
+
+    //recoil state
+    const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
 
     // //effect
     useEffect(() => {
@@ -169,9 +174,9 @@ const NoticeDetail = (props) => {
                 </>
             ) : (
                 <>
-                    <div className="row mt-4">
+                    <div className="row mt-4 text-center">
                         <div className="col">
-                            <h2>공지사항 상세</h2>
+                            <h4>운수좋은날 홈페이지의 새로운 소식을 확인하세요.</h4>
                         </div>
                     </div>
                     <hr />
@@ -201,6 +206,8 @@ const NoticeDetail = (props) => {
                             <button className="btn btn-success me-5 text-start" onClick={e => redirectList()}>
                                 목록
                             </button>
+
+                            {loginLevel === '관리자' && (
                             <div>
                                 <button className="btn btn-warning text-end me-2"
                                     onClick={e => editNotice(notice)}>
@@ -211,6 +218,7 @@ const NoticeDetail = (props) => {
                                     삭제
                                 </button>
                             </div>
+                            )}
                         </div>
                     </div>
                 </>

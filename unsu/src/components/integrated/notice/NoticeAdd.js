@@ -68,7 +68,7 @@ const NoticeAdd = ()=>{
     return(
 
         <>
-            <Jumbotron title="공지사항 등록페이지" />
+            <h3> 공지사항을 등록해주세요</h3>
 
             <div className="row mt-5">
                 <div className="col">

@@ -5,10 +5,10 @@ import { throttle } from "lodash";
 import moment from "moment";
 import { Rating } from "react-simple-star-rating";
 import { Modal } from "bootstrap";
-import { IoMdAdd } from "react-icons/io";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { MdRateReview } from "react-icons/md";
 import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
 import { MdOutlineExpandMore } from "react-icons/md";
+import { FcExpand } from "react-icons/fc";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { isLoginState, loginIdState, loginLevelState } from "../../utils/RecoilData";
 
@@ -225,7 +225,7 @@ const ReviewList = () => {
     return (
         <>
 
-            <div className="row mt-5 sticky-top">
+            <div className="row mt-5">
                 <div className="col">
                     <h2>이용후기</h2>
                     <p>총 후기 개수: {reviewCount}개</p>
@@ -233,9 +233,9 @@ const ReviewList = () => {
 
                 {/* 추가 버튼 */}
                 <div className="col text-end">
-                    <button className="btn btn-primary"
+                    <button className="btn btn-outline-secondary"
                         onClick={e => openModal()}>
-                        <IoMdAdd />
+                        <MdRateReview />
                         후기 작성
                     </button>
                 </div>
@@ -347,7 +347,7 @@ const ReviewList = () => {
                                         </div>
 
                                         <div className="col text-start" style={{ maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}><br /><br />{review.reviewTitle}</div>
-                                        <div className="col text-end"><br /><br />{moment(review.reviewWtime).format("YYYY-MM-DD HH:mm")}</div>
+                                        <div className="col text-end"><br /><br />{moment(review.reviewWtime).format("YYYY-MM-DD")}</div>
                                     </button>
                                 </h2>
                                 <div id={`collapse${review.reviewNo}`} className="accordion-collapse collapse" aria-labelledby={`heading${review.reviewNo}`} data-bs-parent="#reviewAccordion">
@@ -374,7 +374,7 @@ const ReviewList = () => {
                     {last === false &&
                         <button className="btn w-100"
                             onClick={loadMoreReviews}>
-                            이용후기 더 보기<MdOutlineExpandMore />
+                            이용후기 더 보기<FcExpand />
                         </button>
                     }
                 </div>
