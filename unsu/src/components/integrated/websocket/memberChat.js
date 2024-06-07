@@ -20,8 +20,8 @@ const MemberChat = () => {
 
   useEffect(() => {
     // 페이지에 들어갈 때 웹소켓 연결 생성
-    // const newSocket = new SockJS(`${process.env.REACT_APP_BASE_URL}/ws/memberChat`);
-    const newSocket = new SockJS("http://192.168.30.45:8080/ws/memberChat");
+    const newSocket = new SockJS(`${process.env.REACT_APP_BASE_URL}/ws/memberChat`);
+    // const newSocket = new SockJS("http://192.168.30.45:8080/ws/memberChat");
 
     // 메세지 표시
     newSocket.onmessage = (e) => {
